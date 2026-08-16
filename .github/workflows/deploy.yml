@@ -20,6 +20,8 @@ jobs:
       - name: Build main website
         run: |
           cd easytofindedu-web
+          echo "VITE_API_BASE_URL=https://api.easytofindedu.com/api/v1" > .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
           npm ci
           npm run build
 
