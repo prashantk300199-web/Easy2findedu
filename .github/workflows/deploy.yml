@@ -1,0 +1,89 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build main website
+        run: |
+          cd easytofindedu-web
+          npm ci
+          npm run build
+
+      - name: Deploy main website to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          source: "easytofindedu-web/dist/*"
+          target: "/var/www/easytofindedu-temp"
+          strip_components: 2
+
+      - name: Move files to final location
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            rm -rf /var/www/easytofindedu/*
+            mv /var/www/easytofindedu-temp/* /var/www/easytofindedu/
+            rmdir /var/www/easytofindedu-temp
+            echo "✅ Main website deployed"
+
+  deploy-admin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build admin dashboard
+        run: |
+          cd admin-dashboard
+          npm ci
+          npm run build
+
+      - name: Deploy admin to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          source: "admin-dashboard/dist/*"
+          target: "/var/www/admin-easytofindedu-temp"
+          strip_components: 2
+
+      - name: Move files to final location
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            rm -rf /var/www/admin-easytofindedu/*
+            mv /var/www/admin-easytofindedu-temp/* /var/www/admin-easytofindedu/
+            rmdir /var/www/admin-easytofindedu-temp
+            echo "✅ Admin dashboard deployed"

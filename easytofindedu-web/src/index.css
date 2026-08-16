@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-cream text-ink font-sans;
+    font-feature-settings: 'liga' 1, 'kern' 1;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    font-weight: 400;
+  }
+
+  ::selection {
+    @apply bg-gold-500 text-night-800;
+  }
+
+  :focus-visible {
+    outline: 1.5px solid #C9A96A;
+    outline-offset: 4px;
+  }
+
+  /* Gold scrollbar on the dark shell reads as a deliberate detail. */
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-track { background: #F4EEE3; }
+  ::-webkit-scrollbar-thumb { background: #D8CBB4; }
+  ::-webkit-scrollbar-thumb:hover { background: #C9A96A; }
+}
+
+@layer components {
+  .overline {
+    @apply font-sans text-[10px] font-medium uppercase tracking-overline text-gold-700;
+  }
+
+  .overline-light {
+    @apply font-sans text-[10px] font-medium uppercase tracking-overline text-gold-400;
+  }
+
+  .folio {
+    @apply font-sans text-[11px] tabular-nums tracking-wide2 text-gold-600;
+  }
+
+  /* Hairline that fades out — used to open every section. */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,169,106,0.85), rgba(201,169,106,0.08));
+  }
+
+  .rule-gold-dark {
+    height: 1px;
+    background: linear-gradient(90deg, rgba(201,169,106,0.75), rgba(201,169,106,0.05));
+  }
+
+  /* Cinematic scrim so display type stays legible over photography. */
+  .scrim {
+    background: linear-gradient(180deg, rgba(7,12,24,0.72) 0%, rgba(7,12,24,0.42) 45%, rgba(7,12,24,0.88) 100%);
+  }
+
+  .scrim-soft {
+    background: linear-gradient(180deg, rgba(7,12,24,0.05) 0%, rgba(7,12,24,0.55) 70%, rgba(7,12,24,0.9) 100%);
+  }
+
+  .glass {
+    background: rgba(251, 248, 242, 0.09);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(201, 169, 106, 0.28);
+  }
+
+  .link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .link-underline:hover { background-size: 100% 1px; }
+
+  /* Gold sweep across display headings on dark sections. */
+  .gilded {
+    background: linear-gradient(100deg, #C9A96A 20%, #F0E4CC 42%, #C9A96A 60%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    @apply animate-shimmer;
+  }
+
+  .line-mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.1em;
+    margin-bottom: -0.1em;
+  }
+
+  .line-mask > span {
+    display: block;
+    transform: translateY(105%);
+    transition: transform 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .line-mask.is-in > span { transform: translateY(0); }
+
+  /* Fine paper tooth over cream areas; keeps large flats from going dead. */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: -50%;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.22;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.4'/%3E%3C/svg%3E");
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .line-mask > span { transform: none !important; }
+}
