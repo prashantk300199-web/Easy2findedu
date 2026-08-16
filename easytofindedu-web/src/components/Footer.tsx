@@ -58,8 +58,9 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Mobile navigation menu */}
+        {/* Mobile navigation menu - Quick Access */}
         <div className="border-b border-gold-500/20 py-12 md:hidden">
+          <p className="mb-4 text-center text-sm font-medium uppercase tracking-wider text-gold-400">Quick Access</p>
           <nav className="grid grid-cols-2 gap-4">
             <Link
               to="/hostels"
