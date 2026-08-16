@@ -153,6 +153,35 @@ export function Navbar() {
               </span>
             </NavLink>
           ))}
+
+          {/* Mobile auth section */}
+          <div className="mt-8 border-t border-gold-500/15 pt-8"
+            style={{
+              transitionDelay: `${LINKS.length * 70}ms`,
+              transform: open ? 'translateY(0)' : 'translateY(24px)',
+              opacity: open ? 1 : 0,
+              transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
+            }}
+          >
+            {user ? (
+              <div className="flex flex-col gap-4">
+                <span className="text-cream-100/70 text-sm">Logged in as {user.name}</span>
+                <button
+                  type="button"
+                  onClick={logout}
+                  className="text-left font-display text-2xl text-gold-400 hover:text-gold-300"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="inline-block">
+                <Action variant="light" className="px-8 py-3 text-lg">
+                  Login
+                </Action>
+              </Link>
+            )}
+          </div>
         </nav>
       </div>
     </>

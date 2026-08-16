@@ -389,21 +389,10 @@ function ContactSection({ hostel }: { hostel: Hostel }) {
   return (
     <Sec id="contact" title="Management Details">
       <div className="grid gap-6 sm:grid-cols-2">
-        {/* Warden box — most prominent: dark card with call CTA */}
-        {warden?.name && (
+        {/* Warden box - hidden, use WardenUnlock component instead */}
+        {warden && (warden.name || warden.contact_number) && (
           <div className="bg-night-900 p-8 text-cream-100">
-            <p className="overline-light">Warden</p>
-            <h3 className="mt-4 font-display text-2xl text-cream-100">{warden.name}</h3>
-            {warden.contact_number && (
-              <a href={`tel:${warden.contact_number}`}
-                className="mt-5 flex items-center gap-3 text-gold-400 hover:text-gold-300 transition-colors duration-300">
-                <span className="text-xl">☎</span>
-                <span className="font-display text-2xl tracking-wide">{warden.contact_number}</span>
-              </a>
-            )}
-            <p className="mt-4 text-xs text-cream-100/50 leading-relaxed">
-              Contact for admissions, enquiries and emergencies
-            </p>
+            <WardenUnlock hostelId={hostel._id} warden={warden} />
           </div>
         )}
         {/* Security features */}

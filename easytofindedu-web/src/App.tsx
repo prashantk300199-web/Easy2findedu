@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { HomePage } from './pages/HomePage';
 import { InstitutesPage } from './pages/InstitutesPage';
 import { InstituteDetailPage } from './pages/InstituteDetailPage';
@@ -101,8 +102,11 @@ function Shell() {
   return (
     <div className="grain flex min-h-screen flex-col">
       {!isStandalone && !isDashboard && <Navbar />}
-      <AnimatedRoutes />
+      <div className={!isStandalone && !isDashboard ? 'pb-20 md:pb-0' : ''}>
+        <AnimatedRoutes />
+      </div>
       {!isStandalone && !isDashboard && <Footer />}
+      {!isStandalone && !isDashboard && <MobileBottomNav />}
     </div>
   );
 }
