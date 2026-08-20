@@ -96,7 +96,7 @@ export function WishlistButton({ itemId, itemType: _itemType, compact = false }:
       }`}
     >
       <span className="text-xl">{isWishlisted ? '❤️' : '🤍'}</span>
-      <span className="text-sm font-medium tracking-wide">
+      <span className="text-sm font-sans tracking-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
         {isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
       </span>
     </motion.button>

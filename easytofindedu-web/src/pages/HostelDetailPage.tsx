@@ -23,7 +23,6 @@ const LEGAL_LABELS: Record<string, string> = {
   character_certificate: 'Character Certificate',
   trade_license: 'Trade License',
   fire_noc: 'Fire NOC',
-  hostel_association_member: 'Hostel Association Member',
 };
 const SECURITY_LABELS: Record<string, string> = {
   full_time_warden: 'Full-time Warden',

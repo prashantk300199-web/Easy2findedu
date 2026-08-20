@@ -2,11 +2,11 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const NAV_ITEMS = [
-  { to: '/hostels', label: 'Hostels', icon: '🏠' },
-  { to: '/institutes', label: 'Institutes', icon: '🎓' },
-  { to: '/colleges', label: 'Colleges', icon: '🏫' },
-  { to: '/career-guidance', label: 'Career', icon: '💼' },
-  { to: '/abroad', label: 'Abroad', icon: '✈️' },
+  { to: '/hostels', label: 'Hostels', icon: '⌂' },
+  { to: '/institutes', label: 'Institutes', icon: '⚐' },
+  { to: '/colleges', label: 'Colleges', icon: '▣' },
+  { to: '/career-guidance', label: 'Career', icon: '◈' },
+  { to: '/abroad', label: 'Abroad', icon: '✦' },
 ];
 
 export function MobileBottomNav() {

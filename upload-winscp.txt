@@ -1,0 +1,5 @@
+open sftp://root:P9f;wyF)74?;?;81@72.60.201.201:22
+cd /var/www/easytofindedu/
+lcd C:\Users\ayush\Downloads\Vidhyamarg\Vidhyamarg\easytofindedu-web\dist
+put *
+exit
