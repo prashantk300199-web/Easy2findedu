@@ -32,7 +32,8 @@ declare global {
       accounts: {
         id: {
           initialize: (cfg: object) => void;
-          prompt: (cb?: (n: { isNotDisplayed: () => boolean }) => void) => void;
+          prompt: (cb?: (n: { isNotDisplayed: () => boolean; isSkippedMoment?: () => boolean }) => void) => void;
+          renderButton: (parent: HTMLElement, options: object) => void;
         };
       };
     };
@@ -144,27 +145,51 @@ export function LoginPage() {
   }
 
   async function handleGoogle() {
-    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === 'YOUR_CLIENT_ID_HERE.apps.googleusercontent.com') {
-      alert('Google Sign-In is not configured yet.\n\nAdd your VITE_GOOGLE_CLIENT_ID to the .env file and restart the dev server.');
+    if (!GOOGLE_CLIENT_ID) {
+      alert('Google Sign-In is not configured yet.');
       return;
     }
+
     await loadGsi();
     if (!window.google) {
-      alert('Google Sign-In script failed to load. Check your internet connection.');
+      alert('Google Sign-In failed to load. Check your internet connection.');
       return;
     }
+
+    // Initialize Google Sign-In with callback
     window.google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
       callback: async (response: { credential: string }) => {
         try {
+          console.log('Google credential received:', response.credential?.substring(0, 50) + '...');
           await auth.googleLogin(response.credential, role);
           afterAuth();
-        } catch { /* error shown via auth.error */ }
+        } catch (err) {
+          console.error('Google login error:', err);
+        }
       },
     });
+
+    // Try prompt first (works on desktop)
     window.google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed()) {
-        alert('Google Sign-In popup was blocked or could not open. Try allowing popups for this site.');
+      const notDisplayed = notification.isNotDisplayed();
+      const skipped = notification.isSkippedMoment ? notification.isSkippedMoment() : false;
+
+      if (notDisplayed || skipped) {
+        // Prompt didn't work, show the button instead
+        const container = document.getElementById('google-btn-container');
+        if (container && window.google) {
+          container.innerHTML = '';
+          container.classList.remove('hidden');
+          window.google.accounts.id.renderButton(container, {
+            type: 'standard',
+            size: 'large',
+            theme: 'outline',
+            text: 'continue_with',
+            width: Math.min(container.parentElement?.offsetWidth || 400, 400),
+            logo_alignment: 'left',
+          });
+        }
       }
     });
   }
@@ -349,6 +374,8 @@ export function LoginPage() {
                     <span className="text-[11px] uppercase tracking-overline text-ink-400">or</span>
                     <span className="h-px flex-1 bg-cream-300" />
                   </div>
+                  {/* Google button container - shows actual Google button after click */}
+                  <div id="google-btn-container" className="hidden w-full flex justify-center"></div>
                   <GoogleBtn onClick={handleGoogle} disabled={auth.loading} />
                 </>
               )}

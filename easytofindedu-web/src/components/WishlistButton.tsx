@@ -28,8 +28,11 @@ export function WishlistButton({ itemId, itemType: _itemType, compact = false }:
       });
       if (!res.ok) return;
       const data = await res.json();
-      const list: any[] = data.wishlist ?? data.data?.wishlist ?? [];
-      setIsWishlisted(list.some((w: any) => (w._id ?? w) === itemId));
+      const list: any[] = data.data ?? [];
+      setIsWishlisted(list.some((w: any) => {
+        const wId = typeof w === 'string' ? w : (w._id ?? w);
+        return wId === itemId;
+      }));
     } catch {
       // silently fail
     }
@@ -58,12 +61,16 @@ export function WishlistButton({ itemId, itemType: _itemType, compact = false }:
 
       if (res.ok) {
         setIsWishlisted(!isWishlisted);
+        const data = await res.json();
+        console.log('Wishlist updated:', data.message);
       } else {
         const err = await res.json().catch(() => ({}));
         console.error('Wishlist error:', err);
+        alert(err.message || 'Failed to update wishlist');
       }
     } catch (error) {
       console.error('Wishlist error:', error);
+      alert('Failed to update wishlist');
     } finally {
       setLoading(false);
     }
@@ -118,12 +125,12 @@ export function WishlistPage() {
   const loadWishlist = async () => {
     try {
       const token = getToken();
-      const res = await fetch('https://easytofindedu.onrender.com/api/v1/wishlist', {
+      const res = await fetch('https://easytofindedu.onrender.com/api/v1/student/auth/wishlist', {
         headers: { Authorization: `Bearer ${token}` },
         credentials: 'include'
       });
       const data = await res.json();
-      setWishlist(data.wishlist || []);
+      setWishlist(data.data || []);
     } catch (error) {
       console.error('Failed to load wishlist');
     } finally {
@@ -158,13 +165,23 @@ export function WishlistPage() {
         </div>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {wishlist.map((item) => (
-            <div key={item._id} className="border border-cream-300 bg-white p-6">
-              <h3 className="font-display text-xl text-night-800 mb-2">{item.name}</h3>
-              <p className="text-sm text-ink-500 mb-4">{item.type}</p>
+          {wishlist.map((hostel) => (
+            <div key={hostel._id} className="border border-gold-300 bg-cream-50 p-6 hover:shadow-lg transition-shadow">
+              {hostel.photos && hostel.photos[0] && (
+                <img
+                  src={hostel.photos[0]}
+                  alt={hostel.name}
+                  className="w-full h-48 object-cover mb-4"
+                />
+              )}
+              <h3 className="font-display text-xl text-night-800 mb-2">{hostel.name}</h3>
+              {hostel.address && (
+                <p className="text-sm text-ink-500 mb-2">{hostel.address.city}, {hostel.address.state}</p>
+              )}
+              <p className="text-sm text-ink-600 mb-4 capitalize">{hostel.hostel_type || 'Hostel'}</p>
               <a
-                href={`/${item.type}s/${item._id}`}
-                className="text-gold-600 hover:text-gold-700 text-sm font-medium"
+                href={`/hostels/${hostel._id}`}
+                className="inline-block bg-gold-500 hover:bg-gold-600 text-night-900 px-6 py-2 text-sm font-medium transition-colors"
               >
                 View Details →
               </a>
