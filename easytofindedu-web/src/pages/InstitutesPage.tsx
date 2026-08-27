@@ -53,9 +53,9 @@ export function InstitutesPage() {
       // Mode filter: online/offline/all
       let matchesMode = true;
       if (mode === 'online') {
-        matchesMode = i.onlineClasses === true;
+        matchesMode = i.academicInfo?.onlineClasses === true;
       } else if (mode === 'offline') {
-        matchesMode = i.onlineClasses !== true; // offline or undefined
+        matchesMode = i.academicInfo?.onlineClasses !== true; // offline or undefined
       }
 
       return matchesCity && matchesQuery && matchesMode;
