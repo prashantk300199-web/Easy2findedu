@@ -346,6 +346,10 @@ function ComplianceSection({ hostel }: { hostel: Hostel }) {
             <p className="mt-0.5 text-sm text-night-800">Member of Hostel Welfare Association</p>
           </div>
         </div>
+      </div>
+    </Sec>
+  );
+}
         ))}
       </div>
     </Sec>
