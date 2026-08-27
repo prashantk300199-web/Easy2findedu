@@ -596,6 +596,21 @@ export function HostelDetailPage() {
                 </div>
               </Reveal>
             )}
+
+            {/* Mobile Schedule Visit - visible only on mobile */}
+            <div className="lg:hidden border-t border-cream-300 pt-8 pb-8">
+              <div className="bg-night-900 p-6 text-cream-100">
+                {rent && (
+                  <div className="mb-6 pb-6 border-b border-gold-500/20">
+                    <p className="overline-light">Starting from</p>
+                    <p className="mt-2 font-display text-3xl text-gold-400">{inr.format(rent)}</p>
+                    <p className="mt-1 text-sm text-cream-100/50">per month per bed</p>
+                  </div>
+                )}
+                <ScheduleVisit propertyId={hostel._id} propertyType="hostel" propertyName={hostel.name} />
+              </div>
+            </div>
+
             <RoomsSection hostel={hostel} />
             <AmenitiesSection hostel={hostel} />
             <FoodSection hostel={hostel} />

@@ -17,6 +17,8 @@ import { Counter, LineReveal, Magnetic, Marquee, Parallax, Reveal, Tilt } from '
 import { Figure } from '../components/Figure';
 import type { Institute } from '../lib/types';
 import { HeroBanner } from '../components/HeroBanner';
+import { ReferralWallet } from '../components/ReferralWallet';
+import { useAuth } from '../contexts/AuthContext';
 
 /* ══════════════════════ HERO ══════════════════════ */
 
@@ -605,6 +607,7 @@ function Guides() {
 /* ══════════════════ PAGE ══════════════════ */
 
 export function HomePage() {
+  const { user } = useAuth();
   const institutes = useAsync((signal) => fetchInstitutes(100, signal), []);
   const colleges = useAsync((signal) => fetchColleges(signal), []);
   const hostels = useAsync((signal) => fetchHostels(1, signal), []);
@@ -622,6 +625,13 @@ export function HomePage() {
       />
 
       <HeroBanner />
+
+      {/* Referral Wallet - visible only for logged-in students */}
+      {user && user.role === 'student' && (
+        <Section className="py-8">
+          <ReferralWallet />
+        </Section>
+      )}
 
       <div className="border-b border-cream-300 bg-cream-100 py-8">
         <Marquee items={['Patna', 'Boring Road', 'Patliputra Colony', 'Kankarbagh', 'Rajendra Nagar', 'Ashiana']} />
