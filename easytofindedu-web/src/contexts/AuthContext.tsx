@@ -23,7 +23,7 @@ interface AuthContextValue extends AuthState {
   register: (data: RegisterData, role: UserRole) => Promise<void>;
   verifyOtp: (email: string, otp: string, role: UserRole) => Promise<void>;
   resendOtp: (email: string, role: UserRole) => Promise<void>;
-  googleLogin: (idToken: string, role: UserRole) => Promise<void>;
+  googleLogin: (idToken: string, role: UserRole, referralCode?: string) => Promise<void>;
   logout: () => Promise<void>;
   clearError: () => void;
   getToken: () => string | null;
@@ -169,10 +169,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const googleLogin = useCallback(async (idToken: string, role: UserRole) => {
+  const googleLogin = useCallback(async (idToken: string, role: UserRole, referralCode?: string) => {
     setLoading();
     try {
-      const res = await post(`${BASE}/auth/google`, { idToken, role });
+      const res = await post(`${BASE}/auth/google`, { idToken, role, referralCode });
       const token = res.data?.token ?? res.token ?? extractToken(COOKIE_NAMES[role]);
       setUser({ ...res.data.user, role: res.data.role }, token);
     } catch (e) {
