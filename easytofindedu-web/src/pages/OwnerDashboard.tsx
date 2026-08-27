@@ -363,20 +363,25 @@ function AddHostel({ setView, editHostelId }: { setView: (v: 'hostels' | 'bookin
     </div>
   );
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent, saveAsDraft = false) => {
     e.preventDefault();
 
-    // Validate current step before proceeding
-    if (step === 1) {
-      if (!f.name || !f.description) {
-        setError('Please fill in all required fields: Hostel Name and Description');
-        return;
+    // If saving as draft, skip validation
+    if (!saveAsDraft) {
+      // Validate current step before proceeding
+      if (step === 1) {
+        if (!f.name || !f.description) {
+          setError('Please fill in all required fields: Hostel Name and Description');
+          return;
+        }
+      }
+      if (step === 2) {
+        if (!f.line1 || !f.area || !f.pincode) {
+          setError('Please fill in all required address fields');
+          return;
+        }
       }
     }
-    if (step === 2) {
-      if (!f.line1 || !f.area || !f.pincode) {
-        setError('Please fill in all required address fields');
-        return;
       }
     }
     if (step === 3) {
@@ -436,6 +441,37 @@ function AddHostel({ setView, editHostelId }: { setView: (v: 'hostels' | 'bookin
       alert(`Hostel ${isEditMode ? 'updated' : 'published'} successfully!`);
       setView('hostels');
     } catch (e: unknown) { setError(e instanceof Error ? e.message : 'Failed'); setLoading(false); }
+  };
+
+  const saveDraft = async () => {
+    setLoading(true);
+    const token = getToken();
+    try {
+      const draftData = {
+        formData: f,
+        amenities,
+        step,
+      };
+
+      const response = await fetch(`${BASE}/hostels/draft`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify(draftData),
+      });
+
+      if (!response.ok) throw new Error('Failed to save draft');
+
+      alert('Draft saved successfully! You can continue later.');
+      setView('hostels');
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Failed to save draft');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const STEPS = ['Basic Info', 'Address & Rent', 'Rooms & Rules', 'Amenities', 'Photos & Mess'];
@@ -578,6 +614,17 @@ function AddHostel({ setView, editHostelId }: { setView: (v: 'hostels' | 'bookin
             className="flex-1 bg-night-800 py-4 text-[12px] uppercase tracking-wide2 text-cream-100 hover:bg-gold-600 disabled:opacity-60 transition-colors">
             {loading ? 'Saving…' : step < 5 ? `Next → ${STEPS[step]}` : 'Publish Hostel'}
           </button>
+
+          {!isEditMode && (
+            <button
+              type="button"
+              onClick={saveDraft}
+              disabled={loading}
+              className="px-6 py-4 border-2 border-night-800 text-night-800 text-[12px] uppercase tracking-wide2 hover:bg-night-800 hover:text-cream-100 disabled:opacity-60 transition-colors"
+            >
+              {loading ? 'Saving...' : '💾 Save Draft'}
+            </button>
+          )}
         </div>
       </form>
     </div>

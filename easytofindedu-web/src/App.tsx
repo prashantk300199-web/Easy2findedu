@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { Navbar } from './components/Navbar';
 import { Footer } from './components/Footer';
 import { MobileBottomNav } from './components/MobileBottomNav';
+import { OfferBanner } from './components/OfferBanner';
 import { HomePage } from './pages/HomePage';
 import { InstitutesPage } from './pages/InstitutesPage';
 import { InstituteDetailPage } from './pages/InstituteDetailPage';
