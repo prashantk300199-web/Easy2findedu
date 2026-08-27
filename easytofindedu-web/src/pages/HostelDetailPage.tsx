@@ -13,6 +13,8 @@ import { ReviewSystem, CompactReviewDisplay } from '../components/ReviewSystem';
 import { FAQSection, DEFAULT_HOSTEL_FAQS } from '../components/FAQSection';
 import { WishlistButton } from '../components/WishlistButton';
 import { SimilarHostelsCarousel } from '../components/SimilarHostelsCarousel';
+import { WardenUnlock } from '../components/WardenUnlock';
+import { ScheduleVisit } from '../components/ScheduleVisit';
 import { useAuth } from '../contexts/AuthContext';
 
 /* ─── lookup maps ─────────────────────────────────────────── */
