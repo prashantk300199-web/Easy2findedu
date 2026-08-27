@@ -2,6 +2,9 @@ import type { Blog, College, Hostel, Institute, NamedRef, Pagination } from './t
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'https://api.easytofindedu.com/api/v1';
 
+// Export the base URL for use in other components
+export const API_BASE_URL = BASE;
+
 async function get<T>(path: string, signal?: AbortSignal): Promise<T> {
   const res = await fetch(`${BASE}${path}`, { signal, headers: { Accept: 'application/json' } });
   if (!res.ok) throw new Error(`Request failed (${res.status})`);
