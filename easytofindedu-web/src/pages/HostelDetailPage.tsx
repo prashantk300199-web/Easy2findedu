@@ -461,7 +461,7 @@ export function HostelDetailPage() {
   const { data, loading, error } = useAsync((signal) => fetchHostel(slug!, signal), [slug]);
   const similar = useAsync((signal) => fetchHostels(20, signal), []);
   const [showAllPhotos, setShowAllPhotos] = useState(false);
-  const { getToken } = useAuth();
+  const { getToken, user } = useAuth();
   const [reviews, setReviews] = useState<any[]>([]);
 
   if (loading) return <Section className="py-32"><Spinner label="Loading hostel" /></Section>;
@@ -634,11 +634,25 @@ export function HostelDetailPage() {
                 totalReviews={(hostel as any).totalReviews ?? 0}
                 onReviewSubmit={async (rating, comment) => {
                   const token = getToken();
+                  const userName = user?.name || 'Anonymous';
+                  const userEmail = user?.email || 'anonymous@example.com';
+
                   const res = await fetch(`https://easytofindedu.onrender.com/api/v1/reviews/hostels/${hostel._id}/reviews`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
                     credentials: 'include',
-                    body: JSON.stringify({ rating, comment }),
+                    body: JSON.stringify({
+                      reviewer_name: userName,
+                      reviewer_email: userEmail,
+                      ratings: {
+                        overall: rating,
+                        cleanliness: rating,
+                        food: rating,
+                        location: rating,
+                        value_for_money: rating
+                      },
+                      comment: comment
+                    }),
                   });
                   if (!res.ok) throw new Error('Failed');
                   const data = await res.json();
