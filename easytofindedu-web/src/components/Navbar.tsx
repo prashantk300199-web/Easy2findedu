@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Action } from './primitives';
 import { Magnetic } from './motion';
 import { Wordmark } from './Logo';
+import { API_BASE_URL } from '../lib/api';
 
 const LINKS = [
   { to: '/hostels', label: 'Hostels' },
@@ -18,13 +19,38 @@ const LINKS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [coins, setCoins] = useState<number | null>(null);
   const location = useLocation();
-  const { user, logout } = useAuth();
+  const { user, logout, getToken } = useAuth();
 
   // The homepage opens on a dark full-bleed hero, so the bar starts light there.
   // All pages that open with a full-bleed dark hero need a light navbar.
   const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses'];
   const overHero = (location.pathname === '/' || HERO_ROUTES.includes(location.pathname)) && !scrolled;
+
+  // Fetch wallet coins if user is logged in
+  useEffect(() => {
+    const fetchCoins = async () => {
+      if (user && user.role === 'student') {
+        try {
+          const token = getToken();
+          const response = await fetch(`${API_BASE_URL}/wallet/wallet`, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+            },
+          });
+          if (response.ok) {
+            const data = await response.json();
+            setCoins(data.data?.coins ?? 0);
+          }
+        } catch (error) {
+          console.error('Failed to fetch wallet:', error);
+          setCoins(0);
+        }
+      }
+    };
+    fetchCoins();
+  }, [user, getToken]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -82,6 +108,27 @@ export function Navbar() {
             {/* Auth button */}
             {user ? (
               <div className="hidden items-center gap-3 md:flex">
+                {user.role === 'student' && coins !== null && (
+                  <div className={cx(
+                    'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-colors duration-300',
+                    overHero
+                      ? 'border-gold-500/30 bg-gold-500/10'
+                      : 'border-gold-600/25 bg-gold-50'
+                  )}>
+                    <span className={cx(
+                      'text-[13px] font-medium tabular-nums',
+                      overHero ? 'text-gold-300' : 'text-gold-700'
+                    )}>
+                      {coins}
+                    </span>
+                    <span className={cx(
+                      'text-[10px] uppercase tracking-wide',
+                      overHero ? 'text-gold-400/80' : 'text-gold-600/70'
+                    )}>
+                      Coins
+                    </span>
+                  </div>
+                )}
                 <span className={cx('text-[12px] uppercase tracking-wide2', overHero ? 'text-cream-100/70' : 'text-ink-500')}>
                   {user.name.split(' ')[0]}
                 </span>
@@ -165,6 +212,16 @@ export function Navbar() {
           >
             {user ? (
               <div className="flex flex-col gap-4">
+                {user.role === 'student' && coins !== null && (
+                  <div className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-3 py-2 w-fit">
+                    <span className="text-gold-300 text-base font-medium tabular-nums">
+                      {coins}
+                    </span>
+                    <span className="text-gold-400/80 text-xs uppercase tracking-wide">
+                      Coins
+                    </span>
+                  </div>
+                )}
                 <span className="text-cream-100/70 text-sm">Logged in as {user.name}</span>
                 <button
                   type="button"
