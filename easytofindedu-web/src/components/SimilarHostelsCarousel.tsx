@@ -40,7 +40,7 @@ export function SimilarHostelsCarousel({ hostels, currentHostelId }: SimilarHost
   };
 
   return (
-    <div className="border-t border-cream-300 pt-12 mt-16">
+    <div className="border-t border-cream-300 pt-12 mt-16 overflow-hidden">
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-display text-2xl text-night-800">Similar Hostels</h2>
         <div className="flex gap-2">
@@ -74,7 +74,7 @@ export function SimilarHostelsCarousel({ hostels, currentHostelId }: SimilarHost
       <div
         ref={scrollRef}
         onScroll={checkScroll}
-        className="flex gap-6 overflow-x-auto scrollbar-hide pb-4"
+        className="flex gap-6 overflow-x-scroll scrollbar-hide pb-4 -mx-1 px-1"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {similarHostels.map((hostel) => (
