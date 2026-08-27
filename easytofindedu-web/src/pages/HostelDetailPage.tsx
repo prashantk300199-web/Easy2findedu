@@ -350,11 +350,6 @@ function ComplianceSection({ hostel }: { hostel: Hostel }) {
     </Sec>
   );
 }
-        ))}
-      </div>
-    </Sec>
-  );
-}
 
 /* ─── rules ───────────────────────────────────────────────── */
 function RulesSection({ hostel }: { hostel: Hostel }) {
