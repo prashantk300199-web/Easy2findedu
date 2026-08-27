@@ -602,7 +602,7 @@ export function HostelDetailPage() {
               <Reveal>
                 <div className="border-t border-cream-300 pt-12 pb-10">
                   <h2 className="overline text-gold-700">Profile Overview</h2>
-                  <p className="mt-6 whitespace-pre-line font-display text-xl leading-relaxed text-ink-700">
+                  <p className="mt-6 whitespace-pre-line text-[17px] leading-relaxed text-ink-700 max-w-[65ch]">
                     {hostel.description}
                   </p>
                 </div>
