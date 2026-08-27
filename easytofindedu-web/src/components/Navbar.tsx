@@ -196,7 +196,6 @@ export function Navbar() {
             }}
           >
             <Wordmark light={true} size={32} />
-            <p className="text-cream-100/50 text-xs uppercase tracking-wide mt-2">Trusted Platform</p>
           </div>
 
           {/* Auth section at top - Login or User info */}
