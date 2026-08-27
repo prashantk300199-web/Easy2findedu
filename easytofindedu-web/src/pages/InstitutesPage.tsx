@@ -10,11 +10,18 @@ import { Reveal } from '../components/motion';
 import { InstituteCard } from '../components/InstituteCard';
 
 type Sort = 'name' | 'oldest' | 'newest';
+type InstituteMode = 'all' | 'online' | 'offline';
 
 const SORTS: { key: Sort; label: string }[] = [
   { key: 'name', label: 'A–Z' },
   { key: 'oldest', label: 'Longest running' },
   { key: 'newest', label: 'Newest' },
+];
+
+const MODES: { key: InstituteMode; label: string }[] = [
+  { key: 'all', label: 'All Institutes' },
+  { key: 'online', label: 'Online Classes' },
+  { key: 'offline', label: 'Offline Classes' },
 ];
 
 export function InstitutesPage() {
@@ -23,6 +30,7 @@ export function InstitutesPage() {
   const [query, setQuery] = useState(params.get('q') ?? '');
   const [city, setCity] = useState<string>('All');
   const [sort, setSort] = useState<Sort>('name');
+  const [mode, setMode] = useState<InstituteMode>('all');
 
   const all = data?.items ?? [];
 
@@ -41,7 +49,16 @@ export function InstitutesPage() {
       const matchesCity = city === 'All' || cityName(i) === city;
       const matchesQuery =
         !q || i.name.toLowerCase().includes(q) || placeLine(i).toLowerCase().includes(q);
-      return matchesCity && matchesQuery;
+
+      // Mode filter: online/offline/all
+      let matchesMode = true;
+      if (mode === 'online') {
+        matchesMode = i.onlineClasses === true;
+      } else if (mode === 'offline') {
+        matchesMode = i.onlineClasses !== true; // offline or undefined
+      }
+
+      return matchesCity && matchesQuery && matchesMode;
     });
 
     return [...filtered].sort((a, b) => {
@@ -50,7 +67,7 @@ export function InstitutesPage() {
       const by = b.establishedYear ?? 0;
       return sort === 'oldest' ? ay - by : by - ay;
     });
-  }, [all, query, city, sort]);
+  }, [all, query, city, sort, mode]);
 
   // hero image is now a curated Unsplash photograph
 
@@ -84,6 +101,24 @@ export function InstitutesPage() {
           </label>
 
           <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+            {MODES.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setMode(option.key)}
+                className={cx(
+                  'px-4 py-2 text-[11px] uppercase tracking-overline transition-all duration-300 border',
+                  mode === option.key
+                    ? 'border-gold-700 bg-gold-500 text-night-800'
+                    : 'border-cream-300 text-ink-400 hover:border-gold-500',
+                )}
+              >
+                {option.label}
+              </button>
+            ))}
+
+            <span className="text-ink-400 mx-2">|</span>
+
             {SORTS.map((option) => (
               <button
                 key={option.key}

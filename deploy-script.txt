@@ -1,0 +1,8 @@
+option batch abort
+option confirm off
+open ftp://u959936762:Ayush@2005@185.224.139.120/
+cd htdocs
+lcd C:\Users\ayush\Downloads\Vidhyamarg\Vidhyamarg\easytofindedu-web\dist
+put -delete *
+close
+exit

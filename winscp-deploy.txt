@@ -1,0 +1,7 @@
+option batch abort
+option confirm off
+open sftp://root@72.60.201.201 -password="P9f;wyF)74?;?;81"
+cd /var/www/easytofindedu
+lcd easytofindedu-web/dist
+put -delete *
+exit

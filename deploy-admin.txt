@@ -1,0 +1,9 @@
+option batch abort
+option confirm off
+open ftp://u959936762@185.224.139.120 -password="Ayush@2005"
+cd htdocs
+mkdir admin
+cd admin
+lcd C:\Users\ayush\Downloads\Vidhyamarg\Vidhyamarg\admin-dashboard\dist
+put -delete *
+exit

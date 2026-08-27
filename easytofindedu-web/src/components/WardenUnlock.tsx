@@ -89,13 +89,13 @@ export function WardenUnlock({ hostelId, warden }: WardenUnlockProps) {
 
           <div className="text-center">
             <p className="text-sm text-ink-500 mb-3">
-              🔒 Warden details are hidden to protect resident privacy
+              🔒 Warden contact details are hidden to protect privacy
             </p>
             <button
               onClick={handleUnlock}
               className="bg-gold-500 hover:bg-gold-600 text-night-900 px-6 py-3 text-sm font-medium transition-colors"
             >
-              🔓 Unlock Warden Details
+              📞 Call Now
             </button>
           </div>
         </div>
@@ -118,7 +118,7 @@ export function WardenUnlock({ hostelId, warden }: WardenUnlockProps) {
               className="bg-white w-full max-w-md p-8 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="font-display text-2xl text-night-800 mb-2">Unlock Warden Details</h3>
+              <h3 className="font-display text-2xl text-night-800 mb-2">Call Warden</h3>
               <p className="text-sm text-ink-500 mb-6">Please share your basic details to access warden contact information.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -168,7 +168,7 @@ export function WardenUnlock({ hostelId, warden }: WardenUnlockProps) {
                     disabled={submitting}
                     className="flex-1 bg-gold-500 hover:bg-gold-600 text-night-900 py-3 font-medium transition-colors disabled:opacity-50"
                   >
-                    {submitting ? 'Submitting...' : 'View Warden Details'}
+                    {submitting ? 'Submitting...' : 'Get Contact Details'}
                   </button>
                   <button
                     type="button"

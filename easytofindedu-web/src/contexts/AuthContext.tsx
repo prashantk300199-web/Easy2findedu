@@ -36,6 +36,7 @@ export interface RegisterData {
   password: string;
   gender?: string;
   lastQualification?: string;
+  referralCode?: string;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
