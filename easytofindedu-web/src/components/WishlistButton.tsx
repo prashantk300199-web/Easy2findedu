@@ -93,19 +93,16 @@ export function WishlistButton({ itemId, itemType: _itemType, compact = false }:
 
   return (
     <motion.button
-      whileTap={{ scale: 0.9 }}
+      whileTap={{ scale: 0.95 }}
       onClick={toggleWishlist}
       disabled={loading}
-      className={`flex items-center gap-2 px-6 py-3 border transition-all duration-300 ${
+      className={`text-[10px] uppercase tracking-wide2 border px-3 py-1.5 transition-colors ${
         isWishlisted
-          ? 'bg-red-50 border-red-300 text-red-600'
-          : 'bg-cream-50 border-cream-300 text-night-800 hover:border-gold-400 hover:bg-gold-50'
+          ? 'bg-cream-100 border-cream-300 text-gold-700'
+          : 'bg-cream-50 border-cream-300 text-ink-500 hover:border-gold-500/40 hover:text-gold-700'
       }`}
     >
-      <span className="text-xl">{isWishlisted ? '❤️' : '🤍'}</span>
-      <span className="text-sm font-sans tracking-wide" style={{ fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-        {isWishlisted ? 'Wishlisted' : 'Add to Wishlist'}
-      </span>
+      {isWishlisted ? '❤️ Wishlisted' : '🤍 Add to Wishlist'}
     </motion.button>
   );
 }
