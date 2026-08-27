@@ -519,18 +519,6 @@ export function HostelDetailPage() {
           <LineReveal as="h1" className="mt-6 font-display text-d2 text-night-800" lines={[<>{hostel.name}</>]} />
           <p className="mt-3 text-sm text-ink-500">{hostelPlace(hostel)}</p>
 
-          {/* Action buttons */}
-          <div className="mt-6 flex flex-wrap gap-3">
-            <ScheduleVisit propertyId={hostel._id} propertyType="hostel" propertyName={hostel.name} />
-            {rent && (
-              <div className="px-6 py-3 bg-cream-50 border border-cream-300">
-                <span className="text-xs text-ink-400 uppercase tracking-wide">From </span>
-                <span className="font-display text-lg text-night-800">{inr.format(rent)}</span>
-                <span className="text-xs text-ink-400">/month</span>
-              </div>
-            )}
-          </div>
-
           {/* Review stars near hostel name */}
           <div className="mt-3">
             <CompactReviewDisplay rating={(hostel as any).averageRating ?? 4.2} reviewCount={(hostel as any).totalReviews ?? 0} />
@@ -689,6 +677,9 @@ export function HostelDetailPage() {
                 {hostel.warden && (hostel.warden.name || hostel.warden.contact_number) && (
                   <WardenUnlock hostelId={hostel._id} warden={hostel.warden} />
                 )}
+                <div className="mt-6 pt-6 border-t border-gold-500/20">
+                  <ScheduleVisit propertyId={hostel._id} propertyType="hostel" propertyName={hostel.name} />
+                </div>
               </div>
 
               {/* Similar hostels in same area */}
