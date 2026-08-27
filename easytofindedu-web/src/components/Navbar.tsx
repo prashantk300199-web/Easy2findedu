@@ -6,6 +6,7 @@ import { Action } from './primitives';
 import { Magnetic } from './motion';
 import { Wordmark } from './Logo';
 import { API_BASE_URL } from '../lib/api';
+import { WalletModal } from './WalletModal';
 
 const LINKS = [
   { to: '/hostels', label: 'Hostels' },
@@ -20,6 +21,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [coins, setCoins] = useState<number | null>(null);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const location = useLocation();
   const { user, logout, getToken } = useAuth();
 
@@ -109,12 +111,15 @@ export function Navbar() {
             {user ? (
               <div className="hidden items-center gap-3 md:flex">
                 {user.role === 'student' && coins !== null && (
-                  <div className={cx(
-                    'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-colors duration-300',
-                    overHero
-                      ? 'border-gold-500/30 bg-gold-500/10'
-                      : 'border-gold-600/25 bg-gold-50'
-                  )}>
+                  <button
+                    onClick={() => setWalletModalOpen(true)}
+                    className={cx(
+                      'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-all duration-300 hover:scale-105 cursor-pointer',
+                      overHero
+                        ? 'border-gold-500/30 bg-gold-500/10 hover:border-gold-500/50 hover:bg-gold-500/20'
+                        : 'border-gold-600/25 bg-gold-50 hover:border-gold-600/40 hover:bg-gold-100'
+                    )}
+                  >
                     <span className={cx(
                       'text-[13px] font-medium tabular-nums',
                       overHero ? 'text-gold-300' : 'text-gold-700'
@@ -127,7 +132,7 @@ export function Navbar() {
                     )}>
                       Coins
                     </span>
-                  </div>
+                  </button>
                 )}
                 <span className={cx('text-[12px] uppercase tracking-wide2', overHero ? 'text-cream-100/70' : 'text-ink-500')}>
                   {user.name.split(' ')[0]}
@@ -213,14 +218,20 @@ export function Navbar() {
             {user ? (
               <div className="flex flex-col gap-4">
                 {user.role === 'student' && coins !== null && (
-                  <div className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-3 py-2 w-fit">
+                  <button
+                    onClick={() => {
+                      setWalletModalOpen(true);
+                      setOpen(false);
+                    }}
+                    className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-3 py-2 w-fit hover:bg-gold-500/20 hover:border-gold-500/50 transition-all"
+                  >
                     <span className="text-gold-300 text-base font-medium tabular-nums">
                       {coins}
                     </span>
                     <span className="text-gold-400/80 text-xs uppercase tracking-wide">
                       Coins
                     </span>
-                  </div>
+                  </button>
                 )}
                 <span className="text-cream-100/70 text-sm">Logged in as {user.name}</span>
                 <button
@@ -241,6 +252,9 @@ export function Navbar() {
           </div>
         </nav>
       </div>
+
+      {/* Wallet Modal */}
+      <WalletModal isOpen={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
     </>
   );
 }
