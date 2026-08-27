@@ -17,16 +17,21 @@ export function ReferralWallet() {
   const loadWalletData = async () => {
     try {
       const token = getToken();
-      const res = await fetch('https://easytofindedu.onrender.com/api/v1/student/auth/wallet', {
+      const res = await fetch('https://easytofindedu.onrender.com/api/v1/wallet/wallet', {
         headers: { Authorization: `Bearer ${token}` },
         credentials: 'include'
       });
       if (res.ok) {
         const data = await res.json();
-        setWalletData(data.data);
+        setWalletData(data.data || data);
+      } else {
+        // Set default data if API fails
+        setWalletData({ coins: 0, referralCode: null });
       }
     } catch (error) {
       console.error('Failed to load wallet data');
+      // Set default data on error
+      setWalletData({ coins: 0, referralCode: null });
     } finally {
       setLoading(false);
     }
@@ -42,7 +47,6 @@ export function ReferralWallet() {
 
   if (!user || user.role !== 'student') return null;
   if (loading) return null;
-  if (!walletData) return null;
 
   return (
     <motion.div
@@ -53,12 +57,12 @@ export function ReferralWallet() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <p className="text-[10px] uppercase tracking-wide2 text-night-800/70">Your Wallet</p>
-          <p className="mt-1 font-display text-3xl font-semibold">{walletData.coins || 0} Coins</p>
+          <p className="mt-1 font-display text-3xl font-semibold">{walletData?.coins || 0} Coins</p>
         </div>
         <span className="text-4xl">💰</span>
       </div>
 
-      {walletData.referralCode && (
+      {walletData?.referralCode && (
         <div className="mt-4 pt-4 border-t border-night-900/20">
           <p className="text-[10px] uppercase tracking-wide2 text-night-800/70 mb-2">Your Referral Code</p>
           <div className="flex items-center gap-2">
@@ -78,7 +82,7 @@ export function ReferralWallet() {
         </div>
       )}
 
-      {walletData.referredBy && (
+      {walletData?.referredBy && (
         <p className="mt-3 text-xs text-night-800/60">
           ✓ Referred by: {walletData.referredBy}
         </p>
