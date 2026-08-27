@@ -102,7 +102,12 @@ function Shell() {
 
   return (
     <div className="grain flex min-h-screen flex-col">
-      {!isStandalone && !isDashboard && <Navbar />}
+      {!isStandalone && !isDashboard && (
+        <>
+          <Navbar />
+          <OfferBanner />
+        </>
+      )}
       <div className={!isStandalone && !isDashboard ? 'pb-20 md:pb-0' : ''}>
         <AnimatedRoutes />
       </div>
