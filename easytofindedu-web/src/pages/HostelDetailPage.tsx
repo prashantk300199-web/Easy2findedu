@@ -12,7 +12,7 @@ import type { Hostel } from '../lib/types';
 import { ReviewSystem, CompactReviewDisplay } from '../components/ReviewSystem';
 import { FAQSection, DEFAULT_HOSTEL_FAQS } from '../components/FAQSection';
 import { WishlistButton } from '../components/WishlistButton';
-import { ScheduleVisit } from '../components/ScheduleVisit';
+import { SimilarHostelsCarousel } from '../components/SimilarHostelsCarousel';
 import { useAuth } from '../contexts/AuthContext';
 
 /* ─── lookup maps ─────────────────────────────────────────── */
@@ -632,6 +632,14 @@ export function HostelDetailPage() {
             <div id="faqs" className="scroll-mt-28 border-t border-cream-300 pt-12 pb-12">
               <FAQSection faqs={DEFAULT_HOSTEL_FAQS} />
             </div>
+
+            {/* Similar Hostels Carousel */}
+            {similar.data?.items && (
+              <SimilarHostelsCarousel
+                hostels={similar.data.items}
+                currentHostelId={hostel._id}
+              />
+            )}
 
             {/* Reviews */}
             <div id="reviews" className="scroll-mt-28 border-t border-cream-300 pt-12 pb-12">
