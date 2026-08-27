@@ -11,6 +11,11 @@ type PartnerKind = 'owner' | 'institute_owner';
 type Step = 'auth' | 'otp';
 type AuthMode = 'login' | 'register';
 
+interface PendingGoogleLogin {
+  idToken: string;
+  role: UserRole;
+}
+
 /* ─── helpers ────────────────────────────────────────────── */
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID ?? '';
@@ -103,6 +108,8 @@ export function LoginPage() {
   const [mode, setMode] = useState<AuthMode>('login');
   const [step, setStep] = useState<Step>('auth');
   const [pendingEmail, setPendingEmail] = useState('');
+  const [pendingGoogle, setPendingGoogle] = useState<PendingGoogleLogin | null>(null);
+  const [googleReferralCode, setGoogleReferralCode] = useState('');
 
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '',
@@ -164,8 +171,13 @@ export function LoginPage() {
       callback: async (response: { credential: string }) => {
         try {
           console.log('Google credential received:', response.credential?.substring(0, 50) + '...');
-          await auth.googleLogin(response.credential, role);
-          afterAuth();
+          // Show referral code modal for students only
+          if (role === 'student') {
+            setPendingGoogle({ idToken: response.credential, role });
+          } else {
+            await auth.googleLogin(response.credential, role);
+            afterAuth();
+          }
         } catch (err) {
           console.error('Google login error:', err);
         }
@@ -197,6 +209,18 @@ export function LoginPage() {
   }
 
   const partnerLabel = partnerKind === 'owner' ? 'Hostel Owner' : 'Institute Owner';
+
+  async function completeGoogleLogin() {
+    if (!pendingGoogle) return;
+    try {
+      await auth.googleLogin(pendingGoogle.idToken, pendingGoogle.role, googleReferralCode || undefined);
+      setPendingGoogle(null);
+      setGoogleReferralCode('');
+      afterAuth();
+    } catch (err) {
+      console.error('Google login error:', err);
+    }
+  }
 
   return (
     <div className="relative flex min-h-screen bg-cream">
@@ -411,6 +435,45 @@ export function LoginPage() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* Referral Code Modal for Google Login */}
+      {pendingGoogle && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-900/80 backdrop-blur-sm" onClick={() => setPendingGoogle(null)}>
+          <div
+            className="bg-cream-50 border border-cream-300 max-w-md w-full mx-4 p-8"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="font-display text-2xl text-night-800 mb-4">Got a Referral Code?</h2>
+            <p className="text-sm text-ink-500 mb-6">
+              If you have a referral code, enter it below to get <span className="font-medium text-gold-600">1000 coins</span> instead of 500!
+            </p>
+            <input
+              type="text"
+              value={googleReferralCode}
+              onChange={(e) => setGoogleReferralCode(e.target.value.toUpperCase())}
+              placeholder="Enter referral code (optional)"
+              className="w-full border border-cream-300 px-4 py-3 text-night-800 mb-6 focus:border-gold-500 focus:outline-none"
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={() => {
+                  setGoogleReferralCode('');
+                  completeGoogleLogin();
+                }}
+                className="flex-1 border border-cream-300 px-6 py-3 text-ink-600 hover:bg-cream-100 transition-colors"
+              >
+                Skip
+              </button>
+              <button
+                onClick={completeGoogleLogin}
+                className="flex-1 bg-gold-600 hover:bg-gold-700 text-cream-50 px-6 py-3 transition-colors"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
