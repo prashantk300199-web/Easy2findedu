@@ -186,46 +186,42 @@ export function Navbar() {
           open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0',
         )}
       >
-        <nav className="flex h-full flex-col justify-center px-8">
-          {LINKS.map((link, i) => (
-            <NavLink
-              key={link.to}
-              to={link.to}
-              className="group flex items-baseline gap-6 border-b border-gold-500/15 py-5"
-              style={{
-                transitionDelay: `${i * 70}ms`,
-                transform: open ? 'translateY(0)' : 'translateY(24px)',
-                opacity: open ? 1 : 0,
-                transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
-              }}
-            >
-              <span className="folio">{String(i + 1).padStart(2, '0')}</span>
-              <span className="font-display text-[32px] text-cream-100 transition-colors duration-500 group-hover:text-gold-400">
-                {link.label}
-              </span>
-            </NavLink>
-          ))}
-
-          {/* Mobile auth section */}
-          <div className="mt-8 border-t border-gold-500/15 pt-8"
+        <nav className="flex h-full flex-col px-8 py-24 overflow-y-auto">
+          {/* Logo at top */}
+          <div className="mb-8 pb-6 border-b border-gold-500/15"
             style={{
-              transitionDelay: `${LINKS.length * 70}ms`,
+              transform: open ? 'translateY(0)' : 'translateY(24px)',
+              opacity: open ? 1 : 0,
+              transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
+            }}
+          >
+            <Wordmark light={true} size={32} />
+            <p className="text-cream-100/50 text-xs uppercase tracking-wide mt-2">Trusted Platform</p>
+          </div>
+
+          {/* Auth section at top - Login or User info */}
+          <div className="mb-6"
+            style={{
+              transitionDelay: '70ms',
               transform: open ? 'translateY(0)' : 'translateY(24px)',
               opacity: open ? 1 : 0,
               transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
             }}
           >
             {user ? (
-              <div className="flex flex-col gap-4">
+              <div className="space-y-4">
+                <div className="text-cream-100/70 text-sm">
+                  Logged in as <span className="text-cream-100 font-medium">{user.name}</span>
+                </div>
                 {user.role === 'student' && coins !== null && (
                   <button
                     onClick={() => {
                       setWalletModalOpen(true);
                       setOpen(false);
                     }}
-                    className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-3 py-2 w-fit hover:bg-gold-500/20 hover:border-gold-500/50 transition-all"
+                    className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-4 py-2.5 w-fit hover:bg-gold-500/20 hover:border-gold-500/50 transition-all"
                   >
-                    <span className="text-gold-300 text-base font-medium tabular-nums">
+                    <span className="text-gold-300 text-lg font-medium tabular-nums">
                       {coins}
                     </span>
                     <span className="text-gold-400/80 text-xs uppercase tracking-wide">
@@ -233,22 +229,47 @@ export function Navbar() {
                     </span>
                   </button>
                 )}
-                <span className="text-cream-100/70 text-sm">Logged in as {user.name}</span>
                 <button
                   type="button"
-                  onClick={logout}
-                  className="text-left font-display text-2xl text-gold-400 hover:text-gold-300"
+                  onClick={() => {
+                    logout();
+                    setOpen(false);
+                  }}
+                  className="text-gold-400 hover:text-gold-300 text-sm uppercase tracking-wide transition-colors"
                 >
-                  Sign Out
+                  Sign Out →
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="inline-block">
-                <Action variant="light" className="px-8 py-3 text-lg">
+              <Link to="/login" onClick={() => setOpen(false)} className="inline-block">
+                <Action variant="light" className="px-8 py-3 text-base">
                   Login
                 </Action>
               </Link>
             )}
+          </div>
+
+          {/* Navigation links */}
+          <div className="border-t border-gold-500/15">
+            {LINKS.map((link, i) => (
+              <NavLink
+                key={link.to}
+                to={link.to}
+                onClick={() => setOpen(false)}
+                className="group flex items-baseline gap-6 border-b border-gold-500/15 py-5"
+                style={{
+                  transitionDelay: `${(i + 2) * 70}ms`,
+                  transform: open ? 'translateY(0)' : 'translateY(24px)',
+                  opacity: open ? 1 : 0,
+                  transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
+                }}
+              >
+                <span className="folio">{String(i + 1).padStart(2, '0')}</span>
+                <span className="font-display text-[28px] text-cream-100 transition-colors duration-500 group-hover:text-gold-400">
+                  {link.label}
+                </span>
+              </NavLink>
+            ))}
           </div>
         </nav>
       </div>
