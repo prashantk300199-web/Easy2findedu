@@ -73,6 +73,10 @@ export function FAQSection({ faqs, title = 'Frequently Asked Questions' }: FAQSe
 // Default FAQs for hostels
 export const DEFAULT_HOSTEL_FAQS: FAQ[] = [
   {
+    question: 'Why should I choose this hostel?',
+    answer: 'This hostel offers verified facilities, experienced management, prime location near educational institutions, comprehensive security measures, and quality amenities. Our verified listings ensure transparency, and you can check real student reviews and ratings to make an informed decision.'
+  },
+  {
     question: 'What documents are required for hostel admission?',
     answer: 'Typically, you need a government-issued ID proof (Aadhar/PAN), college/institution ID card, passport-size photographs, and parent/guardian contact details. Some hostels may require additional documents like a character certificate.'
   },

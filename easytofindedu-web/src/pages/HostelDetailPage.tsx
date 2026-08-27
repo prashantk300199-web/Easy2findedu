@@ -12,7 +12,7 @@ import type { Hostel } from '../lib/types';
 import { ReviewSystem, CompactReviewDisplay } from '../components/ReviewSystem';
 import { FAQSection, DEFAULT_HOSTEL_FAQS } from '../components/FAQSection';
 import { WishlistButton } from '../components/WishlistButton';
-import { WardenUnlock } from '../components/WardenUnlock';
+import { ScheduleVisit } from '../components/ScheduleVisit';
 import { useAuth } from '../contexts/AuthContext';
 
 /* ─── lookup maps ─────────────────────────────────────────── */
@@ -334,6 +334,19 @@ function ComplianceSection({ hostel }: { hostel: Hostel }) {
             </div>
           </div>
         ))}
+        {/* Hostel Welfare Association Member Badge */}
+        <div className="flex items-center gap-4 border p-5 border-gold-500/50 bg-gold-100">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center text-[13px] font-bold bg-gold-500 text-night-800">
+            ✓
+          </span>
+          <div>
+            <p className="text-[10px] uppercase tracking-wide2 text-gold-700">
+              Verified
+            </p>
+            <p className="mt-0.5 text-sm text-night-800">Member of Hostel Welfare Association</p>
+          </div>
+        </div>
+        ))}
       </div>
     </Sec>
   );
@@ -504,6 +517,18 @@ export function HostelDetailPage() {
 
           <LineReveal as="h1" className="mt-6 font-display text-d2 text-night-800" lines={[<>{hostel.name}</>]} />
           <p className="mt-3 text-sm text-ink-500">{hostelPlace(hostel)}</p>
+
+          {/* Action buttons */}
+          <div className="mt-6 flex flex-wrap gap-3">
+            <ScheduleVisit propertyId={hostel._id} propertyType="hostel" propertyName={hostel.name} />
+            {rent && (
+              <div className="px-6 py-3 bg-cream-50 border border-cream-300">
+                <span className="text-xs text-ink-400 uppercase tracking-wide">From </span>
+                <span className="font-display text-lg text-night-800">{inr.format(rent)}</span>
+                <span className="text-xs text-ink-400">/month</span>
+              </div>
+            )}
+          </div>
 
           {/* Review stars near hostel name */}
           <div className="mt-3">

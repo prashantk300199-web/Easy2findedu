@@ -107,6 +107,7 @@ export function LoginPage() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', password: '',
     gender: '', lastQualification: '', otp: '',
+    referralCode: '', // Added referral code field
   });
 
   const role: UserRole = tab === 'student' ? 'student' : partnerKind;
@@ -136,6 +137,7 @@ export function LoginPage() {
           name: form.name, email: form.email,
           phone: form.phone, password: form.password,
           ...(role === 'student' && { gender: form.gender, lastQualification: form.lastQualification }),
+          ...(form.referralCode && { referralCode: form.referralCode }), // Include referral code if provided
         };
         await auth.register(data, role);
         setPendingEmail(form.email);
@@ -349,6 +351,17 @@ export function LoginPage() {
                     )}
                     <Field label="Email address" name="email" type="email" value={form.email} onChange={set('email')} />
                     <Field label="Password" name="password" type="password" value={form.password} onChange={set('password')} />
+
+                    {mode === 'register' && (
+                      <Field
+                        label="Referral Code (Optional)"
+                        name="referralCode"
+                        value={form.referralCode}
+                        onChange={set('referralCode')}
+                        placeholder="Enter referral code to get 1000 coins"
+                        required={false}
+                      />
+                    )}
                   </>
                 )}
 
