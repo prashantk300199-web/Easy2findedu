@@ -8,12 +8,15 @@
   html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
   }
 
   body {
     @apply bg-cream text-ink font-sans;
     font-feature-settings: 'liga' 1, 'kern' 1;
+    overflow-x: hidden;
+  }
+
+  #root {
     overflow-x: hidden;
     max-width: 100vw;
   }
