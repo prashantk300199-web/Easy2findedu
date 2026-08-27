@@ -634,7 +634,7 @@ export function HostelDetailPage() {
                 totalReviews={(hostel as any).totalReviews ?? 0}
                 onReviewSubmit={async (rating, comment) => {
                   const token = getToken();
-                  const res = await fetch(`https://easytofindedu.onrender.com/api/v1/hostels/${hostel._id}/reviews`, {
+                  const res = await fetch(`https://easytofindedu.onrender.com/api/v1/reviews/hostels/${hostel._id}/reviews`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) },
                     credentials: 'include',
