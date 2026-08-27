@@ -382,8 +382,6 @@ function AddHostel({ setView, editHostelId }: { setView: (v: 'hostels' | 'bookin
         }
       }
     }
-      }
-    }
     if (step === 3) {
       if (!f.room_beds || !f.room_rent) {
         setError('Please fill in room details: number of beds and monthly rent');
