@@ -61,6 +61,7 @@ export interface Institute {
     mockTestFrequency?: string;
     remedialClasses?: boolean;
     parentTeacherMeeting?: boolean;
+    onlineClasses?: boolean;
     dropoutRate?: number;
     residentialProgram?: boolean;
   };
