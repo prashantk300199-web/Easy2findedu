@@ -110,29 +110,42 @@ export function Navbar() {
             {/* Auth button */}
             {user ? (
               <div className="hidden items-center gap-3 md:flex">
-                {user.role === 'student' && coins !== null && (
-                  <button
-                    onClick={() => setWalletModalOpen(true)}
-                    className={cx(
-                      'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-all duration-300 hover:scale-105 cursor-pointer',
-                      overHero
-                        ? 'border-gold-500/30 bg-gold-500/10 hover:border-gold-500/50 hover:bg-gold-500/20'
-                        : 'border-gold-600/25 bg-gold-50 hover:border-gold-600/40 hover:bg-gold-100'
+                {user.role === 'student' && (
+                  <>
+                    <Link
+                      to="/wishlist"
+                      className={cx(
+                        'text-[12px] uppercase tracking-wide2 transition-colors duration-300',
+                        overHero ? 'text-cream-100/80 hover:text-cream-100' : 'text-ink-700 hover:text-night-800'
+                      )}
+                    >
+                      ❤️ Wishlist
+                    </Link>
+                    {coins !== null && (
+                      <button
+                        onClick={() => setWalletModalOpen(true)}
+                        className={cx(
+                          'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-all duration-300 hover:scale-105 cursor-pointer',
+                          overHero
+                            ? 'border-gold-500/30 bg-gold-500/10 hover:border-gold-500/50 hover:bg-gold-500/20'
+                            : 'border-gold-600/25 bg-gold-50 hover:border-gold-600/40 hover:bg-gold-100'
+                        )}
+                      >
+                        <span className={cx(
+                          'text-[13px] font-medium tabular-nums',
+                          overHero ? 'text-gold-300' : 'text-gold-700'
+                        )}>
+                          {coins}
+                        </span>
+                        <span className={cx(
+                          'text-[10px] uppercase tracking-wide',
+                          overHero ? 'text-gold-400/80' : 'text-gold-600/70'
+                        )}>
+                          Coins
+                        </span>
+                      </button>
                     )}
-                  >
-                    <span className={cx(
-                      'text-[13px] font-medium tabular-nums',
-                      overHero ? 'text-gold-300' : 'text-gold-700'
-                    )}>
-                      {coins}
-                    </span>
-                    <span className={cx(
-                      'text-[10px] uppercase tracking-wide',
-                      overHero ? 'text-gold-400/80' : 'text-gold-600/70'
-                    )}>
-                      Coins
-                    </span>
-                  </button>
+                  </>
                 )}
                 <span className={cx('text-[12px] uppercase tracking-wide2', overHero ? 'text-cream-100/70' : 'text-ink-500')}>
                   {user.name.split(' ')[0]}
@@ -187,17 +200,6 @@ export function Navbar() {
         )}
       >
         <nav className="flex h-full flex-col px-8 py-24 overflow-y-auto">
-          {/* Logo at top */}
-          <div className="mb-8 pb-6 border-b border-gold-500/15"
-            style={{
-              transform: open ? 'translateY(0)' : 'translateY(24px)',
-              opacity: open ? 1 : 0,
-              transition: 'transform 800ms cubic-bezier(0.22,1,0.36,1), opacity 800ms',
-            }}
-          >
-            <Wordmark light={true} size={32} />
-          </div>
-
           {/* Auth section at top - Login or User info */}
           <div className="mb-6"
             style={{
@@ -212,21 +214,32 @@ export function Navbar() {
                 <div className="text-cream-100/70 text-sm">
                   Logged in as <span className="text-cream-100 font-medium">{user.name}</span>
                 </div>
-                {user.role === 'student' && coins !== null && (
-                  <button
-                    onClick={() => {
-                      setWalletModalOpen(true);
-                      setOpen(false);
-                    }}
-                    className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-4 py-2.5 w-fit hover:bg-gold-500/20 hover:border-gold-500/50 transition-all"
-                  >
-                    <span className="text-gold-300 text-lg font-medium tabular-nums">
-                      {coins}
-                    </span>
-                    <span className="text-gold-400/80 text-xs uppercase tracking-wide">
-                      Coins
-                    </span>
-                  </button>
+                {user.role === 'student' && (
+                  <>
+                    <Link
+                      to="/wishlist"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm uppercase tracking-wide transition-colors"
+                    >
+                      ❤️ My Wishlist
+                    </Link>
+                    {coins !== null && (
+                      <button
+                        onClick={() => {
+                          setWalletModalOpen(true);
+                          setOpen(false);
+                        }}
+                        className="flex items-center gap-2 rounded border border-gold-500/30 bg-gold-500/10 px-4 py-2.5 w-fit hover:bg-gold-500/20 hover:border-gold-500/50 transition-all"
+                      >
+                        <span className="text-gold-300 text-lg font-medium tabular-nums">
+                          {coins}
+                        </span>
+                        <span className="text-gold-400/80 text-xs uppercase tracking-wide">
+                          Coins
+                        </span>
+                      </button>
+                    )}
+                  </>
                 )}
                 <button
                   type="button"
