@@ -20,6 +20,7 @@ import { LoginPage } from './pages/LoginPage';
 import { OwnerDashboard } from './pages/OwnerDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { WishlistPage } from './components/WishlistButton';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -84,6 +85,7 @@ function AnimatedRoutes() {
           <Route path="/colleges/:id" element={<CollegeDetailPage />} />
           <Route path="/hostels" element={<HostelsPage />} />
           <Route path="/hostels/:slug" element={<HostelDetailPage />} />
+          <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/career-guidance" element={<CareerGuidancePage />} />
           <Route path="/abroad" element={<ProspectPage kind="abroad" />} />
           <Route path="/online-courses" element={<ProspectPage kind="online" />} />
