@@ -174,7 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const res = await post(`${BASE}/auth/google`, { idToken, role, referralCode });
       const token = res.data?.token ?? res.token ?? extractToken(COOKIE_NAMES[role]);
-      setUser({ ...res.data.user, role: res.data.role }, token);
+      setUser({ ...res.data.user, role: res.data.user.role || role }, token);
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Google login failed');
       throw e;

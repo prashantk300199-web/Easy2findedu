@@ -211,14 +211,29 @@ export function LoginPage() {
   const partnerLabel = partnerKind === 'owner' ? 'Hostel Owner' : 'Institute Owner';
 
   async function completeGoogleLogin() {
-    if (!pendingGoogle) return;
+    if (!pendingGoogle) {
+      console.log('No pending Google login');
+      return;
+    }
+
+    console.log('Completing Google login with:', {
+      role: pendingGoogle.role,
+      referralCode: googleReferralCode || 'none',
+      hasToken: !!pendingGoogle.idToken
+    });
+
     try {
       await auth.googleLogin(pendingGoogle.idToken, pendingGoogle.role, googleReferralCode || undefined);
+      console.log('Google login successful, clearing modal');
       setPendingGoogle(null);
       setGoogleReferralCode('');
       afterAuth();
     } catch (err) {
       console.error('Google login error:', err);
+      // Clear modal even on error so user can see the error message
+      setPendingGoogle(null);
+      setGoogleReferralCode('');
+      // The error will be shown by AuthContext
     }
   }
 
@@ -438,9 +453,13 @@ export function LoginPage() {
 
       {/* Referral Code Modal for Google Login */}
       {pendingGoogle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-900/80 backdrop-blur-sm">
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-night-900/80 backdrop-blur-sm"
+          style={{ touchAction: 'none' }}
+        >
           <div
-            className="bg-cream-50 border border-cream-300 max-w-md w-full mx-4 p-8"
+            className="bg-cream-50 border border-cream-300 max-w-md w-full mx-4 p-8 relative z-[10000]"
+            style={{ touchAction: 'auto' }}
             onClick={(e) => e.stopPropagation()}
           >
             <h2 className="font-display text-2xl text-night-800 mb-4">Got a Referral Code?</h2>
@@ -453,28 +472,50 @@ export function LoginPage() {
               onChange={(e) => setGoogleReferralCode(e.target.value.toUpperCase())}
               placeholder="Enter referral code (optional)"
               className="w-full border border-cream-300 px-4 py-3 text-night-800 mb-6 focus:border-gold-500 focus:outline-none"
+              style={{ touchAction: 'auto' }}
             />
             <div className="flex gap-3">
               <button
                 type="button"
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setGoogleReferralCode('');
+                  completeGoogleLogin();
+                }}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setGoogleReferralCode('');
                   completeGoogleLogin();
                 }}
-                className="flex-1 border border-cream-300 px-6 py-3 text-ink-600 hover:bg-cream-100 transition-colors active:bg-cream-200 touch-manipulation"
+                className="flex-1 border border-cream-300 px-6 py-3 text-ink-600 hover:bg-cream-100 transition-colors active:bg-cream-200 cursor-pointer select-none"
+                style={{
+                  touchAction: 'manipulation',
+                  WebkitTapHighlightColor: 'transparent',
+                  userSelect: 'none'
+                }}
               >
                 Skip
               </button>
               <button
                 type="button"
+                onTouchEnd={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  completeGoogleLogin();
+                }}
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   completeGoogleLogin();
                 }}
-                className="flex-1 bg-gold-600 hover:bg-gold-700 text-cream-50 px-6 py-3 transition-colors active:bg-gold-800 touch-manipulation"
+                className="flex-1 bg-gold-600 hover:bg-gold-700 text-cream-50 px-6 py-3 transition-colors active:bg-gold-800 cursor-pointer select-none"
+                style={{
+                  touchAction: 'manipulation',
+                  WebkitTapHighlightColor: 'transparent',
+                  userSelect: 'none'
+                }}
               >
                 Continue
               </button>

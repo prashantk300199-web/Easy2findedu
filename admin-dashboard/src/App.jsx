@@ -801,13 +801,52 @@ function Owners({ token }) {
 function Students({ token }) {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingCoins, setEditingCoins] = useState(null);
+  const [newCoins, setNewCoins] = useState('');
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    apiCall('/admin/users/students', token)
-      .then((d) => setStudents(d.data?.students || d.students || []))
+    apiCall('/student/auth/admin/students', token)
+      .then((d) => setStudents(d.data?.data || d.data?.students || d.students || []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [token]);
+
+  const handleEditCoins = (student) => {
+    setEditingCoins(student._id);
+    setNewCoins(student.wallet?.coins || 0);
+  };
+
+  const handleSaveCoins = async (studentId) => {
+    setUpdating(true);
+    try {
+      await apiCall(`/student/auth/admin/students/${studentId}/coins`, token, {
+        method: 'PUT',
+        body: JSON.stringify({ coins: parseInt(newCoins) }),
+      });
+
+      // Update local state
+      setStudents((prev) =>
+        prev.map((s) =>
+          s._id === studentId
+            ? { ...s, wallet: { ...s.wallet, coins: parseInt(newCoins) } }
+            : s
+        )
+      );
+
+      setEditingCoins(null);
+      setNewCoins('');
+    } catch (err) {
+      alert(err.message || 'Failed to update coins');
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingCoins(null);
+    setNewCoins('');
+  };
 
   if (loading) return <Spinner />;
 
@@ -825,7 +864,9 @@ function Students({ token }) {
               <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Name</th>
               <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Email</th>
               <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Phone</th>
-              <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Gender</th>
+              <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Coins</th>
+              <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Referral Code</th>
+              <th className="text-left p-4 text-[10px] uppercase tracking-overline text-ink-500 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -834,7 +875,52 @@ function Students({ token }) {
                 <td className="p-4 text-sm text-night-800 font-medium">{s.name}</td>
                 <td className="p-4 text-sm text-ink-500">{s.email}</td>
                 <td className="p-4 text-sm text-ink-500">{s.phone || 'N/A'}</td>
-                <td className="p-4 text-sm text-ink-500 capitalize">{s.gender || 'N/A'}</td>
+                <td className="p-4">
+                  {editingCoins === s._id ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        value={newCoins}
+                        onChange={(e) => setNewCoins(e.target.value)}
+                        className="w-24 border border-cream-300 px-2 py-1 text-sm focus:border-gold-500 focus:outline-none"
+                        disabled={updating}
+                      />
+                      <button
+                        onClick={() => handleSaveCoins(s._id)}
+                        disabled={updating}
+                        className="px-3 py-1 bg-emerald-600 text-white text-xs hover:bg-emerald-700 disabled:opacity-50"
+                      >
+                        Save
+                      </button>
+                      <button
+                        onClick={handleCancelEdit}
+                        disabled={updating}
+                        className="px-3 py-1 bg-cream-300 text-night-800 text-xs hover:bg-cream-400 disabled:opacity-50"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-night-800 font-medium">
+                      💰 {s.wallet?.coins || 0}
+                    </span>
+                  )}
+                </td>
+                <td className="p-4">
+                  <code className="text-xs bg-cream-200 px-2 py-1 text-night-800 font-mono">
+                    {s.referralCode || 'N/A'}
+                  </code>
+                </td>
+                <td className="p-4">
+                  {editingCoins !== s._id && (
+                    <button
+                      onClick={() => handleEditCoins(s)}
+                      className="px-4 py-2 bg-gold-500 text-night-900 text-xs uppercase tracking-wide hover:bg-gold-600 transition-colors"
+                    >
+                      Edit Coins
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
