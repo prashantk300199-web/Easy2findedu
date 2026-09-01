@@ -47,14 +47,10 @@ function Hero({ counts }: { counts: number[] }) {
       <div className="absolute inset-0 scrim" />
 
       <Section className="relative flex min-h-[100svh] flex-col justify-center pb-28 pt-40">
-        <Reveal>
-          <div className="inline-flex items-center gap-4 border border-gold-500/35 px-5 py-2.5">
-            <span className="h-1.5 w-1.5 rotate-45 bg-gold-500" />
-            <span className="text-[10px] uppercase tracking-overline text-gold-300">
-              India's Trusted Student Platform
-            </span>
-          </div>
-        </Reveal>
+        {/* Offer Banner Slider - Compact in top area */}
+        <div className="mb-8">
+          <HeroBanner />
+        </div>
 
         <LineReveal
           as="h1"
@@ -623,8 +619,6 @@ export function HomePage() {
           colleges.data?.length ?? 0,
         ]}
       />
-
-      <HeroBanner />
 
       {/* Referral Wallet - visible only for logged-in students */}
       {user && user.role === 'student' && (

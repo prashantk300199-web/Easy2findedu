@@ -24,7 +24,7 @@ const LEGAL_LABELS: Record<string, string> = {
   character_certificate: 'Character Certificate',
   trade_license: 'Trade License',
   fire_noc: 'Fire NOC',
-  hostel_association_member: 'Hostel Association Member',
+  hostel_association_member: 'Member of Hostel Welfare Association',
 };
 const SECURITY_LABELS: Record<string, string> = {
   full_time_warden: 'Full-time Warden',
@@ -706,6 +706,21 @@ export function HostelDetailPage() {
             </div>
           </aside>
         </div>
+
+        {/* Similar Hostels Section for Mobile - shown only on mobile/tablet */}
+        {nearbyHostels.length > 0 && (
+          <div className="lg:hidden mt-12">
+            <div className="border border-cream-300 bg-cream-50 p-6 rounded-sm">
+              <p className="overline">Similar in {hostel.address?.area}</p>
+              <div className="mt-5 space-y-4">
+                {nearbyHostels.map(h => <SimilarCard key={h._id} hostel={h} />)}
+              </div>
+              <Link to="/hostels" className="mt-6 block text-[11px] uppercase tracking-wide2 text-gold-700 hover:text-night-800 transition-colors">
+                View all hostels →
+              </Link>
+            </div>
+          </div>
+        )}
       </Section>
     </>
   );
