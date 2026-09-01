@@ -438,7 +438,7 @@ export function LoginPage() {
 
       {/* Referral Code Modal for Google Login */}
       {pendingGoogle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-900/80 backdrop-blur-sm" onClick={() => setPendingGoogle(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-900/80 backdrop-blur-sm">
           <div
             className="bg-cream-50 border border-cream-300 max-w-md w-full mx-4 p-8"
             onClick={(e) => e.stopPropagation()}
@@ -456,17 +456,25 @@ export function LoginPage() {
             />
             <div className="flex gap-3">
               <button
-                onClick={() => {
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   setGoogleReferralCode('');
                   completeGoogleLogin();
                 }}
-                className="flex-1 border border-cream-300 px-6 py-3 text-ink-600 hover:bg-cream-100 transition-colors"
+                className="flex-1 border border-cream-300 px-6 py-3 text-ink-600 hover:bg-cream-100 transition-colors active:bg-cream-200 touch-manipulation"
               >
                 Skip
               </button>
               <button
-                onClick={completeGoogleLogin}
-                className="flex-1 bg-gold-600 hover:bg-gold-700 text-cream-50 px-6 py-3 transition-colors"
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  completeGoogleLogin();
+                }}
+                className="flex-1 bg-gold-600 hover:bg-gold-700 text-cream-50 px-6 py-3 transition-colors active:bg-gold-800 touch-manipulation"
               >
                 Continue
               </button>
