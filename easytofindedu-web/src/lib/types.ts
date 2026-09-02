@@ -198,18 +198,43 @@ export interface Hostel {
   photos?: CloudinaryImage[];
   address?: {
     line1?: string;
+    line2?: string;
     area?: string;
     subarea?: string;
     city?: string;
     state?: string;
     pincode?: string;
   };
+  location?: {
+    type?: string;
+    coordinates?: number[];
+  };
+  contact_info?: {
+    phone?: string;
+    alternative_phone?: string;
+    additional_phones?: string[];
+    email?: string;
+    warden_name?: string;
+  };
   rooms?: HostelRoom[];
   total_hostel_beds?: number;
   in_room_amenities?: string[];
+  washroom_amenities?: string[];
+  utilities?: string[];
+  cleaning?: string[];
+  building_amenities?: string[];
   common_amenities?: string[];
   recreation?: string[];
-  meal_plans?: { frequency?: string; meal_type?: string; service_type?: string }[];
+  meal_plans?: {
+    frequency?: string;
+    meal_type?: string;
+    service_type?: string;
+    monthly_cost?: number;
+    menu_card?: {
+      url?: string;
+      publicId?: string;
+    };
+  }[];
   security?: Record<string, boolean>;
   rules?: {
     gate_close_time?: string;
@@ -220,11 +245,28 @@ export interface Hostel {
     pets_allowed?: boolean;
     custom_rules?: string[];
   };
-  washroom_details?: { total_washrooms?: number; washroom_to_student_ratio?: string };
-  warden?: { name?: string; contact_number?: string };
+  washroom_details?: {
+    total_washrooms?: number;
+    washroom_to_student_ratio?: string;
+    indian_toilet?: boolean;
+    western_toilet?: boolean;
+    attached_washroom_available?: boolean;
+  };
+  laundry?: {
+    washing_machine?: boolean;
+    paid_laundry_service?: boolean;
+    drying_area?: boolean;
+  };
+  warden?: {
+    name?: string;
+    contact_number?: string;
+    email?: string;
+    gender?: string;
+    age?: string;
+  };
   nearby_distances?: {
-    institutes?: { name?: string; distance_km?: number }[];
-    landmarks?: { name?: string; distance_km?: number }[];
+    institutes?: { name?: string; distance?: number; unit?: string }[];
+    landmarks?: { name?: string; distance?: number; unit?: string }[];
   };
   building_details?: { building_age_years?: number; number_of_floors?: number; flooring_type?: string };
   rent?: { registration_fee?: number; security_deposit_type?: string };

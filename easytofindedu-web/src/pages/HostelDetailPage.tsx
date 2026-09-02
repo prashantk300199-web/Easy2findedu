@@ -33,6 +33,8 @@ const SECURITY_LABELS: Record<string, string> = {
   biometric_entry: 'Biometric Entry',
   visitor_register: 'Visitor Register',
   first_aid_kit: 'First Aid Kit',
+  fire_extinguisher: 'Fire Extinguisher',
+  transport_facilities: 'Transport Facilities',
 };
 const MEAL_FREQ: Record<string, string> = {
   '1_time': 'Once a day', '2_times': 'Twice a day',
@@ -148,31 +150,53 @@ function RoomsSection({ hostel }: { hostel: Hostel }) {
 
 const AMENITY_GROUPS: Record<string, string[]> = {
   'Room Amenities': [
-    'bed', 'mattress', 'wardrobe', 'study_table', 'study_chair', 'bookshelf',
-    'fan', 'ac', 'air_cooler', 'room_heater', 'curtains', 'attached_bathroom',
-    'balcony', 'tv', 'shoe_rack', 'mirror',
+    'bed', 'mattress', 'pillow', 'bed_with_storage', 'wardrobe', 'study_table',
+    'study_chair', 'bookshelf', 'shoe_rack', 'mirror', 'curtains', 'fan', 'ac',
+    'cooler', 'room_heater', 'attached_bathroom', 'balcony',
   ],
-  'Common Facilities': [
-    'wifi', 'geyser', 'ro_water', 'water_cooler', 'electricity_backup',
-    'inverter_backup', 'refrigerator', 'induction', 'tiffin_service',
-    'washing_machine', 'paid_laundry_service', 'drying_area',
-    'daily_room_cleaning', 'parking', 'terrace_access', 'newspaper_magazine',
+  'Washroom Facilities': [
+    'indian_toilet', 'western_toilet', 'geyser', '24x7_water_in_washroom',
+    'separate_bath_toilet',
+  ],
+  'Utilities': [
+    'wifi', 'ro_water', 'water_cooler', '24x7_water_supply', 'electricity_backup',
+    'inverter_backup', 'induction', 'tiffin_service', 'refrigerator',
+    'guest_room_for_parents',
+  ],
+  'Cleaning Services': [
+    'daily_room_cleaning', '6_days_week_cleaning', '5_days_week_cleaning',
+  ],
+  'Building Amenities': [
+    'lift', 'parking', 'wheelchair_access', 'terrace_access',
+  ],
+  'Recreation': [
+    'common_tv', 'common_hall', 'indoor_games', 'gym', 'study_room',
+    'library', 'newspaper_magazine',
   ],
   'Security': [
     'full_time_warden', 'cctv', 'security_guard_24x7', 'biometric_entry',
-    'visitor_register', 'first_aid_kit',
+    'visitor_register', 'first_aid_kit', 'fire_extinguisher', 'transport_facilities',
   ],
 };
 
 function AmenitiesSection({ hostel }: { hostel: Hostel }) {
   const inRoom = new Set(hostel.in_room_amenities ?? []);
-  const common = new Set(hostel.common_amenities ?? []);
+  const washroom = new Set(hostel.washroom_amenities ?? []);
+  const utilities = new Set(hostel.utilities ?? []);
+  const cleaning = new Set(hostel.cleaning ?? []);
+  const building = new Set(hostel.building_amenities ?? []);
+  const recreation = new Set(hostel.recreation ?? []);
   const security = hostel.security ?? {};
 
   const isPresent = (group: string, key: string): boolean => {
     if (group === 'Security') return Boolean((security as Record<string, boolean>)[key]);
     if (group === 'Room Amenities') return inRoom.has(key);
-    return common.has(key);
+    if (group === 'Washroom Facilities') return washroom.has(key);
+    if (group === 'Utilities') return utilities.has(key);
+    if (group === 'Cleaning Services') return cleaning.has(key);
+    if (group === 'Building Amenities') return building.has(key);
+    if (group === 'Recreation') return recreation.has(key);
+    return false;
   };
 
   return (
@@ -386,10 +410,53 @@ function RulesSection({ hostel }: { hostel: Hostel }) {
 function ContactSection({ hostel }: { hostel: Hostel }) {
   const warden = hostel.warden;
   const security = hostel.security;
+  const contactInfo = hostel.contact_info;
   const securityItems = Object.entries(security ?? {}).filter(([k, on]) => on && SECURITY_LABELS[k]);
+
+  // Collect all phone numbers
+  const phoneNumbers = [];
+  if (contactInfo?.phone) phoneNumbers.push({ label: 'Primary', number: contactInfo.phone });
+  if (contactInfo?.alternative_phone) phoneNumbers.push({ label: 'Alternative', number: contactInfo.alternative_phone });
+  if (contactInfo?.additional_phones) {
+    contactInfo.additional_phones.forEach((phone, idx) => {
+      if (phone) phoneNumbers.push({ label: `Phone ${idx + 3}`, number: phone });
+    });
+  }
+
   return (
     <Sec id="contact" title="Management Details">
       <div className="grid gap-6 sm:grid-cols-2">
+        {/* Contact Information */}
+        {(phoneNumbers.length > 0 || contactInfo?.email) && (
+          <div className="bg-cream-50 border border-cream-300 p-8">
+            <p className="overline">Contact Information</p>
+            <div className="mt-5 space-y-3">
+              {phoneNumbers.map((phone, idx) => (
+                <div key={idx} className="text-sm">
+                  <span className="text-ink-500">{phone.label}:</span>
+                  <a href={`tel:${phone.number}`} className="ml-2 font-semibold text-gold-700 hover:text-gold-800">
+                    {phone.number}
+                  </a>
+                </div>
+              ))}
+              {contactInfo?.email && (
+                <div className="text-sm">
+                  <span className="text-ink-500">Email:</span>
+                  <a href={`mailto:${contactInfo.email}`} className="ml-2 font-semibold text-gold-700 hover:text-gold-800">
+                    {contactInfo.email}
+                  </a>
+                </div>
+              )}
+              {contactInfo?.warden_name && (
+                <div className="text-sm">
+                  <span className="text-ink-500">Warden:</span>
+                  <span className="ml-2 font-semibold text-night-800">{contactInfo.warden_name}</span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Warden box - hidden, use WardenUnlock component instead */}
         {warden && (warden.name || warden.contact_number) && (
           <div className="bg-night-900 p-8 text-cream-100">

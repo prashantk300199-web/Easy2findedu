@@ -38,7 +38,7 @@ async function ownerDelete(path: string, token: string | null) {
 
 // ── Sidebar ────────────────────────────────────────────────────────────────
 
-function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bookings' | 'profile' | 'add') => void }) {
+function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bookings' | 'profile') => void }) {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -46,7 +46,6 @@ function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bo
     { id: 'hostels', label: 'My Hostels' },
     { id: 'bookings', label: 'Bookings' },
     { id: 'profile', label: 'Profile' },
-    { id: 'add', label: '+ Add Hostel' },
   ] as const;
 
   return (
@@ -69,6 +68,14 @@ function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bo
             {n.label}
           </button>
         ))}
+
+        {/* Add Hostel - Navigate to new page */}
+        <button
+          onClick={() => navigate('/hostels/add')}
+          className="mb-1 flex w-full items-center gap-3 px-4 py-3 text-left text-sm font-semibold text-gold-700 hover:bg-gold-50 transition-colors duration-300"
+        >
+          + Add Hostel
+        </button>
       </nav>
       <div className="border-t border-cream-300 px-7 py-5">
         <p className="text-sm font-medium text-night-800">{user?.name ?? 'Owner'}</p>
@@ -85,8 +92,9 @@ function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bo
 
 interface HostelRow { _id: string; name: string; masked_name: string; hostel_type: string; is_open: boolean; status: string; total_hostel_beds: number; }
 
-function MyHostels({ setView, onEdit }: { setView: (v: 'hostels' | 'bookings' | 'profile' | 'add') => void; onEdit: (id: string) => void }) {
+function MyHostels() {
   const { getToken } = useAuth();
+  const navigate = useNavigate();
   const [hostels, setHostels] = useState<HostelRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -639,30 +647,18 @@ export function OwnerDashboard() {
     if (!loading && (!user || user.role !== 'owner')) navigate('/login');
   }, [user, loading, navigate]);
 
-  const [view, setView] = useState<'hostels' | 'bookings' | 'profile' | 'add'>('hostels');
-  const [editHostelId, setEditHostelId] = useState<string | undefined>(undefined);
-
-  const openEditForm = (hostelId: string) => {
-    setEditHostelId(hostelId);
-    setView('add');
-  };
-
-  const openAddForm = () => {
-    setEditHostelId(undefined);
-    setView('add');
-  };
+  const [view, setView] = useState<'hostels' | 'bookings' | 'profile'>('hostels');
 
   if (loading) return <div className="flex h-screen items-center justify-center"><p className="text-ink-400">Loading…</p></div>;
   if (!user) return null;
 
   return (
     <div className="flex min-h-screen bg-cream-100">
-      <Sidebar view={view} setView={(v) => { setView(v); if (v === 'add') openAddForm(); }} />
+      <Sidebar view={view} setView={setView} />
       <main className="flex-1 p-8">
-        {view === 'hostels' && <MyHostels setView={setView} onEdit={openEditForm} />}
+        {view === 'hostels' && <MyHostels />}
         {view === 'bookings' && <Bookings />}
         {view === 'profile' && <Profile />}
-        {view === 'add' && <AddHostel setView={setView} editHostelId={editHostelId} />}
       </main>
     </div>
   );
