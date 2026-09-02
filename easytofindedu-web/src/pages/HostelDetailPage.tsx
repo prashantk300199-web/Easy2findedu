@@ -295,13 +295,13 @@ function DistanceSection({ hostel }: { hostel: Hostel }) {
         {institutes.length > 0 && (
           <div>
             <p className="text-[11px] uppercase tracking-wide2 text-night-800 mb-2">Nearby Institutes</p>
-            <ul>{institutes.map((n, i) => <Row key={i} name={n.name} km={n.distance_km} />)}</ul>
+            <ul>{institutes.map((n, i) => <Row key={i} name={n.name} km={n.distance || n.distance_km} />)}</ul>
           </div>
         )}
         {landmarks.length > 0 && (
           <div>
             <p className="text-[11px] uppercase tracking-wide2 text-night-800 mb-2">City Landmarks</p>
-            <ul>{landmarks.map((n, i) => <Row key={i} name={n.name} km={n.distance_km} />)}</ul>
+            <ul>{landmarks.map((n, i) => <Row key={i} name={n.name} km={n.distance || n.distance_km} />)}</ul>
           </div>
         )}
       </div>

@@ -1,5 +1,5 @@
 import { Map, Clock, ShieldCheck, Trash2, X, PlusCircle } from 'lucide-react';
-import { FormData } from '../../lib/hostelFormTypes';
+import type { FormData } from '../../lib/hostelFormTypes';
 
 interface Step4Props {
   formData: FormData;

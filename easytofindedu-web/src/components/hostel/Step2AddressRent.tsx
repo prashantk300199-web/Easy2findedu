@@ -1,5 +1,6 @@
 import { MapPin, Navigation } from 'lucide-react';
-import { FormData, CITIES, AREAS_PATNA, SUBAREAS_PATNA } from '../../lib/hostelFormTypes';
+import type { FormData } from '../../lib/hostelFormTypes';
+import { CITIES, AREAS_PATNA, SUBAREAS_PATNA } from '../../lib/hostelFormTypes';
 
 interface Step2Props {
   formData: FormData;
