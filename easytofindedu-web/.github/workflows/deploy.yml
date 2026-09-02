@@ -1,4 +1,4 @@
-name: Deploy Frontend to Hostinger
+name: Deploy Frontend to Hostinger VPS
 
 on:
   push:
@@ -21,7 +21,7 @@ jobs:
 
       - name: Create environment file
         run: |
-          echo "VITE_API_BASE_URL=${{ secrets.VITE_API_BASE_URL }}" > .env
+          echo "VITE_API_BASE_URL=https://easytofindedu.onrender.com/api/v1" > .env
           echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
 
       - name: Install dependencies
@@ -30,12 +30,26 @@ jobs:
       - name: Build application
         run: npm run build
 
-      - name: Deploy to Hostinger via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+      - name: Deploy to VPS via SCP
+        uses: appleboy/scp-action@v0.1.7
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./dist/
-          server-dir: ${{ secrets.FTP_SERVER_DIR }}
-          dangerous-clean-slate: false
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          source: "dist/*"
+          target: "/var/www/easytofindedu-temp"
+          strip_components: 1
+
+      - name: Move files to final location
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            rm -rf /var/www/easytofindedu/*
+            mv /var/www/easytofindedu-temp/* /var/www/easytofindedu/
+            rmdir /var/www/easytofindedu-temp
+            echo "✅ Frontend deployed successfully"
