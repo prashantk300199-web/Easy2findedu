@@ -10,8 +10,9 @@ import {
 } from 'lucide-react';
 import {
   AMENITIES, ROOM_TYPES, CITIES, AREAS_PATNA, SUBAREAS_PATNA,
-  FormData, getInitialFormData, PhoneNumber
+  getInitialFormData
 } from '../lib/hostelFormTypes';
+import type { FormData, PhoneNumber } from '../lib/hostelFormTypes';
 import { Step1BasicInfo } from '../components/hostel/Step1BasicInfo';
 import { Step2AddressRent } from '../components/hostel/Step2AddressRent';
 import { Step3RoomsMeals } from '../components/hostel/Step3RoomsMeals';

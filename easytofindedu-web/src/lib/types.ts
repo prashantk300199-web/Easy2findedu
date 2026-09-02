@@ -265,8 +265,8 @@ export interface Hostel {
     age?: string;
   };
   nearby_distances?: {
-    institutes?: { name?: string; distance?: number; unit?: string }[];
-    landmarks?: { name?: string; distance?: number; unit?: string }[];
+    institutes?: { name?: string; distance?: number; distance_km?: number; unit?: string }[];
+    landmarks?: { name?: string; distance?: number; distance_km?: number; unit?: string }[];
   };
   building_details?: { building_age_years?: number; number_of_floors?: number; flooring_type?: string };
   rent?: { registration_fee?: number; security_deposit_type?: string };

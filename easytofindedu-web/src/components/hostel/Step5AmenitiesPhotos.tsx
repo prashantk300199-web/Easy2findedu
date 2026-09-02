@@ -1,5 +1,6 @@
 import { Camera, Gavel, Upload, Trash2 } from 'lucide-react';
-import { FormData, AMENITIES } from '../../lib/hostelFormTypes';
+import type { FormData } from '../../lib/hostelFormTypes';
+import { AMENITIES } from '../../lib/hostelFormTypes';
 
 interface Step5Props {
   formData: FormData;

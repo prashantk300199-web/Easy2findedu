@@ -1,5 +1,5 @@
 import { Building2, UserCheck, PlusCircle, Trash2, Phone } from 'lucide-react';
-import { FormData, PhoneNumber } from '../lib/hostelFormTypes';
+import type { FormData, PhoneNumber } from '../../lib/hostelFormTypes';
 
 interface Step1Props {
   formData: FormData;

@@ -90,7 +90,7 @@ function Sidebar({ view, setView }: { view: string; setView: (v: 'hostels' | 'bo
 
 // ── My Hostels ─────────────────────────────────────────────────────────────
 
-interface HostelRow { _id: string; name: string; masked_name: string; hostel_type: string; is_open: boolean; status: string; total_hostel_beds: number; }
+interface HostelRow { _id: string; name: string; masked_name: string; slug: string; hostel_type: string; is_open: boolean; status: string; total_hostel_beds: number; }
 
 function MyHostels() {
   const { getToken } = useAuth();
@@ -124,7 +124,7 @@ function MyHostels() {
     <div>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="font-display text-3xl text-night-800">My Hostels</h1>
-        <button onClick={() => setView('add')}
+        <button onClick={() => navigate('/hostels/add')}
           className="bg-night-800 px-6 py-3 text-[11px] uppercase tracking-wide2 text-cream-100 transition-colors hover:bg-gold-600">
           + Add Hostel
         </button>
@@ -134,7 +134,7 @@ function MyHostels() {
         <div className="border border-dashed border-cream-400 py-24 text-center">
           <p className="font-display text-2xl text-ink-600">No hostels listed yet</p>
           <p className="mt-3 text-sm text-ink-400">Add your first hostel to start receiving bookings</p>
-          <button onClick={() => setView('add')}
+          <button onClick={() => navigate('/hostels/add')}
             className="mt-8 inline-block bg-night-800 px-8 py-4 text-[11px] uppercase tracking-wide2 text-cream-100 hover:bg-gold-600">
             Add Hostel
           </button>
@@ -161,10 +161,10 @@ function MyHostels() {
                   }`}>
                   {h.is_open ? 'Open' : 'Closed'}
                 </button>
-                <button onClick={() => onEdit(h._id)}
+                <Link to={`/hostels/${h.slug}`}
                   className="border border-night-800 px-4 py-2 text-[10px] uppercase tracking-wide2 text-night-800 hover:bg-night-800 hover:text-cream-100 transition-colors">
-                  Edit
-                </button>
+                  View
+                </Link>
                 <button onClick={() => del(h._id, h.masked_name || h.name)}
                   className="px-4 py-2 text-[10px] uppercase tracking-wide2 text-wine hover:bg-cream-200 transition-colors">
                   Delete

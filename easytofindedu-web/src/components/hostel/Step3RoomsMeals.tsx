@@ -1,5 +1,6 @@
 import { Bed, Utensils, PlusCircle, Trash2, Upload, X } from 'lucide-react';
-import { FormData, ROOM_TYPES, Room, MealPlan } from '../../lib/hostelFormTypes';
+import type { FormData, Room, MealPlan } from '../../lib/hostelFormTypes';
+import { ROOM_TYPES } from '../../lib/hostelFormTypes';
 
 interface Step3Props {
   formData: FormData;
