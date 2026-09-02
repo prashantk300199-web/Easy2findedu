@@ -13,6 +13,7 @@ import { CollegesPage } from './pages/CollegesPage';
 import { CollegeDetailPage } from './pages/CollegeDetailPage';
 import { HostelsPage } from './pages/HostelsPage';
 import { HostelDetailPage } from './pages/HostelDetailPage';
+import { AddHostelPage } from './pages/AddHostelPage';
 import { CareerGuidancePage } from './pages/CareerGuidancePage';
 import { ProspectPage } from './pages/ProspectPage';
 import { JournalPage } from './pages/JournalPage';
@@ -85,6 +86,7 @@ function AnimatedRoutes() {
           <Route path="/colleges/:id" element={<CollegeDetailPage />} />
           <Route path="/hostels" element={<HostelsPage />} />
           <Route path="/hostels/:slug" element={<HostelDetailPage />} />
+          <Route path="/hostels/add" element={<AddHostelPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/career-guidance" element={<CareerGuidancePage />} />
           <Route path="/abroad" element={<ProspectPage kind="abroad" />} />
