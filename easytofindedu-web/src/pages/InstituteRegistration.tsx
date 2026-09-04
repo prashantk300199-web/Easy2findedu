@@ -4,6 +4,10 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import Step1InstituteInfo from '../components/institute-registration/Step1InstituteInfo';
 import Step2Category from '../components/institute-registration/Step2Category';
+import Step3LocationContact from '../components/institute-registration/Step3LocationContact';
+import Step4Courses from '../components/institute-registration/Step4Courses';
+import Step5Facilities from '../components/institute-registration/Step5Facilities';
+import Step6Faculty from '../components/institute-registration/Step6Faculty';
 
 const TOTAL_STEPS = 12;
 
@@ -241,7 +245,43 @@ export default function InstituteRegistration() {
               loading={saving}
             />
           )}
-          {currentStep > 2 && (
+          {currentStep === 3 && (
+            <Step3LocationContact
+              data={formData.step3}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 4 && (
+            <Step4Courses
+              data={formData.step4}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 5 && (
+            <Step5Facilities
+              data={formData.step5}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 6 && (
+            <Step6Faculty
+              data={formData.step6}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep > 6 && (
             <div className="bg-white p-8 rounded-lg shadow text-center">
               <h3 className="text-xl font-semibold mb-4">Step {currentStep} - Coming Soon</h3>
               <p className="text-gray-600 mb-6">This step is under development.</p>
