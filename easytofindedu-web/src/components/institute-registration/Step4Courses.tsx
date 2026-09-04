@@ -35,7 +35,7 @@ interface Step4Props {
 const COURSE_MODES = ['Online', 'Offline', 'Hybrid'];
 const LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Professional', 'Other'];
 
-const emptyC ourse: Omit<Course, 'id'> = {
+const emptyCourse: Omit<Course, 'id'> = {
   name: '',
   category: '',
   level: '',
