@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, Video, Globe, Instagram, Facebook, Linkedin, Youtube, Upload, X } from 'lucide-react';
+import { Image, Video, Globe, Upload, X } from 'lucide-react';
 
 interface Step10Props {
   data?: any;
@@ -68,8 +68,8 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
   const removeImage = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      galleryFiles: prev.galleryFiles.filter((_, i) => i !== index),
-      galleryPreviews: prev.galleryPreviews.filter((_, i) => i !== index)
+      galleryFiles: prev.galleryFiles.filter((_: File, i: number) => i !== index),
+      galleryPreviews: prev.galleryPreviews.filter((_: string, i: number) => i !== index)
     }));
   };
 
