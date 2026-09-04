@@ -48,6 +48,7 @@ function AnimatedRoutes() {
     return (
       <Routes location={location}>
         <Route path="/dashboard/*" element={<OwnerDashboard />} />
+        <Route path="/institute-dashboard" element={<InstituteRegistration />} />
         <Route path="/institute-registration" element={<InstituteRegistration />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
