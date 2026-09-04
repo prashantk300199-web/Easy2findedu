@@ -163,7 +163,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
                 Uploaded Images ({formData.galleryPreviews.length})
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {formData.galleryPreviews.map((preview, index) => (
+                {formData.galleryPreviews.map((preview: string, index: number) => (
                   <div key={index} className="relative group">
                     <img
                       src={preview}
@@ -243,7 +243,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
             {/* Instagram */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Instagram size={16} />
+                <Globe size={16} />
                 Instagram Profile
               </label>
               <input
@@ -262,7 +262,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
             {/* Facebook */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Facebook size={16} />
+                <Globe size={16} />
                 Facebook Page
               </label>
               <input
@@ -281,7 +281,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
             {/* LinkedIn */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Linkedin size={16} />
+                <Globe size={16} />
                 LinkedIn Profile
               </label>
               <input
@@ -300,7 +300,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
             {/* YouTube */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-                <Youtube size={16} />
+                <Video size={16} />
                 YouTube Channel
               </label>
               <input
