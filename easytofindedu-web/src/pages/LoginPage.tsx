@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth, type RegisterData, type UserRole } from '../contexts/AuthContext';
 import { IMG } from '../lib/images';
 
@@ -102,6 +102,7 @@ const slide = {
 export function LoginPage() {
   const navigate = useNavigate();
   const auth = useAuth();
+  const [searchParams] = useSearchParams();
 
   const [tab, setTab] = useState<Tab>('student');
   const [partnerKind, setPartnerKind] = useState<PartnerKind>('owner');
@@ -116,6 +117,15 @@ export function LoginPage() {
     gender: '', lastQualification: '', otp: '',
     referralCode: '', // Added referral code field
   });
+
+  // Auto-populate referral code from URL parameter
+  useEffect(() => {
+    const refCode = searchParams.get('ref');
+    if (refCode) {
+      setForm(prev => ({ ...prev, referralCode: refCode }));
+      setMode('register'); // Switch to register mode if ref code is present
+    }
+  }, [searchParams]);
 
   const role: UserRole = tab === 'student' ? 'student' : partnerKind;
 
