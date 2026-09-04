@@ -8,6 +8,11 @@ import Step3LocationContact from '../components/institute-registration/Step3Loca
 import Step4Courses from '../components/institute-registration/Step4Courses';
 import Step5Facilities from '../components/institute-registration/Step5Facilities';
 import Step6Faculty from '../components/institute-registration/Step6Faculty';
+import Step7FeesScholarships from '../components/institute-registration/Step7FeesScholarships';
+import Step8Admission from '../components/institute-registration/Step8Admission';
+import Step9Career from '../components/institute-registration/Step9Career';
+import Step10Gallery from '../components/institute-registration/Step10Gallery';
+import Step11Verification from '../components/institute-registration/Step11Verification';
 
 const TOTAL_STEPS = 12;
 
@@ -281,7 +286,52 @@ export default function InstituteRegistration() {
               loading={saving}
             />
           )}
-          {currentStep > 6 && (
+          {currentStep === 7 && (
+            <Step7FeesScholarships
+              data={formData.step7}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 8 && (
+            <Step8Admission
+              data={formData.step8}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 9 && (
+            <Step9Career
+              data={formData.step9}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 10 && (
+            <Step10Gallery
+              data={formData.step10}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 11 && (
+            <Step11Verification
+              data={formData.step11}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep > 11 && (
             <div className="bg-white p-8 rounded-lg shadow text-center">
               <h3 className="text-xl font-semibold mb-4">Step {currentStep} - Coming Soon</h3>
               <p className="text-gray-600 mb-6">This step is under development.</p>
