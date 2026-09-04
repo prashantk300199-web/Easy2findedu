@@ -31,29 +31,50 @@ export function ReferralWallet() {
   const loadData = async () => {
     try {
       const token = getToken();
+      console.log('ReferralWallet: Token retrieved:', token ? 'Yes' : 'No');
+
+      if (!token) {
+        console.error('ReferralWallet: No token available');
+        setWalletData({ coins: 0, referralCode: null });
+        setLoading(false);
+        return;
+      }
 
       // Load wallet data
       const walletRes = await fetch('https://easytofindedu.onrender.com/api/v1/wallet/wallet', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         credentials: 'include'
       });
 
       if (walletRes.ok) {
         const walletData = await walletRes.json();
+        console.log('ReferralWallet: Wallet data received:', walletData);
         setWalletData(walletData.data || walletData);
       } else {
+        const errorData = await walletRes.json();
+        console.error('ReferralWallet: Wallet API failed:', errorData);
         setWalletData({ coins: 0, referralCode: null });
       }
 
       // Load referral stats
       const statsRes = await fetch('https://easytofindedu.onrender.com/api/v1/student/auth/referral-stats', {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
         credentials: 'include'
       });
 
       if (statsRes.ok) {
         const statsData = await statsRes.json();
+        console.log('ReferralWallet: Referral stats received:', statsData);
         setReferralStats(statsData.data || null);
+      } else {
+        const errorData = await statsRes.json();
+        console.error('ReferralWallet: Referral stats API failed:', errorData);
       }
     } catch (error) {
       console.error('Failed to load wallet/referral data:', error);
