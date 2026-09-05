@@ -6,11 +6,14 @@ import Step1InstituteInfo from '../components/institute-registration/Step1Instit
 import Step2Category from '../components/institute-registration/Step2Category';
 import Step3LocationContact from '../components/institute-registration/Step3LocationContact';
 import Step4Courses from '../components/institute-registration/Step4Courses';
+import Step5Batches from '../components/institute-registration/Step5Batches';
+import Step6LearningExperience from '../components/institute-registration/Step6LearningExperience';
 import Step7Facilities from '../components/institute-registration/Step7Facilities';
 import Step8Faculty from '../components/institute-registration/Step8Faculty';
 import Step9FeesScholarships from '../components/institute-registration/Step9FeesScholarships';
 import Step10Admission from '../components/institute-registration/Step10Admission';
 import Step11Career from '../components/institute-registration/Step11Career';
+import Step12Results from '../components/institute-registration/Step12Results';
 import Step13Gallery from '../components/institute-registration/Step13Gallery';
 import Step14Verification from '../components/institute-registration/Step14Verification';
 
@@ -137,6 +140,13 @@ export default function InstituteRegistration() {
       setCurrentStep(prev => prev - 1);
       window.scrollTo(0, 0);
     }
+  };
+
+  const handleDataChange = (data: any) => {
+    setFormData(prev => ({
+      ...prev,
+      [`step${currentStep}`]: data
+    }));
   };
 
   const handleSaveDraft = async (stepData: any) => {
@@ -271,44 +281,25 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 5 && (
-            <div className="bg-white p-8 rounded-lg shadow text-center">
-              <h3 className="text-xl font-semibold mb-4">Step 5 - Batches & Schedule</h3>
-              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
-              <div className="flex gap-4 justify-center">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => handleNext({})}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Skip
-                </button>
-              </div>
-            </div>
+            <Step5Batches
+              data={formData.step5}
+              coursesData={formData.step4}
+              onChange={handleDataChange}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
           )}
           {currentStep === 6 && (
-            <div className="bg-white p-8 rounded-lg shadow text-center">
-              <h3 className="text-xl font-semibold mb-4">Step 6 - Learning Experience</h3>
-              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
-              <div className="flex gap-4 justify-center">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => handleNext({})}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Skip
-                </button>
-              </div>
-            </div>
+            <Step6LearningExperience
+              data={formData.step6}
+              onChange={handleDataChange}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
           )}
           {currentStep === 7 && (
             <Step7Facilities
@@ -357,24 +348,14 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 12 && (
-            <div className="bg-white p-8 rounded-lg shadow text-center">
-              <h3 className="text-xl font-semibold mb-4">Step 12 - Results & Achievements</h3>
-              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
-              <div className="flex gap-4 justify-center">
-                <button
-                  onClick={handleBack}
-                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => handleNext({})}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-                >
-                  Skip
-                </button>
-              </div>
-            </div>
+            <Step12Results
+              data={formData.step12}
+              onChange={handleDataChange}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
           )}
           {currentStep === 13 && (
             <Step13Gallery
