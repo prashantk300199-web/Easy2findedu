@@ -61,18 +61,18 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Career / Outcomes</h2>
-      <p className="text-gray-600 mb-6">Provide career support and outcome information (All fields optional)</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Career / Outcomes</h2>
+      <p className="text-cream-100/60 mb-8">Provide career support and outcome information (All fields optional)</p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Career Services */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Briefcase size={20} />
+          <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
+            <Briefcase size={20} className="text-gold-400" />
             Career Services & Support
           </h3>
-          <p className="text-sm text-gray-500 mb-4">Select all services you provide to students</p>
+          <p className="text-sm text-cream-100/50 mb-4">Select all services you provide to students</p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {CAREER_SERVICES.map(service => (
@@ -80,31 +80,31 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                 key={service}
                 className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
                   (formData.careerServices as string[]).includes(service)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-gold-500 bg-gold-900/20'
+                    : 'border-night-700 bg-night-900 hover:border-gold-500/30'
                 }`}
               >
                 <input
                   type="checkbox"
                   checked={(formData.careerServices as string[]).includes(service)}
                   onChange={() => handleServiceToggle(service)}
-                  className="mr-3"
+                  className="mr-3 accent-gold-500"
                 />
-                <span className="text-sm text-gray-700">{service}</span>
+                <span className="text-sm text-cream-100">{service}</span>
               </label>
             ))}
           </div>
 
           {(formData.careerServices as string[]).length > 0 && (
-            <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-900 mb-2">
+            <div className="mt-4 bg-night-900/50 border border-gold-500/30 rounded-lg p-5">
+              <h4 className="font-semibold text-gold-400 mb-3">
                 Selected Services ({(formData.careerServices as string[]).length})
               </h4>
               <div className="flex flex-wrap gap-2">
                 {(formData.careerServices as string[]).map(service => (
                   <span
                     key={service}
-                    className="bg-white text-blue-700 px-3 py-1 rounded-full text-sm border border-blue-200"
+                    className="bg-night-900 text-gold-400 px-3 py-1.5 rounded-full text-sm border border-gold-500/30"
                   >
                     {service}
                   </span>
@@ -115,18 +115,18 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
         </div>
 
         {/* Placement & Industry Information */}
-        <div className="border-t pt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Users size={20} />
+        <div className="border-t border-night-700 pt-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
+            <Users size={20} className="text-gold-400" />
             Placement & Industry Information
           </h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-cream-100/50 mb-4">
             For professional/vocational institutes (Skip if not applicable)
           </p>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
                 Top Recruiters
               </label>
               <textarea
@@ -135,12 +135,12 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                 onChange={handleChange}
                 rows={3}
                 placeholder="List top companies that recruit from your institute (comma separated)"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
                 Industry Partners
               </label>
               <textarea
@@ -149,13 +149,13 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                 onChange={handleChange}
                 rows={3}
                 placeholder="List industry partners, collaborations, and tie-ups"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
               />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Average Package (₹ LPA)
                 </label>
                 <input
@@ -164,12 +164,12 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                   value={formData.averagePackage}
                   onChange={handleChange}
                   placeholder="E.g., 6 LPA"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Highest Package (₹ LPA)
                 </label>
                 <input
@@ -178,12 +178,12 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                   value={formData.highestPackage}
                   onChange={handleChange}
                   placeholder="E.g., 15 LPA"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Placement Rate (%)
                 </label>
                 <input
@@ -194,7 +194,7 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
                   placeholder="E.g., 85"
                   min="0"
                   max="100"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
             </div>
@@ -202,14 +202,14 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
         </div>
 
         {/* Career Outcomes */}
-        <div className="border-t pt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <TrendingUp size={20} />
+        <div className="border-t border-night-700 pt-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
+            <TrendingUp size={20} className="text-gold-400" />
             Career Outcomes & Success Stories
           </h3>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-cream-100 mb-2">
               Career Outcomes
             </label>
             <textarea
@@ -218,21 +218,21 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
               onChange={handleChange}
               rows={5}
               placeholder="Describe typical career paths, success stories, notable alumni, achievements, etc."
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-cream-100/50 mt-1">
               Examples: "Our students work at Google, Amazon, Microsoft" or "Alumni perform at national dance festivals" or "Graduates run successful makeup studios"
             </p>
           </div>
         </div>
 
         {/* Info Box */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <h4 className="font-semibold text-yellow-900 mb-2 flex items-center gap-2">
+        <div className="bg-gold-900/20 border border-gold-500/30 rounded-lg p-5">
+          <h4 className="font-semibold text-gold-400 mb-3 flex items-center gap-2">
             <Award size={18} />
             Note for Non-Professional Institutes
           </h4>
-          <p className="text-sm text-yellow-800">
+          <p className="text-sm text-cream-100/70">
             If your institute focuses on arts, hobbies, personal development, or creative skills (dance, music, makeup, photography, etc.),
             you can skip placement-related fields and focus on career services like performance opportunities, portfolio development,
             competition participation, or freelancing support.
@@ -245,7 +245,7 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             Back
           </button>
@@ -253,14 +253,14 @@ export default function Step9Career({ data, onNext, onBack, onSaveDraft, loading
             type="button"
             onClick={handleSave}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             {loading ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
             {loading ? 'Saving...' : 'Save & Continue'}
           </button>
