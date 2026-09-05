@@ -214,21 +214,21 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Faculty / Trainers / Mentors</h2>
-      <p className="text-gray-600 mb-6">Provide information about your teaching staff</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Faculty / Trainers / Mentors</h2>
+      <p className="text-cream-100/60 mb-8">Provide information about your teaching staff</p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* General Faculty Information */}
-        <div className="border-b pb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Users size={20} />
+        <div className="border-b border-night-700 pb-6">
+          <h3 className="text-xl font-semibold text-cream-100 mb-6 flex items-center gap-2">
+            <Users size={20} className="text-gold-400" />
             General Information
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
                 Total Faculty / Trainers
               </label>
               <input
@@ -238,12 +238,12 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 onChange={handleChange}
                 placeholder="E.g., 15"
                 min="0"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
                 Trainer-Student Ratio
               </label>
               <input
@@ -252,14 +252,14 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 value={formData.trainerStudentRatio}
                 onChange={handleChange}
                 placeholder="E.g., 1:20"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
               />
             </div>
           </div>
 
           {/* Teaching Method */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-cream-100 mb-2">
               Teaching Method (Select all that apply)
             </label>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -268,17 +268,17 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                   key={method}
                   className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
                     (formData.teachingMethod as string[]).includes(method)
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-gold-500 bg-gold-900/20'
+                      : 'border-night-700 bg-night-900 hover:border-gold-500/30'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={(formData.teachingMethod as string[]).includes(method)}
                     onChange={() => handleTeachingMethodToggle(method)}
-                    className="mr-3"
+                    className="mr-3 accent-gold-500"
                   />
-                  <span className="text-sm text-gray-700">{method}</span>
+                  <span className="text-sm text-cream-100">{method}</span>
                 </label>
               ))}
             </div>
@@ -286,7 +286,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
 
           {/* Student Support */}
           <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-cream-100 mb-2">
               Student Support
             </label>
             <textarea
@@ -295,7 +295,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
               onChange={handleChange}
               rows={3}
               placeholder="Describe how you support students (e.g., study materials, doubt sessions, etc.)"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
             />
           </div>
 
@@ -307,9 +307,9 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 name="doubtSupport"
                 checked={formData.doubtSupport}
                 onChange={handleChange}
-                className="mr-3 h-4 w-4"
+                className="mr-3 h-4 w-4 accent-gold-500"
               />
-              <span className="text-sm text-gray-700">Doubt Support Available</span>
+              <span className="text-sm text-cream-100">Doubt Support Available</span>
             </label>
 
             <label className="flex items-center">
@@ -318,27 +318,27 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 name="oneToOneMentoring"
                 checked={formData.oneToOneMentoring}
                 onChange={handleChange}
-                className="mr-3 h-4 w-4"
+                className="mr-3 h-4 w-4 accent-gold-500"
               />
-              <span className="text-sm text-gray-700">1-to-1 Mentoring Available</span>
+              <span className="text-sm text-cream-100">1-to-1 Mentoring Available</span>
             </label>
           </div>
         </div>
 
         {/* Trainer Profiles */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Trainer Profiles (Optional)</h3>
+          <h3 className="text-xl font-semibold text-cream-100 mb-6">Trainer Profiles (Optional)</h3>
 
           {!isAdding && (
             <div className="space-y-4 mb-6">
               {trainers.length === 0 ? (
-                <div className="text-center py-8 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                  <Users className="mx-auto h-12 w-12 text-gray-400 mb-2" />
-                  <p className="text-gray-500 mb-4">No trainer profiles added yet</p>
+                <div className="text-center py-12 bg-night-900/50 rounded-lg border-2 border-dashed border-night-700">
+                  <Users className="mx-auto h-12 w-12 text-gold-400 mb-3" />
+                  <p className="text-cream-100/60 mb-4">No trainer profiles added yet</p>
                   <button
                     type="button"
                     onClick={handleAddTrainer}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 inline-flex items-center gap-2"
+                    className="px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 inline-flex items-center gap-2 font-bold shadow-goldGlow transition-all"
                   >
                     <Plus size={18} />
                     Add Trainer Profile
@@ -348,36 +348,36 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {trainers.map((trainer, index) => (
-                      <div key={trainer.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                      <div key={trainer.id} className="border border-night-700 bg-night-900 rounded-lg p-4 hover:shadow-goldGlow hover:border-gold-500/30 transition-all">
                         <div className="flex gap-4">
                           {trainer.photoPreview && (
                             <img
                               src={trainer.photoPreview}
                               alt={trainer.name}
-                              className="w-16 h-16 rounded-full object-cover"
+                              className="w-16 h-16 rounded-full object-cover border-2 border-gold-500/30"
                             />
                           )}
                           <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900">{trainer.name}</h4>
+                            <h4 className="font-semibold text-cream-100">{trainer.name}</h4>
                             {trainer.qualification && (
-                              <p className="text-sm text-gray-600">{trainer.qualification}</p>
+                              <p className="text-sm text-cream-100/70">{trainer.qualification}</p>
                             )}
                             {trainer.experience && (
-                              <p className="text-sm text-gray-500">{trainer.experience} experience</p>
+                              <p className="text-sm text-cream-100/50">{trainer.experience} experience</p>
                             )}
                           </div>
                           <div className="flex gap-2">
                             <button
                               type="button"
                               onClick={() => handleEditTrainer(index)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                              className="p-2 text-gold-400 hover:bg-night-700 rounded transition-colors"
                             >
                               <Edit2 size={18} />
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteTrainer(index)}
-                              className="p-2 text-red-600 hover:bg-red-50 rounded"
+                              className="p-2 text-red-400 hover:bg-night-700 rounded transition-colors"
                             >
                               <Trash2 size={18} />
                             </button>
@@ -390,7 +390,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                   <button
                     type="button"
                     onClick={handleAddTrainer}
-                    className="w-full py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-500 hover:bg-blue-50 text-gray-600 hover:text-blue-600 font-medium inline-flex items-center justify-center gap-2"
+                    className="w-full py-4 border-2 border-dashed border-night-700 rounded-lg hover:border-gold-500 hover:bg-night-900/50 text-cream-100 hover:text-gold-400 font-semibold inline-flex items-center justify-center gap-2 transition-all"
                   >
                     <Plus size={20} />
                     Add Another Trainer
@@ -402,12 +402,12 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
 
           {/* Trainer Form */}
           {isAdding && (
-            <div className="border border-gray-300 rounded-lg p-6 mb-6 bg-gray-50">
-              <div className="flex justify-between items-center mb-4">
-                <h4 className="text-lg font-semibold text-gray-900">
+            <div className="border border-gold-500/30 rounded-lg p-6 mb-6 bg-night-900/50">
+              <div className="flex justify-between items-center mb-6">
+                <h4 className="text-xl font-semibold text-cream-100">
                   {editingIndex !== null ? 'Edit Trainer' : 'Add New Trainer'}
                 </h4>
-                <button type="button" onClick={handleCancel} className="text-gray-400 hover:text-gray-600">
+                <button type="button" onClick={handleCancel} className="text-cream-100/60 hover:text-cream-100">
                   <X size={24} />
                 </button>
               </div>
@@ -415,7 +415,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
               <div className="space-y-4">
                 {/* Profile Photo */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cream-100 mb-2">
                     Profile Photo
                   </label>
                   <div className="mt-2">
@@ -424,20 +424,20 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                         <img
                           src={currentTrainer.photoPreview}
                           alt="Trainer preview"
-                          className="w-32 h-32 rounded-full object-cover border border-gray-300"
+                          className="w-32 h-32 rounded-full object-cover border-2 border-gold-500/30"
                         />
                         <button
                           type="button"
                           onClick={removePhoto}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
                         >
                           <X size={16} />
                         </button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-gray-300 border-dashed rounded-full cursor-pointer hover:bg-gray-50">
-                        <Upload className="w-8 h-8 text-gray-400" />
-                        <p className="text-xs text-gray-400 mt-1">Upload</p>
+                      <label className="flex flex-col items-center justify-center w-32 h-32 border-2 border-night-700 border-dashed rounded-full cursor-pointer hover:bg-night-900/50 transition-colors">
+                        <Upload className="w-8 h-8 text-gold-400" />
+                        <p className="text-xs text-cream-100/60 mt-1">Upload</p>
                         <input
                           type="file"
                           accept="image/*"
@@ -447,13 +447,13 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                       </label>
                     )}
                   </div>
-                  {errors.photo && <p className="text-red-500 text-sm mt-1">{errors.photo}</p>}
+                  {errors.photo && <p className="text-red-400 text-sm mt-1">{errors.photo}</p>}
                 </div>
 
                 {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Name <span className="text-red-500">*</span>
+                  <label className="block text-sm font-semibold text-cream-100 mb-2">
+                    Name <span className="text-red-400">*</span>
                   </label>
                   <input
                     type="text"
@@ -461,17 +461,17 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                     value={currentTrainer.name}
                     onChange={handleTrainerChange}
                     placeholder="Trainer's full name"
-                    className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                      errors.name ? 'border-red-500' : 'border-gray-300'
+                    className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all ${
+                      errors.name ? 'border-red-500' : 'border-night-700'
                     }`}
                   />
-                  {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+                  {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
                 </div>
 
                 {/* Qualification & Experience */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-cream-100 mb-2">
                       Qualification
                     </label>
                     <input
@@ -480,12 +480,12 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                       value={currentTrainer.qualification}
                       onChange={handleTrainerChange}
                       placeholder="E.g., M.Sc, B.Tech, Certified Professional"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-cream-100 mb-2">
                       Experience
                     </label>
                     <input
@@ -494,7 +494,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                       value={currentTrainer.experience}
                       onChange={handleTrainerChange}
                       placeholder="E.g., 10 years"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                     />
                   </div>
                 </div>
@@ -502,7 +502,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                 {/* Specialization & Industry Experience */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-cream-100 mb-2">
                       Specialization
                     </label>
                     <input
@@ -511,12 +511,12 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                       value={currentTrainer.specialization}
                       onChange={handleTrainerChange}
                       placeholder="Area of expertise"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-cream-100 mb-2">
                       Industry Experience
                     </label>
                     <input
@@ -525,14 +525,14 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                       value={currentTrainer.industryExperience}
                       onChange={handleTrainerChange}
                       placeholder="E.g., 5 years in IT industry"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                     />
                   </div>
                 </div>
 
                 {/* Certifications */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cream-100 mb-2">
                     Certifications
                   </label>
                   <textarea
@@ -541,13 +541,13 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                     onChange={handleTrainerChange}
                     rows={2}
                     placeholder="List professional certifications..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                   />
                 </div>
 
                 {/* Achievements */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cream-100 mb-2">
                     Achievements
                   </label>
                   <textarea
@@ -556,13 +556,13 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                     onChange={handleTrainerChange}
                     rows={2}
                     placeholder="Notable achievements and awards..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                   />
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-cream-100 mb-2">
                     Bio
                   </label>
                   <textarea
@@ -571,7 +571,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                     onChange={handleTrainerChange}
                     rows={3}
                     placeholder="Brief biography of the trainer..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                   />
                 </div>
 
@@ -580,14 +580,14 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                   <button
                     type="button"
                     onClick={handleCancel}
-                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                    className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 transition-all font-semibold"
                   >
                     Cancel
                   </button>
                   <button
                     type="button"
                     onClick={handleSaveTrainer}
-                    className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 transition-all font-bold shadow-goldGlow"
                   >
                     {editingIndex !== null ? 'Update Trainer' : 'Add Trainer'}
                   </button>
@@ -604,7 +604,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
               type="button"
               onClick={onBack}
               disabled={loading}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
             >
               Back
             </button>
@@ -612,14 +612,14 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
               type="button"
               onClick={handleSave}
               disabled={loading}
-              className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+              className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
             >
               {loading ? 'Saving...' : 'Save Draft'}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
             >
               {loading ? 'Saving...' : 'Save & Continue'}
             </button>
