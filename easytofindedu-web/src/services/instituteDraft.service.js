@@ -1,80 +1,79 @@
-import axios from 'axios';
+import api from './api';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+/**
+ * Institute Draft Service
+ * Handles institute registration draft operations
+ */
 
-// Create axios instance with default config
-const api = axios.create({
-  baseURL: API_URL,
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  withCredentials: true
-});
-
-// Add token to requests
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
-
-// Get draft
+// Get draft for logged-in owner
 export const getDraft = async () => {
-  const response = await api.get('/institute/draft');
-  return response.data;
+  try {
+    const response = await api.get('/institute/draft');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching draft:', error);
+    throw error;
+  }
 };
 
-// Get draft status (for dashboard)
-export const getDraftStatus = async () => {
-  const response = await api.get('/institute/draft/status');
-  return response.data;
-};
-
-// Save draft
+// Save draft (manual or auto-save)
 export const saveDraft = async (draftData) => {
-  const response = await api.post('/institute/draft/save', draftData);
-  return response.data;
+  try {
+    const response = await api.post('/institute/draft/save', draftData);
+    return response.data;
+  } catch (error) {
+    console.error('Error saving draft:', error);
+    throw error;
+  }
 };
 
-// Upload file for draft
-export const uploadDraftFile = async (file, fieldName, stepNumber) => {
-  const formData = new FormData();
-  formData.append('file', file);
-  formData.append('fieldName', fieldName);
-  formData.append('stepNumber', stepNumber);
-
-  const response = await api.post('/institute/draft/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data'
-    }
-  });
-  return response.data;
+// Get draft status
+export const getDraftStatus = async () => {
+  try {
+    const response = await api.get('/institute/draft/status');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching draft status:', error);
+    throw error;
+  }
 };
 
 // Submit draft for verification
 export const submitDraft = async () => {
-  const response = await api.post('/institute/draft/submit');
-  return response.data;
+  try {
+    const response = await api.post('/institute/draft/submit');
+    return response.data;
+  } catch (error) {
+    console.error('Error submitting draft:', error);
+    throw error;
+  }
 };
 
 // Delete draft
 export const deleteDraft = async () => {
-  const response = await api.delete('/institute/draft');
-  return response.data;
+  try {
+    const response = await api.delete('/institute/draft');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting draft:', error);
+    throw error;
+  }
 };
 
-export default {
-  getDraft,
-  getDraftStatus,
-  saveDraft,
-  uploadDraftFile,
-  submitDraft,
-  deleteDraft
+// Upload file for draft
+export const uploadDraftFile = async (file) => {
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await api.post('/institute/draft/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
 };
