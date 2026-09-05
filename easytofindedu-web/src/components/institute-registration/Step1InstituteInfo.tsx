@@ -153,14 +153,15 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Institute Information</h2>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Institute Information</h2>
+      <p className="text-cream-100/60 mb-8">Let's start with basic details about your institute</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Institute Name */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Institute Name <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
+            Institute Name <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
@@ -168,24 +169,24 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             value={formData.name}
             onChange={handleChange}
             placeholder="E.g., Brilliant Academy, Tech Training Center"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.name ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+              errors.name ? 'border-red-500' : 'border-night-700'
             }`}
           />
-          {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
+          {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
         </div>
 
         {/* Institute Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Institute Type <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
+            Institute Type <span className="text-red-400">*</span>
           </label>
           <select
             name="instituteType"
             value={formData.instituteType}
             onChange={handleChange}
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.instituteType ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+              errors.instituteType ? 'border-red-500' : 'border-night-700'
             }`}
           >
             <option value="">Select Type</option>
@@ -193,13 +194,13 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
               <option key={type} value={type}>{type}</option>
             ))}
           </select>
-          {errors.instituteType && <p className="text-red-500 text-sm mt-1">{errors.instituteType}</p>}
+          {errors.instituteType && <p className="text-red-400 text-sm mt-1">{errors.instituteType}</p>}
         </div>
 
         {/* Short Description */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Short Description <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
+            Short Description <span className="text-red-400">*</span>
           </label>
           <textarea
             name="description"
@@ -208,19 +209,19 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             rows={3}
             maxLength={200}
             placeholder="Brief description of your institute (max 200 characters)"
-            className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-              errors.description ? 'border-red-500' : 'border-gray-300'
+            className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+              errors.description ? 'border-red-500' : 'border-night-700'
             }`}
           />
           <div className="flex justify-between items-center mt-1">
-            {errors.description && <p className="text-red-500 text-sm">{errors.description}</p>}
-            <p className="text-gray-500 text-sm ml-auto">{formData.description.length}/200</p>
+            {errors.description && <p className="text-red-400 text-sm">{errors.description}</p>}
+            <p className="text-cream-100/50 text-sm ml-auto">{formData.description.length}/200</p>
           </div>
         </div>
 
         {/* Detailed About */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
             Detailed About
           </label>
           <textarea
@@ -229,13 +230,13 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             onChange={handleChange}
             rows={5}
             placeholder="Provide detailed information about your institute..."
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
           />
         </div>
 
         {/* Established Year */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
             Established Year
           </label>
           <input
@@ -246,20 +247,20 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             min="1900"
             max={new Date().getFullYear()}
             placeholder={new Date().getFullYear().toString()}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
           />
         </div>
 
         {/* Ownership Type */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
             Ownership Type
           </label>
           <select
             name="ownershipType"
             value={formData.ownershipType}
             onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
           >
             <option value="">Select Ownership Type</option>
             {OWNERSHIP_TYPES.map(type => (
@@ -270,7 +271,7 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
 
         {/* Number of Branches */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
             Number of Branches
           </label>
           <input
@@ -279,14 +280,15 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             value={formData.numberOfBranches}
             onChange={handleChange}
             min="1"
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            placeholder="Enter number of branches"
+            className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
           />
         </div>
 
         {/* Institute Logo */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Institute Logo <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
+            Institute Logo <span className="text-red-400">*</span>
           </label>
           <div className="mt-2">
             {formData.logoPreview ? (
@@ -294,22 +296,22 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
                 <img
                   src={formData.logoPreview}
                   alt="Logo preview"
-                  className="w-32 h-32 object-cover rounded-lg border border-gray-300"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-gold-500/30"
                 />
                 <button
                   type="button"
                   onClick={() => removeFile('logo')}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
                 >
                   <X size={16} />
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-night-700 border-dashed rounded-lg cursor-pointer hover:bg-night-900/50 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-2 text-gray-400" />
-                  <p className="text-sm text-gray-500">Click to upload logo</p>
-                  <p className="text-xs text-gray-400">PNG, JPG up to 5MB</p>
+                  <Upload className="w-8 h-8 mb-2 text-gold-400" />
+                  <p className="text-sm text-cream-100">Click to upload logo</p>
+                  <p className="text-xs text-cream-100/50">PNG, JPG up to 5MB</p>
                 </div>
                 <input
                   type="file"
@@ -320,36 +322,36 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
               </label>
             )}
           </div>
-          {errors.logo && <p className="text-red-500 text-sm mt-1">{errors.logo}</p>}
+          {errors.logo && <p className="text-red-400 text-sm mt-1">{errors.logo}</p>}
         </div>
 
         {/* Cover Image */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-semibold text-cream-100 mb-2">
             Cover Image
           </label>
           <div className="mt-2">
             {formData.coverImagePreview ? (
-              <div className="relative inline-block">
+              <div className="relative inline-block w-full">
                 <img
                   src={formData.coverImagePreview}
                   alt="Cover preview"
-                  className="w-full h-48 object-cover rounded-lg border border-gray-300"
+                  className="w-full h-48 object-cover rounded-lg border-2 border-gold-500/30"
                 />
                 <button
                   type="button"
                   onClick={() => removeFile('coverImage')}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
                 >
                   <X size={16} />
                 </button>
               </div>
             ) : (
-              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+              <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-night-700 border-dashed rounded-lg cursor-pointer hover:bg-night-900/50 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <Upload className="w-8 h-8 mb-2 text-gray-400" />
-                  <p className="text-sm text-gray-500">Click to upload cover image</p>
-                  <p className="text-xs text-gray-400">PNG, JPG up to 5MB</p>
+                  <Upload className="w-8 h-8 mb-2 text-gold-400" />
+                  <p className="text-sm text-cream-100">Click to upload cover image</p>
+                  <p className="text-xs text-cream-100/50">PNG, JPG up to 5MB</p>
                 </div>
                 <input
                   type="file"
@@ -360,7 +362,7 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
               </label>
             )}
           </div>
-          {errors.coverImage && <p className="text-red-500 text-sm mt-1">{errors.coverImage}</p>}
+          {errors.coverImage && <p className="text-red-400 text-sm mt-1">{errors.coverImage}</p>}
         </div>
 
         {/* Action Buttons */}
@@ -369,14 +371,14 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             type="button"
             onClick={handleSave}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             {loading ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
             {loading ? 'Saving...' : 'Save & Continue'}
           </button>

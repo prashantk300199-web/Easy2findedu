@@ -148,13 +148,13 @@ export default function InstituteRegistration() {
 
   if (!user || user.role !== 'institute_owner') {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-night-900">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
-          <p className="text-gray-600 mb-4">Only institute owners can register institutes.</p>
+          <h2 className="font-display text-3xl text-cream-100 mb-4">Access Denied</h2>
+          <p className="text-cream-100/60 mb-6">Only institute owners can register institutes.</p>
           <button
             onClick={() => navigate('/login')}
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-8 py-3 bg-gold-500 text-night-900 font-semibold rounded-lg hover:bg-gold-400 transition-all duration-300 shadow-goldGlow"
           >
             Go to Login
           </button>
@@ -164,64 +164,64 @@ export default function InstituteRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-night-900 py-12">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Register Your Institute</h1>
-          <p className="text-gray-600 mt-2">Complete all steps to list your institute</p>
+        <div className="mb-12 text-center">
+          <h1 className="font-display text-5xl md:text-6xl text-cream-100 mb-4">Register Your Institute</h1>
+          <p className="text-cream-100/60 text-lg">Complete all steps to list your institute on our platform</p>
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-8">
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-gray-700">
+        <div className="mb-12">
+          <div className="flex justify-between items-center mb-4">
+            <span className="text-sm font-medium text-gold-400 uppercase tracking-wide">
               Step {currentStep} of {TOTAL_STEPS}
             </span>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-cream-100/70">
               {Math.round((currentStep / TOTAL_STEPS) * 100)}% Complete
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-night-800 rounded-full h-2 overflow-hidden">
             <motion.div
-              className="bg-blue-600 h-2 rounded-full"
+              className="bg-gradient-to-r from-gold-500 to-gold-400 h-2 rounded-full shadow-goldGlow"
               initial={{ width: 0 }}
               animate={{ width: `${(currentStep / TOTAL_STEPS) * 100}%` }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.5 }}
             />
           </div>
         </div>
 
         {/* Step Navigation Pills */}
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="mb-10 flex flex-wrap gap-3 justify-center">
           {Array.from({ length: TOTAL_STEPS }, (_, i) => i + 1).map((step) => (
             <button
               key={step}
               onClick={() => setCurrentStep(step)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+              className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                 currentStep === step
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-gold-500 text-night-900 shadow-goldGlow'
                   : step < currentStep
-                  ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  ? 'bg-night-700 text-gold-400 border border-gold-500/30 hover:border-gold-500/50'
+                  : 'bg-night-800 text-cream-100/60 border border-night-700 hover:bg-night-750 hover:text-cream-100'
               }`}
             >
-              {step}
+              Step {step}
             </button>
           ))}
         </div>
 
         {/* Error Display */}
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-red-800">{error}</p>
+          <div className="mb-6 p-5 bg-red-900/20 border border-red-500/30 rounded-lg backdrop-blur-sm">
+            <p className="text-red-400 font-medium">{error}</p>
           </div>
         )}
 
         {/* Saving Indicator */}
         {saving && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-800">Saving draft...</p>
+          <div className="mb-6 p-5 bg-gold-900/20 border border-gold-500/30 rounded-lg backdrop-blur-sm">
+            <p className="text-gold-400 font-medium">Saving draft...</p>
           </div>
         )}
 
