@@ -251,3 +251,16 @@ export const validateUploadedFiles = (req, res, next) => {
     });
   }
 };
+
+/**
+ * Generic upload instance for draft files
+ * Supports any file type with 10MB limit
+ */
+export const upload = multer({
+  storage: memoryStorage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB per file
+    files: 5
+  }
+});
+

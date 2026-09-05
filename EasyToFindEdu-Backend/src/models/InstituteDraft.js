@@ -46,26 +46,26 @@ const batchSchema = new mongoose.Schema({
   daysOfWeek: [String],
   classTiming: String,
   classDuration: String,
-  classesPerWeek: String,
-  batchSize: String,
-  seatsAvailable: String,
-  scheduleType: String,
-  timeSlot: String,
-  mode: String,
+  classesPerWeek: Number,
+  batchSize: Number,
+  seatsAvailable: Number,
+  scheduleType: String, // Weekday/Weekend
+  timeSlot: String, // Morning/Afternoon/Evening
+  mode: String, // Online/Offline/Hybrid
   trialAvailable: Boolean,
-  status: String
+  status: String // Upcoming/Ongoing/Full/Closed
 }, { _id: false });
 
-const academicResultSchema = new mongoose.Schema({
+const resultSchema = new mongoose.Schema({
   id: String,
   exam: String,
   year: String,
-  studentsAppeared: String,
-  qualified: String,
-  selected: String,
+  studentsAppeared: Number,
+  qualified: Number,
+  selected: Number,
   highestRank: String,
   topScores: String,
-  selectionPercentage: String,
+  selectionPercentage: Number,
   airStateRank: String,
   supportingDocFile: String,
   supportingDocPreview: String
@@ -75,7 +75,8 @@ const instituteDraftSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'InstituteOwner',
-    required: true
+    required: true,
+    index: true
   },
 
   // Registration status
@@ -89,7 +90,7 @@ const instituteDraftSchema = new mongoose.Schema({
     type: Number,
     default: 1,
     min: 1,
-    max: 14
+    max: 15
   },
 
   completionPercentage: {
@@ -124,17 +125,17 @@ const instituteDraftSchema = new mongoose.Schema({
   // Step 2: Category Selection
   step2Category: {
     primaryCategory: String,
-    subcategory: String,
+    subcategories: [String],
     categorySpecificData: mongoose.Schema.Types.Mixed
   },
 
   // Step 3: Location & Contact
   step3LocationContact: {
-    fullAddress: String,
-    area: String,
-    city: String,
     state: String,
-    country: String,
+    city: String,
+    area: String,
+    subarea: String,
+    fullAddress: String,
     landmark: String,
     pincode: String,
     googleMapsLink: String,
@@ -149,12 +150,12 @@ const instituteDraftSchema = new mongoose.Schema({
     courses: [courseSchema]
   },
 
-  // Step 5: Batches & Schedule (NEW - Phase 6)
+  // Step 5: Batches & Schedule
   step5Batches: {
     batches: [batchSchema]
   },
 
-  // Step 6: Learning Experience (NEW - Phase 6)
+  // Step 6: Learning Experience
   step6LearningExperience: {
     liveClasses: Boolean,
     recordedClasses: Boolean,
@@ -180,13 +181,13 @@ const instituteDraftSchema = new mongoose.Schema({
     technicalSupport: Boolean
   },
 
-  // Step 7: Facilities (RENUMBERED from Step 5)
+  // Step 7: Facilities
   step7Facilities: {
     facilities: [String],
     otherFacilities: String
   },
 
-  // Step 8: Faculty/Trainers (RENUMBERED from Step 6)
+  // Step 8: Faculty/Trainers
   step8Faculty: {
     totalFaculty: Number,
     trainerStudentRatio: String,
@@ -197,7 +198,7 @@ const instituteDraftSchema = new mongoose.Schema({
     trainers: [trainerSchema]
   },
 
-  // Step 9: Fees & Scholarships (RENUMBERED from Step 7)
+  // Step 9: Fees & Scholarships
   step9Fees: {
     registrationFee: String,
     admissionFee: String,
@@ -219,7 +220,7 @@ const instituteDraftSchema = new mongoose.Schema({
     cancellationPolicy: String
   },
 
-  // Step 10: Admission/Enrollment (RENUMBERED from Step 8)
+  // Step 10: Admission/Enrollment
   step10Admission: {
     admissionType: String,
     admissionProcess: String,
@@ -236,7 +237,7 @@ const instituteDraftSchema = new mongoose.Schema({
     demoAvailable: Boolean
   },
 
-  // Step 11: Career/Outcomes (RENUMBERED from Step 9, ENHANCED)
+  // Step 11: Career & Outcomes
   step11Career: {
     placementAssistance: Boolean,
     jobAssistance: Boolean,
@@ -254,21 +255,22 @@ const instituteDraftSchema = new mongoose.Schema({
     industryPartners: String,
     averagePackage: String,
     highestPackage: String,
-    placementRate: String,
+    placementRate: Number,
     careerOutcomes: String
   },
 
-  // Step 12: Results & Achievements (NEW - Phase 6)
+  // Step 12: Results & Achievements
   step12Results: {
-    results: [academicResultSchema],
+    results: [resultSchema],
     awards: String,
     competitionWins: String,
     studentAchievements: String,
     successStories: String,
-    certifications: String
+    certifications: String,
+    careerOutcomes: String
   },
 
-  // Step 13: Gallery & Online Presence (RENUMBERED from Step 10)
+  // Step 13: Gallery & Online Presence
   step13Gallery: {
     galleryFiles: [String],
     galleryPreviews: [String],
@@ -280,101 +282,8 @@ const instituteDraftSchema = new mongoose.Schema({
     youtube: String
   },
 
-  // Step 14: Verification (RENUMBERED from Step 11)
+  // Step 14: Verification
   step14Verification: {
-    ownerName: String,
-    designation: String,
-    idProofFile: String,
-    idProofPreview: String,
-    registrationDocFile: String,
-    registrationDocPreview: String,
-    gstNumber: String,
-    panNumber: String,
-    accreditation: String,
-    affiliation: String,
-    certificationAuthority: String,
-    governmentRecognition: String,
-    licenseNumber: String,
-    addressProofFile: String,
-    addressProofPreview: String
-  },
-
-  // DEPRECATED: Keep old step fields for backward compatibility during migration
-  // These will be automatically migrated to new step numbers
-  step5Facilities: {
-    facilities: [String],
-    otherFacilities: String
-  },
-
-  step6Faculty: {
-    totalFaculty: Number,
-    trainerStudentRatio: String,
-    teachingMethod: [String],
-    studentSupport: String,
-    doubtSupport: Boolean,
-    oneToOneMentoring: Boolean,
-    trainers: [trainerSchema]
-  },
-
-  step7Fees: {
-    registrationFee: String,
-    admissionFee: String,
-    courseFee: String,
-    monthlyFee: String,
-    quarterlyFee: String,
-    materialFee: String,
-    kitFee: String,
-    examFee: String,
-    certificationFee: String,
-    otherCharges: String,
-    totalPayableAmount: String,
-    scholarshipAvailable: Boolean,
-    scholarshipDetails: String,
-    installmentAvailable: Boolean,
-    installmentSchedule: String,
-    emiProvider: String,
-    refundPolicy: String,
-    cancellationPolicy: String
-  },
-
-  step8Admission: {
-    admissionType: String,
-    admissionProcess: String,
-    admissionStartDate: String,
-    admissionEndDate: String,
-    nextBatchStartDate: String,
-    registrationDeadline: String,
-    applicationLink: String,
-    applicationFee: String,
-    requiredDocuments: String,
-    admissionContactPerson: String,
-    admissionContactNumber: String,
-    walkInAvailable: Boolean,
-    demoAvailable: Boolean
-  },
-
-  step9Career: {
-    careerServices: [String],
-    topRecruiters: String,
-    industryPartners: String,
-    averagePackage: String,
-    highestPackage: String,
-    placementRate: Number,
-    careerOutcomes: String
-  },
-
-  step10Gallery: {
-    galleryFiles: [String],
-    galleryPreviews: [String],
-    videoUrl: String,
-    website: String,
-    instagram: String,
-    facebook: String,
-    linkedin: String,
-    youtube: String
-  },
-
-  step11Verification: {
     ownerName: String,
     designation: String,
     idProofFile: String,
@@ -402,67 +311,18 @@ const instituteDraftSchema = new mongoose.Schema({
 instituteDraftSchema.index({ owner: 1, status: 1 });
 instituteDraftSchema.index({ lastSavedAt: -1 });
 
-// Pre-save hook to auto-migrate old step data to new structure
-instituteDraftSchema.pre('save', function(next) {
-  // Migrate Step 5 (Facilities) → Step 7
-  if (this.step5Facilities && !this.step7Facilities) {
-    this.step7Facilities = this.step5Facilities;
-  }
-
-  // Migrate Step 6 (Faculty) → Step 8
-  if (this.step6Faculty && !this.step8Faculty) {
-    this.step8Faculty = this.step6Faculty;
-  }
-
-  // Migrate Step 7 (Fees) → Step 9
-  if (this.step7Fees && !this.step9Fees) {
-    this.step9Fees = this.step7Fees;
-  }
-
-  // Migrate Step 8 (Admission) → Step 10
-  if (this.step8Admission && !this.step10Admission) {
-    this.step10Admission = this.step8Admission;
-  }
-
-  // Migrate Step 9 (Career) → Step 11
-  if (this.step9Career && !this.step11Career) {
-    // Map old career structure to new enhanced structure
-    this.step11Career = {
-      topRecruiters: this.step9Career.topRecruiters,
-      industryPartners: this.step9Career.industryPartners,
-      averagePackage: this.step9Career.averagePackage,
-      highestPackage: this.step9Career.highestPackage,
-      placementRate: this.step9Career.placementRate?.toString(),
-      careerOutcomes: this.step9Career.careerOutcomes,
-      // Map old careerServices array to new boolean fields
-      placementAssistance: this.step9Career.careerServices?.includes('Placement Assistance'),
-      jobAssistance: this.step9Career.careerServices?.includes('Job Assistance'),
-      internshipAssistance: this.step9Career.careerServices?.includes('Internship Assistance'),
-      careerCounselling: this.step9Career.careerServices?.includes('Career Counselling')
-    };
-  }
-
-  // Migrate Step 10 (Gallery) → Step 13
-  if (this.step10Gallery && !this.step13Gallery) {
-    this.step13Gallery = this.step10Gallery;
-  }
-
-  // Migrate Step 11 (Verification) → Step 14
-  if (this.step11Verification && !this.step14Verification) {
-    this.step14Verification = this.step11Verification;
-  }
-
-  // Update lastSavedAt
+// Method to update last saved timestamp
+instituteDraftSchema.methods.updateLastSaved = function() {
   this.lastSavedAt = new Date();
-
-  next();
-});
+  return this.save();
+};
 
 // Method to calculate completion percentage
 instituteDraftSchema.methods.calculateCompletion = function() {
-  const totalSteps = 14;
   let completedSteps = 0;
+  const totalSteps = 14;
 
+  // Check each step for completion
   if (this.step1InstituteInfo?.instituteName) completedSteps++;
   if (this.step2Category?.primaryCategory) completedSteps++;
   if (this.step3LocationContact?.fullAddress) completedSteps++;
