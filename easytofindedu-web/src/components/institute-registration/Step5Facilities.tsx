@@ -111,8 +111,8 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
         key={facility}
         className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
           isSelected
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-200 hover:border-gray-300'
+            ? 'border-gold-500 bg-gold-900/20 shadow-goldGlow'
+            : 'border-night-700 bg-night-900 hover:border-gold-500/30'
         }`}
       >
         <input
@@ -122,11 +122,11 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
           className="hidden"
         />
         {isSelected ? (
-          <CheckSquare className="text-blue-600 mr-3 flex-shrink-0" size={20} />
+          <CheckSquare className="text-gold-400 mr-3 flex-shrink-0" size={20} />
         ) : (
-          <Square className="text-gray-400 mr-3 flex-shrink-0" size={20} />
+          <Square className="text-cream-100/40 mr-3 flex-shrink-0" size={20} />
         )}
-        <span className={`text-sm ${isSelected ? 'font-medium text-blue-900' : 'text-gray-700'}`}>
+        <span className={`text-sm ${isSelected ? 'font-semibold text-gold-400' : 'text-cream-100'}`}>
           {facility}
         </span>
       </label>
@@ -134,37 +134,37 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Facilities</h2>
-      <p className="text-gray-600 mb-6">Select all facilities available at your institute (Optional)</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Facilities</h2>
+      <p className="text-cream-100/60 mb-8">Select all facilities available at your institute (Optional)</p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* General Facilities */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">General Facilities</h3>
+          <h3 className="text-xl font-semibold text-cream-100 mb-4">General Facilities</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {GENERAL_FACILITIES.map(renderFacilityCheckbox)}
           </div>
         </div>
 
         {/* Academic / Learning Facilities */}
-        <div className="border-t pt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Academic / Learning Facilities</h3>
+        <div className="border-t border-night-700 pt-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-4">Academic / Learning Facilities</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {ACADEMIC_FACILITIES.map(renderFacilityCheckbox)}
           </div>
         </div>
 
         {/* Category-Specific Facilities */}
-        <div className="border-t pt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Category-Specific Facilities</h3>
-          <p className="text-sm text-gray-500 mb-4">
+        <div className="border-t border-night-700 pt-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-4">Category-Specific Facilities</h3>
+          <p className="text-sm text-cream-100/50 mb-4">
             Select facilities specific to your institute type (Dance, Music, Makeup, Coding, Trading, etc.)
           </p>
 
           {Object.entries(CATEGORY_SPECIFIC_FACILITIES).map(([category, facilities]) => (
             <div key={category} className="mb-6">
-              <h4 className="text-md font-medium text-gray-800 mb-3">{category}</h4>
+              <h4 className="text-md font-medium text-gold-400 mb-3">{category}</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {facilities.map(renderFacilityCheckbox)}
               </div>
@@ -173,12 +173,12 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
         </div>
 
         {/* Other Facilities */}
-        <div className="border-t pt-8">
+        <div className="border-t border-night-700 pt-8">
           <label
             className={`flex items-center p-4 border rounded-lg cursor-pointer transition-all mb-4 ${
               showOther
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-gray-200 hover:border-gray-300'
+                ? 'border-gold-500 bg-gold-900/20'
+                : 'border-night-700 bg-night-900 hover:border-gold-500/30'
             }`}
           >
             <input
@@ -188,15 +188,15 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
               className="hidden"
             />
             {showOther ? (
-              <CheckSquare className="text-blue-600 mr-3 flex-shrink-0" size={20} />
+              <CheckSquare className="text-gold-400 mr-3 flex-shrink-0" size={20} />
             ) : (
-              <Square className="text-gray-400 mr-3 flex-shrink-0" size={20} />
+              <Square className="text-cream-100/40 mr-3 flex-shrink-0" size={20} />
             )}
             <div>
-              <span className={`text-sm font-medium ${showOther ? 'text-blue-900' : 'text-gray-700'}`}>
+              <span className={`text-sm font-medium ${showOther ? 'text-gold-400' : 'text-cream-100'}`}>
                 Other Facilities
               </span>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-cream-100/50 mt-1">
                 Specify any additional facilities not listed above
               </p>
             </div>
@@ -208,22 +208,22 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
               onChange={(e) => setOtherFacilities(e.target.value)}
               rows={4}
               placeholder="List any other facilities available at your institute..."
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
             />
           )}
         </div>
 
         {/* Summary */}
         {selectedFacilities.length > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <h4 className="font-semibold text-blue-900 mb-2">
+          <div className="bg-night-900/50 border border-gold-500/30 rounded-lg p-5">
+            <h4 className="font-semibold text-gold-400 mb-3">
               Selected Facilities ({selectedFacilities.length})
             </h4>
             <div className="flex flex-wrap gap-2">
               {selectedFacilities.map(facility => (
                 <span
                   key={facility}
-                  className="bg-white text-blue-700 px-3 py-1 rounded-full text-sm border border-blue-200"
+                  className="bg-night-900 text-gold-400 px-3 py-1.5 rounded-full text-sm border border-gold-500/30"
                 >
                   {facility}
                 </span>
@@ -238,7 +238,7 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             Back
           </button>
@@ -246,14 +246,14 @@ export default function Step5Facilities({ data, onNext, onBack, onSaveDraft, loa
             type="button"
             onClick={handleSave}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             {loading ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
             {loading ? 'Saving...' : 'Save & Continue'}
           </button>
