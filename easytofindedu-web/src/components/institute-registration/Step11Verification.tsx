@@ -156,30 +156,30 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
   ) => {
     return (
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          {label} {required && <span className="text-red-500">*</span>}
+        <label className="block text-sm font-semibold text-cream-100 mb-2">
+          {label} {required && <span className="text-red-400">*</span>}
         </label>
 
         {preview || file ? (
-          <div className="border border-gray-300 rounded-lg p-4">
+          <div className="border border-night-700 bg-night-900 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {preview ? (
                   <img
                     src={preview}
                     alt={label}
-                    className="w-16 h-16 object-cover rounded border border-gray-300"
+                    className="w-16 h-16 object-cover rounded border border-gold-500/30"
                   />
                 ) : (
-                  <div className="w-16 h-16 bg-gray-100 rounded border border-gray-300 flex items-center justify-center">
-                    <Shield className="text-gray-400" size={24} />
+                  <div className="w-16 h-16 bg-night-800 rounded border border-night-700 flex items-center justify-center">
+                    <Shield className="text-gold-400" size={24} />
                   </div>
                 )}
                 <div>
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-medium text-cream-100">
                     {file?.name || 'Document uploaded'}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-cream-100/50">
                     {file && (file.size / 1024).toFixed(2)} KB
                   </p>
                 </div>
@@ -187,18 +187,18 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
               <button
                 type="button"
                 onClick={() => removeFile(field)}
-                className="text-red-600 hover:text-red-700"
+                className="text-red-400 hover:text-red-300 transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
           </div>
         ) : (
-          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer hover:bg-gray-50">
+          <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-night-700 border-dashed rounded-lg cursor-pointer hover:bg-night-900/50 transition-colors">
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <Upload className="w-8 h-8 mb-2 text-gray-400" />
-              <p className="text-sm text-gray-500">Click to upload {label}</p>
-              <p className="text-xs text-gray-400">Image or PDF up to 10MB</p>
+              <Upload className="w-8 h-8 mb-2 text-gold-400" />
+              <p className="text-sm text-cream-100">Click to upload {label}</p>
+              <p className="text-xs text-cream-100/50">Image or PDF up to 10MB</p>
             </div>
             <input
               type="file"
@@ -208,23 +208,23 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
             />
           </label>
         )}
-        {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+        {errors[field] && <p className="text-red-400 text-sm mt-1">{errors[field]}</p>}
       </div>
     );
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Verification</h2>
-      <p className="text-gray-600 mb-6">Provide verification documents for admin approval</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Verification</h2>
+      <p className="text-cream-100/60 mb-8">Provide verification documents for admin approval</p>
 
       {/* Privacy Notice */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+      <div className="bg-gold-900/20 border border-gold-500/30 rounded-lg p-5 mb-6">
         <div className="flex items-start gap-3">
-          <Shield className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
+          <Shield className="text-gold-400 flex-shrink-0 mt-0.5" size={20} />
           <div>
-            <h4 className="font-semibold text-blue-900 mb-1">Privacy & Security</h4>
-            <p className="text-sm text-blue-800">
+            <h4 className="font-semibold text-gold-400 mb-1">Privacy & Security</h4>
+            <p className="text-sm text-cream-100/70">
               All verification documents are kept <strong>strictly confidential</strong> and are accessible only to authorized admin users.
               These documents will never be publicly visible or shared with third parties.
             </p>
@@ -235,16 +235,16 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Required Information */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Shield size={20} />
+          <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
+            <Shield size={20} className="text-gold-400" />
             Required Information
           </h3>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Owner / Authorized Representative Name <span className="text-red-500">*</span>
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
+                  Owner / Authorized Representative Name <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -252,16 +252,16 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.ownerName}
                   onChange={handleChange}
                   placeholder="Full name as per official documents"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                    errors.ownerName ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all ${
+                    errors.ownerName ? 'border-red-500' : 'border-night-700'
                   }`}
                 />
-                {errors.ownerName && <p className="text-red-500 text-sm mt-1">{errors.ownerName}</p>}
+                {errors.ownerName && <p className="text-red-400 text-sm mt-1">{errors.ownerName}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Designation <span className="text-red-500">*</span>
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
+                  Designation <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -269,11 +269,11 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.designation}
                   onChange={handleChange}
                   placeholder="E.g., Owner, Director, Principal"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-                    errors.designation ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all ${
+                    errors.designation ? 'border-red-500' : 'border-night-700'
                   }`}
                 />
-                {errors.designation && <p className="text-red-500 text-sm mt-1">{errors.designation}</p>}
+                {errors.designation && <p className="text-red-400 text-sm mt-1">{errors.designation}</p>}
               </div>
             </div>
 
@@ -296,18 +296,18 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
         </div>
 
         {/* Optional Information */}
-        <div className="border-t pt-8">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="border-t border-night-700 pt-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-4">
             Optional Information
           </h3>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-cream-100/50 mb-4">
             Providing additional verification details helps build trust and credibility
           </p>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   GST Number
                 </label>
                 <input
@@ -316,12 +316,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.gstNumber}
                   onChange={handleChange}
                   placeholder="Enter GST number"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   PAN Number
                 </label>
                 <input
@@ -330,12 +330,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.panNumber}
                   onChange={handleChange}
                   placeholder="Enter PAN number"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Accreditation
                 </label>
                 <input
@@ -344,12 +344,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.accreditation}
                   onChange={handleChange}
                   placeholder="E.g., NAAC, NBA, ISO"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Affiliation
                 </label>
                 <input
@@ -358,12 +358,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                   value={formData.affiliation}
                   onChange={handleChange}
                   placeholder="E.g., University/Board affiliation"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Certification Authority
                 </label>
                 <input
