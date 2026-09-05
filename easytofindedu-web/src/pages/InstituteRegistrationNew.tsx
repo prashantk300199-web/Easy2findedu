@@ -8,15 +8,18 @@ import Step1InstituteInfo from '../components/institute-registration/Step1Instit
 import Step2Category from '../components/institute-registration/Step2Category';
 import Step3LocationContact from '../components/institute-registration/Step3LocationContact';
 import Step4Courses from '../components/institute-registration/Step4Courses';
-import Step5Facilities from '../components/institute-registration/Step5Facilities';
-import Step6Faculty from '../components/institute-registration/Step6Faculty';
-import Step7FeesScholarships from '../components/institute-registration/Step7FeesScholarships';
-import Step8Admission from '../components/institute-registration/Step8Admission';
-import Step9Career from '../components/institute-registration/Step9Career';
-import Step10Gallery from '../components/institute-registration/Step10Gallery';
-import Step11Verification from '../components/institute-registration/Step11Verification';
+import Step5Batches from '../components/institute-registration/Step5Batches';
+import Step6LearningExperience from '../components/institute-registration/Step6LearningExperience';
+import Step7Facilities from '../components/institute-registration/Step7Facilities';
+import Step8Faculty from '../components/institute-registration/Step8Faculty';
+import Step9FeesScholarships from '../components/institute-registration/Step9FeesScholarships';
+import Step10Admission from '../components/institute-registration/Step10Admission';
+import Step11Career from '../components/institute-registration/Step11Career';
+import Step12Results from '../components/institute-registration/Step12Results';
+import Step13Gallery from '../components/institute-registration/Step13Gallery';
+import Step14Verification from '../components/institute-registration/Step14Verification';
 
-const TOTAL_STEPS = 11;
+const TOTAL_STEPS = 14;
 const AUTO_SAVE_DELAY = 30000; // 30 seconds
 
 export default function InstituteRegistration() {
@@ -33,7 +36,7 @@ export default function InstituteRegistration() {
   const [completionPercentage, setCompletionPercentage] = useState(0);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
-  const autoSaveTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastDataRef = useRef<any>(null);
 
   // Load draft on mount
@@ -94,13 +97,16 @@ export default function InstituteRegistration() {
         if (draft.step2Category) restoredData.step2 = draft.step2Category;
         if (draft.step3LocationContact) restoredData.step3 = draft.step3LocationContact;
         if (draft.step4Courses) restoredData.step4 = draft.step4Courses;
-        if (draft.step5Facilities) restoredData.step5 = draft.step5Facilities;
-        if (draft.step6Faculty) restoredData.step6 = draft.step6Faculty;
-        if (draft.step7Fees) restoredData.step7 = draft.step7Fees;
-        if (draft.step8Admission) restoredData.step8 = draft.step8Admission;
-        if (draft.step9Career) restoredData.step9 = draft.step9Career;
-        if (draft.step10Gallery) restoredData.step10 = draft.step10Gallery;
-        if (draft.step11Verification) restoredData.step11 = draft.step11Verification;
+        if (draft.step5Batches) restoredData.step5 = draft.step5Batches;
+        if (draft.step6LearningExperience) restoredData.step6 = draft.step6LearningExperience;
+        if (draft.step7Facilities) restoredData.step7 = draft.step7Facilities;
+        if (draft.step8Faculty) restoredData.step8 = draft.step8Faculty;
+        if (draft.step9Fees) restoredData.step9 = draft.step9Fees;
+        if (draft.step10Admission) restoredData.step10 = draft.step10Admission;
+        if (draft.step11Career) restoredData.step11 = draft.step11Career;
+        if (draft.step12Results) restoredData.step12 = draft.step12Results;
+        if (draft.step13Gallery) restoredData.step13 = draft.step13Gallery;
+        if (draft.step14Verification) restoredData.step14 = draft.step14Verification;
 
         setFormData(restoredData);
         setCurrentStep(draft.currentStep || 1);
@@ -141,13 +147,16 @@ export default function InstituteRegistration() {
         step2Category: formData.step2 || null,
         step3LocationContact: formData.step3 || null,
         step4Courses: formData.step4 || null,
-        step5Facilities: formData.step5 || null,
-        step6Faculty: formData.step6 || null,
-        step7Fees: formData.step7 || null,
-        step8Admission: formData.step8 || null,
-        step9Career: formData.step9 || null,
-        step10Gallery: formData.step10 || null,
-        step11Verification: formData.step11 || null
+        step5Batches: formData.step5 || null,
+        step6LearningExperience: formData.step6 || null,
+        step7Facilities: formData.step7 || null,
+        step8Faculty: formData.step8 || null,
+        step9Fees: formData.step9 || null,
+        step10Admission: formData.step10 || null,
+        step11Career: formData.step11 || null,
+        step12Results: formData.step12 || null,
+        step13Gallery: formData.step13 || null,
+        step14Verification: formData.step14 || null
       };
 
       const response = await draftService.saveDraft(draftPayload);
@@ -280,18 +289,26 @@ export default function InstituteRegistration() {
       onChange: handleDataChange
     };
 
+    // For Step 5 (Batches), pass coursesData from Step 4
+    if (currentStep === 5) {
+      return <Step5Batches {...stepProps} coursesData={formData.step4} />;
+    }
+
     switch (currentStep) {
       case 1: return <Step1InstituteInfo {...stepProps} />;
       case 2: return <Step2Category {...stepProps} />;
       case 3: return <Step3LocationContact {...stepProps} />;
       case 4: return <Step4Courses {...stepProps} />;
-      case 5: return <Step5Facilities {...stepProps} />;
-      case 6: return <Step6Faculty {...stepProps} />;
-      case 7: return <Step7FeesScholarships {...stepProps} />;
-      case 8: return <Step8Admission {...stepProps} />;
-      case 9: return <Step9Career {...stepProps} />;
-      case 10: return <Step10Gallery {...stepProps} />;
-      case 11: return <Step11Verification {...stepProps} />;
+      case 5: return <Step5Batches {...stepProps} coursesData={formData.step4} />;
+      case 6: return <Step6LearningExperience {...stepProps} />;
+      case 7: return <Step7Facilities {...stepProps} />;
+      case 8: return <Step8Faculty {...stepProps} />;
+      case 9: return <Step9FeesScholarships {...stepProps} />;
+      case 10: return <Step10Admission {...stepProps} />;
+      case 11: return <Step11Career {...stepProps} />;
+      case 12: return <Step12Results {...stepProps} />;
+      case 13: return <Step13Gallery {...stepProps} />;
+      case 14: return <Step14Verification {...stepProps} />;
       default: return null;
     }
   };
