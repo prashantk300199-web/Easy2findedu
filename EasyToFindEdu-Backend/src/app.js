@@ -42,6 +42,7 @@ import collegeCourseRoutes from "./routes/collegeCourse.routes.js";
 import collegeRoutes from "./routes/college.routes.js";
 import walletRoutes from "./routes/wallet.routes.js";
 import scheduleVisitRoutes from "./routes/scheduleVisit.routes.js";
+import instituteDraftRoutes from "./routes/instituteDraft.routes.js";
 
 import ApiResponse from "./utils/ApiResponse.js";
 
@@ -153,6 +154,7 @@ app.use("/api/v1/collegeS", collegeRoutes);
 app.use("/api/v1/careers", careerProgramPublicRoutes);
 app.use("/api/v1/wallet", walletRoutes);
 app.use("/api/v1/schedule-visit", scheduleVisitRoutes);
+app.use("/api/v1/institute", instituteDraftRoutes);
 app.use("/api/v1/admin/careers", careerProgramAdminRoutes);
 app.use("/api/v1/career-guidance", careerGuidancePublicRoutes);
 app.use("/api/v1/career-guidance", careerGuidanceRoutes);
