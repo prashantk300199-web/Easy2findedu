@@ -10,7 +10,8 @@
     "seed": "node src/scripts/seedSuperAdmin.js",
     "seed:career": "node src/scripts/seedCareerGuidanceData.js",
     "seed:career:force": "node src/scripts/seedCareerGuidanceData.js --force",
-    "seed:all": "npm run seed && npm run seed:career"
+    "seed:all": "npm run seed && npm run seed:career",
+    "migrate:phase6": "node src/scripts/migratePhase6InstituteDrafts.js"
   },
   "keywords": [
     "hostel",
