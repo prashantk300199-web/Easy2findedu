@@ -20,7 +20,7 @@ import { JournalPage } from './pages/JournalPage';
 import { LoginPage } from './pages/LoginPage';
 import { OwnerDashboard } from './pages/OwnerDashboard';
 import { AdminDashboard } from './pages/AdminDashboard';
-import InstituteRegistrationNew from './pages/InstituteRegistrationNew';
+import InstituteRegistration from './pages/InstituteRegistration';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WishlistPage } from './components/WishlistButton';
 
@@ -48,8 +48,8 @@ function AnimatedRoutes() {
     return (
       <Routes location={location}>
         <Route path="/dashboard/*" element={<OwnerDashboard />} />
-        <Route path="/institute-dashboard" element={<InstituteRegistrationNew />} />
-        <Route path="/institute-registration" element={<InstituteRegistrationNew />} />
+        <Route path="/institute-dashboard" element={<InstituteRegistration />} />
+        <Route path="/institute-registration" element={<InstituteRegistration />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
       </Routes>
     );
