@@ -36,6 +36,41 @@ const courseSchema = new mongoose.Schema({
   skills: String
 }, { _id: false });
 
+const batchSchema = new mongoose.Schema({
+  id: String,
+  batchName: String,
+  courseId: String,
+  courseName: String,
+  startDate: String,
+  endDate: String,
+  daysOfWeek: [String],
+  classTiming: String,
+  classDuration: String,
+  classesPerWeek: Number,
+  batchSize: Number,
+  seatsAvailable: Number,
+  scheduleType: String, // Weekday/Weekend
+  timeSlot: String, // Morning/Afternoon/Evening
+  mode: String, // Online/Offline/Hybrid
+  trialAvailable: Boolean,
+  status: String // Upcoming/Ongoing/Full/Closed
+}, { _id: false });
+
+const resultSchema = new mongoose.Schema({
+  id: String,
+  exam: String,
+  year: String,
+  studentsAppeared: Number,
+  qualified: Number,
+  selected: Number,
+  highestRank: String,
+  topScores: String,
+  selectionPercentage: Number,
+  airStateRank: String,
+  supportingDocFile: String,
+  supportingDocPreview: String
+}, { _id: false });
+
 const instituteDraftSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -55,7 +90,7 @@ const instituteDraftSchema = new mongoose.Schema({
     type: Number,
     default: 1,
     min: 1,
-    max: 11
+    max: 15
   },
 
   completionPercentage: {
@@ -115,14 +150,45 @@ const instituteDraftSchema = new mongoose.Schema({
     courses: [courseSchema]
   },
 
-  // Step 5: Facilities
-  step5Facilities: {
+  // Step 5: Batches & Schedule
+  step5Batches: {
+    batches: [batchSchema]
+  },
+
+  // Step 6: Learning Experience
+  step6LearningExperience: {
+    liveClasses: Boolean,
+    recordedClasses: Boolean,
+    practicalTraining: Boolean,
+    liveProjects: Boolean,
+    assignments: Boolean,
+    tests: Boolean,
+    mockTests: Boolean,
+    doubtSessions: Boolean,
+    personalMentorship: Boolean,
+    oneToOneClasses: Boolean,
+    studyMaterial: Boolean,
+    workshops: Boolean,
+    events: Boolean,
+    competitions: Boolean,
+    performanceOpportunities: Boolean,
+    communityAccess: Boolean,
+    learningPlatform: Boolean,
+    mobileApp: Boolean,
+    webPortal: Boolean,
+    onlineTests: Boolean,
+    whatsappSupport: Boolean,
+    technicalSupport: Boolean
+  },
+
+  // Step 7: Facilities
+  step7Facilities: {
     facilities: [String],
     otherFacilities: String
   },
 
-  // Step 6: Faculty/Trainers
-  step6Faculty: {
+  // Step 8: Faculty/Trainers
+  step8Faculty: {
     totalFaculty: Number,
     trainerStudentRatio: String,
     teachingMethod: [String],
@@ -132,8 +198,8 @@ const instituteDraftSchema = new mongoose.Schema({
     trainers: [trainerSchema]
   },
 
-  // Step 7: Fees & Scholarships
-  step7Fees: {
+  // Step 9: Fees & Scholarships
+  step9Fees: {
     registrationFee: String,
     admissionFee: String,
     courseFee: String,
@@ -154,8 +220,8 @@ const instituteDraftSchema = new mongoose.Schema({
     cancellationPolicy: String
   },
 
-  // Step 8: Admission/Enrollment
-  step8Admission: {
+  // Step 10: Admission/Enrollment
+  step10Admission: {
     admissionType: String,
     admissionProcess: String,
     admissionStartDate: String,
@@ -171,9 +237,20 @@ const instituteDraftSchema = new mongoose.Schema({
     demoAvailable: Boolean
   },
 
-  // Step 9: Career/Outcomes
-  step9Career: {
-    careerServices: [String],
+  // Step 11: Career & Outcomes
+  step11Career: {
+    placementAssistance: Boolean,
+    jobAssistance: Boolean,
+    internshipAssistance: Boolean,
+    freelancingSupport: Boolean,
+    businessSupport: Boolean,
+    careerCounselling: Boolean,
+    industryConnections: Boolean,
+    portfolioDevelopment: Boolean,
+    certification: Boolean,
+    performanceOpportunities: Boolean,
+    competitionOpportunities: Boolean,
+    furtherEducationGuidance: Boolean,
     topRecruiters: String,
     industryPartners: String,
     averagePackage: String,
@@ -182,8 +259,19 @@ const instituteDraftSchema = new mongoose.Schema({
     careerOutcomes: String
   },
 
-  // Step 10: Gallery & Online Presence
-  step10Gallery: {
+  // Step 12: Results & Achievements
+  step12Results: {
+    results: [resultSchema],
+    awards: String,
+    competitionWins: String,
+    studentAchievements: String,
+    successStories: String,
+    certifications: String,
+    careerOutcomes: String
+  },
+
+  // Step 13: Gallery & Online Presence
+  step13Gallery: {
     galleryFiles: [String],
     galleryPreviews: [String],
     videoUrl: String,
@@ -194,8 +282,8 @@ const instituteDraftSchema = new mongoose.Schema({
     youtube: String
   },
 
-  // Step 11: Verification
-  step11Verification: {
+  // Step 14: Verification
+  step14Verification: {
     ownerName: String,
     designation: String,
     idProofFile: String,
@@ -232,20 +320,23 @@ instituteDraftSchema.methods.updateLastSaved = function() {
 // Method to calculate completion percentage
 instituteDraftSchema.methods.calculateCompletion = function() {
   let completedSteps = 0;
-  const totalSteps = 11;
+  const totalSteps = 14;
 
   // Check each step for completion
   if (this.step1InstituteInfo?.instituteName) completedSteps++;
   if (this.step2Category?.primaryCategory) completedSteps++;
   if (this.step3LocationContact?.fullAddress) completedSteps++;
   if (this.step4Courses?.courses?.length > 0) completedSteps++;
-  if (this.step5Facilities?.facilities?.length > 0) completedSteps++;
-  if (this.step6Faculty?.totalFaculty) completedSteps++;
-  if (this.step7Fees?.totalPayableAmount || this.step7Fees?.courseFee) completedSteps++;
-  if (this.step8Admission?.admissionType) completedSteps++;
-  if (this.step9Career?.careerServices?.length > 0) completedSteps++;
-  if (this.step10Gallery?.galleryPreviews?.length > 0 || this.step10Gallery?.website) completedSteps++;
-  if (this.step11Verification?.ownerName && this.step11Verification?.idProofPreview) completedSteps++;
+  if (this.step5Batches?.batches?.length > 0) completedSteps++;
+  if (this.step6LearningExperience) completedSteps++;
+  if (this.step7Facilities?.facilities?.length > 0) completedSteps++;
+  if (this.step8Faculty?.totalFaculty) completedSteps++;
+  if (this.step9Fees?.totalPayableAmount || this.step9Fees?.courseFee) completedSteps++;
+  if (this.step10Admission?.admissionType) completedSteps++;
+  if (this.step11Career) completedSteps++;
+  if (this.step12Results) completedSteps++;
+  if (this.step13Gallery?.galleryPreviews?.length > 0 || this.step13Gallery?.website) completedSteps++;
+  if (this.step14Verification?.ownerName && this.step14Verification?.idProofPreview) completedSteps++;
 
   this.completionPercentage = Math.round((completedSteps / totalSteps) * 100);
   return this.completionPercentage;

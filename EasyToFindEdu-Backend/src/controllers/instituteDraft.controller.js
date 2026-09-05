@@ -46,13 +46,16 @@ export const saveDraft = async (req, res) => {
       step2Category,
       step3LocationContact,
       step4Courses,
-      step5Facilities,
-      step6Faculty,
-      step7Fees,
-      step8Admission,
-      step9Career,
-      step10Gallery,
-      step11Verification
+      step5Batches,
+      step6LearningExperience,
+      step7Facilities,
+      step8Faculty,
+      step9Fees,
+      step10Admission,
+      step11Career,
+      step12Results,
+      step13Gallery,
+      step14Verification
     } = req.body;
 
     let draft = await InstituteDraft.findOne({
@@ -70,13 +73,16 @@ export const saveDraft = async (req, res) => {
     if (step2Category) draft.step2Category = { ...draft.step2Category, ...step2Category };
     if (step3LocationContact) draft.step3LocationContact = { ...draft.step3LocationContact, ...step3LocationContact };
     if (step4Courses) draft.step4Courses = { ...draft.step4Courses, ...step4Courses };
-    if (step5Facilities) draft.step5Facilities = { ...draft.step5Facilities, ...step5Facilities };
-    if (step6Faculty) draft.step6Faculty = { ...draft.step6Faculty, ...step6Faculty };
-    if (step7Fees) draft.step7Fees = { ...draft.step7Fees, ...step7Fees };
-    if (step8Admission) draft.step8Admission = { ...draft.step8Admission, ...step8Admission };
-    if (step9Career) draft.step9Career = { ...draft.step9Career, ...step9Career };
-    if (step10Gallery) draft.step10Gallery = { ...draft.step10Gallery, ...step10Gallery };
-    if (step11Verification) draft.step11Verification = { ...draft.step11Verification, ...step11Verification };
+    if (step5Batches) draft.step5Batches = { ...draft.step5Batches, ...step5Batches };
+    if (step6LearningExperience) draft.step6LearningExperience = { ...draft.step6LearningExperience, ...step6LearningExperience };
+    if (step7Facilities) draft.step7Facilities = { ...draft.step7Facilities, ...step7Facilities };
+    if (step8Faculty) draft.step8Faculty = { ...draft.step8Faculty, ...step8Faculty };
+    if (step9Fees) draft.step9Fees = { ...draft.step9Fees, ...step9Fees };
+    if (step10Admission) draft.step10Admission = { ...draft.step10Admission, ...step10Admission };
+    if (step11Career) draft.step11Career = { ...draft.step11Career, ...step11Career };
+    if (step12Results) draft.step12Results = { ...draft.step12Results, ...step12Results };
+    if (step13Gallery) draft.step13Gallery = { ...draft.step13Gallery, ...step13Gallery };
+    if (step14Verification) draft.step14Verification = { ...draft.step14Verification, ...step14Verification };
 
     // Calculate completion percentage
     draft.calculateCompletion();
