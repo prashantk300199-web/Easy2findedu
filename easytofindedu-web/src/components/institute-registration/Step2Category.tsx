@@ -192,15 +192,15 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Category</h2>
-      <p className="text-gray-600 mb-6">Select the category that best describes your institute</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Category</h2>
+      <p className="text-cream-100/60 mb-8">Select the category that best describes your institute</p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Primary Category */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Primary Category <span className="text-red-500">*</span>
+          <label className="block text-sm font-semibold text-cream-100 mb-4">
+            Primary Category <span className="text-red-400">*</span>
           </label>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -213,36 +213,36 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
                   key={category.primary}
                   type="button"
                   onClick={() => handleCategorySelect(category.primary)}
-                  className={`p-4 border-2 rounded-lg text-left transition-all ${
+                  className={`p-5 border-2 rounded-lg text-left transition-all ${
                     isSelected
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-gold-500 bg-gold-900/20 shadow-goldGlow'
+                      : 'border-night-700 bg-night-900 hover:border-gold-500/30 hover:bg-night-850'
                   }`}
                 >
-                  <div className={`w-12 h-12 rounded-lg ${category.color} flex items-center justify-center mb-3`}>
-                    <Icon size={24} />
+                  <div className={`w-12 h-12 rounded-lg bg-gold-500/20 flex items-center justify-center mb-3`}>
+                    <Icon size={24} className="text-gold-400" />
                   </div>
-                  <h3 className="font-semibold text-sm text-gray-900">{category.primary}</h3>
+                  <h3 className="font-semibold text-sm text-cream-100">{category.primary}</h3>
                 </button>
               );
             })}
           </div>
 
           {errors.primaryCategory && (
-            <p className="text-red-500 text-sm mt-2">{errors.primaryCategory}</p>
+            <p className="text-red-400 text-sm mt-2">{errors.primaryCategory}</p>
           )}
         </div>
 
         {/* Subcategory - Only show if primary is selected */}
         {selectedCategory && (
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-cream-100 mb-2">
               Subcategory (Optional)
             </label>
             <select
               value={formData.subcategory}
               onChange={handleSubcategoryChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
             >
               <option value="">Select Subcategory</option>
               {selectedCategory.subcategories.map((sub) => (
@@ -251,7 +251,7 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
                 </option>
               ))}
             </select>
-            <p className="text-gray-500 text-sm mt-1">
+            <p className="text-cream-100/50 text-sm mt-2">
               Help students find you more easily by selecting a specific subcategory
             </p>
           </div>
@@ -259,14 +259,14 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
 
         {/* Examples Section */}
         {selectedCategory && (
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <h4 className="font-semibold text-gray-900 mb-2">Examples for {selectedCategory.primary}:</h4>
-            <ul className="text-sm text-gray-600 space-y-1">
+          <div className="bg-night-900/50 border border-gold-500/20 rounded-lg p-5">
+            <h4 className="font-semibold text-gold-400 mb-3">Examples for {selectedCategory.primary}:</h4>
+            <ul className="text-sm text-cream-100/70 space-y-1.5">
               {selectedCategory.subcategories.slice(0, 4).map((sub) => (
                 <li key={sub}>• {sub}</li>
               ))}
               {selectedCategory.subcategories.length > 4 && (
-                <li>• And more...</li>
+                <li className="text-cream-100/50">• And more...</li>
               )}
             </ul>
           </div>
@@ -278,7 +278,7 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             Back
           </button>
@@ -286,14 +286,14 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
             type="button"
             onClick={handleSave}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             {loading ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
             {loading ? 'Saving...' : 'Save & Continue'}
           </button>
