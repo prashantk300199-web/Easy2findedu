@@ -1,5 +1,5 @@
 import InstituteDraft from '../models/InstituteDraft.js';
-import { uploadToCloudinary } from '../utils/cloudinary.js';
+import { uploadOnCloudinary } from '../config/cloudinary.js';
 
 // Get draft for logged-in owner
 export const getDraft = async (req, res) => {
@@ -125,7 +125,7 @@ export const uploadDraftFile = async (req, res) => {
     }
 
     // Upload to Cloudinary
-    const result = await uploadToCloudinary(req.file.buffer, {
+    const result = await uploadOnCloudinary(req.file, {
       folder: `institute-drafts/${ownerId}`,
       resource_type: 'auto'
     });

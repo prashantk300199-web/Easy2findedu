@@ -3,6 +3,7 @@ services:
     name: vidya-marg-api
     runtime: node
     plan: free
+    rootDir: EasyToFindEdu-Backend
     buildCommand: npm install
     startCommand: npm start
     envVars:

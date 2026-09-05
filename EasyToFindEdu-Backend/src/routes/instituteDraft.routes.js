@@ -7,13 +7,13 @@ import {
   deleteDraft,
   getDraftStatus
 } from '../controllers/instituteDraft.controller.js';
-import { authenticateToken } from '../middlewares/auth.middleware.js';
-import { upload } from '../middlewares/upload.middleware.js';
+import { authenticateInstituteOwner } from '../middlewares/auth.js';
+import { upload } from '../middlewares/upload.js';
 
 const router = express.Router();
 
 // All routes require authentication
-router.use(authenticateToken);
+router.use(authenticateInstituteOwner);
 
 // Get draft for logged-in owner
 router.get('/draft', getDraft);
