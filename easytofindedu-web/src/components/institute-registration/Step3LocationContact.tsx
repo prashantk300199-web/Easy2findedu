@@ -174,22 +174,22 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
   };
 
   return (
-    <div className="bg-white p-8 rounded-lg shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">Location & Contact</h2>
-      <p className="text-gray-600 mb-6">Provide your institute's contact information and location</p>
+    <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
+      <h2 className="font-display text-3xl text-cream-100 mb-2">Location & Contact</h2>
+      <p className="text-cream-100/60 mb-8">Provide your institute's contact information and location</p>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-8">
         {/* Contact Information */}
-        <div className="border-b pb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Phone size={20} />
+        <div className="border-b border-night-700 pb-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-6 flex items-center gap-2">
+            <Phone size={20} className="text-gold-400" />
             Contact Information
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Official Phone <span className="text-red-500">*</span>
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
+                Official Phone <span className="text-red-400">*</span>
               </label>
               <input
                 type="tel"
@@ -198,16 +198,16 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                 onChange={handleChange}
                 placeholder="10-digit mobile number"
                 maxLength={10}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.phone ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                  errors.phone ? 'border-red-500' : 'border-night-700'
                 }`}
               />
-              {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
+              {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Official Email <span className="text-red-500">*</span>
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
+                Official Email <span className="text-red-400">*</span>
               </label>
               <input
                 type="email"
@@ -215,26 +215,26 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="contact@institute.com"
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                  errors.email ? 'border-red-500' : 'border-night-700'
                 }`}
               />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+              {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
             </div>
           </div>
         </div>
 
         {/* Address */}
-        <div className="border-b pb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Mail size={20} />
+        <div className="border-b border-night-700 pb-8">
+          <h3 className="text-xl font-semibold text-cream-100 mb-6 flex items-center gap-2">
+            <MapPin size={20} className="text-gold-400" />
             Address Details
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Complete Address <span className="text-red-500">*</span>
+              <label className="block text-sm font-semibold text-cream-100 mb-2">
+                Complete Address <span className="text-red-400">*</span>
               </label>
               <textarea
                 name="address"
@@ -242,16 +242,16 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                 onChange={handleChange}
                 rows={3}
                 placeholder="Building number, street name, etc."
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.address ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                  errors.address ? 'border-red-500' : 'border-night-700'
                 }`}
               />
-              {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+              {errors.address && <p className="text-red-400 text-sm mt-1">{errors.address}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Area / Locality
                 </label>
                 <input
@@ -260,12 +260,12 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.area}
                   onChange={handleChange}
                   placeholder="E.g., Boring Road"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Landmark
                 </label>
                 <input
@@ -274,15 +274,15 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.landmark}
                   onChange={handleChange}
                   placeholder="Near famous location"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  City <span className="text-red-500">*</span>
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
+                  City <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -290,15 +290,15 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.city}
                   onChange={handleChange}
                   placeholder="E.g., Patna"
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.city ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                    errors.city ? 'border-red-500' : 'border-night-700'
                   }`}
                 />
-                {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
+                {errors.city && <p className="text-red-400 text-sm mt-1">{errors.city}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   District
                 </label>
                 <input
@@ -307,34 +307,34 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.district}
                   onChange={handleChange}
                   placeholder="E.g., Patna"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  State <span className="text-red-500">*</span>
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
+                  State <span className="text-red-400">*</span>
                 </label>
                 <select
                   name="state"
                   value={formData.state}
                   onChange={handleChange}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.state ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                    errors.state ? 'border-red-500' : 'border-night-700'
                   }`}
                 >
                   {STATES.map(state => (
                     <option key={state} value={state}>{state}</option>
                   ))}
                 </select>
-                {errors.state && <p className="text-red-500 text-sm mt-1">{errors.state}</p>}
+                {errors.state && <p className="text-red-400 text-sm mt-1">{errors.state}</p>}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  PIN Code <span className="text-red-500">*</span>
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
+                  PIN Code <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="text"
@@ -343,11 +343,11 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   onChange={handleChange}
                   placeholder="6-digit PIN code"
                   maxLength={6}
-                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.pinCode ? 'border-red-500' : 'border-gray-300'
+                  className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
+                    errors.pinCode ? 'border-red-500' : 'border-night-700'
                   }`}
                 />
-                {errors.pinCode && <p className="text-red-500 text-sm mt-1">{errors.pinCode}</p>}
+                {errors.pinCode && <p className="text-red-400 text-sm mt-1">{errors.pinCode}</p>}
               </div>
             </div>
           </div>
@@ -355,15 +355,15 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
 
         {/* Google Maps Location */}
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <MapPin size={20} />
-            Google Maps Location <span className="text-red-500">*</span>
+          <h3 className="text-xl font-semibold text-cream-100 mb-6 flex items-center gap-2">
+            <MapPin size={20} className="text-gold-400" />
+            Google Maps Location <span className="text-red-400">*</span>
           </h3>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Latitude
                 </label>
                 <input
@@ -373,12 +373,12 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.latitude}
                   onChange={handleChange}
                   placeholder="E.g., 25.5941"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-cream-100 mb-2">
                   Longitude
                 </label>
                 <input
@@ -388,7 +388,7 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                   value={formData.longitude}
                   onChange={handleChange}
                   placeholder="E.g., 85.1376"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
                 />
               </div>
             </div>
@@ -396,15 +396,15 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
             <button
               type="button"
               onClick={handleGetLocation}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 flex items-center gap-2"
+              className="px-5 py-3 bg-green-600 text-white rounded-lg hover:bg-green-500 flex items-center gap-2 font-semibold transition-all shadow-lg"
             >
               <MapPin size={18} />
               Get Current Location
             </button>
 
-            {errors.location && <p className="text-red-500 text-sm">{errors.location}</p>}
+            {errors.location && <p className="text-red-400 text-sm">{errors.location}</p>}
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-cream-100/50">
               Click the button above to automatically detect your location, or enter coordinates manually.
             </p>
           </div>
@@ -416,7 +416,7 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
             type="button"
             onClick={onBack}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             Back
           </button>
@@ -424,14 +424,14 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
             type="button"
             onClick={handleSave}
             disabled={loading}
-            className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
+            className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
             {loading ? 'Saving...' : 'Save Draft'}
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
             {loading ? 'Saving...' : 'Save & Continue'}
           </button>
