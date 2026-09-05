@@ -6,15 +6,15 @@ import Step1InstituteInfo from '../components/institute-registration/Step1Instit
 import Step2Category from '../components/institute-registration/Step2Category';
 import Step3LocationContact from '../components/institute-registration/Step3LocationContact';
 import Step4Courses from '../components/institute-registration/Step4Courses';
-import Step5Facilities from '../components/institute-registration/Step5Facilities';
-import Step6Faculty from '../components/institute-registration/Step6Faculty';
-import Step7FeesScholarships from '../components/institute-registration/Step7FeesScholarships';
-import Step8Admission from '../components/institute-registration/Step8Admission';
-import Step9Career from '../components/institute-registration/Step9Career';
-import Step10Gallery from '../components/institute-registration/Step10Gallery';
-import Step11Verification from '../components/institute-registration/Step11Verification';
+import Step7Facilities from '../components/institute-registration/Step7Facilities';
+import Step8Faculty from '../components/institute-registration/Step8Faculty';
+import Step9FeesScholarships from '../components/institute-registration/Step9FeesScholarships';
+import Step10Admission from '../components/institute-registration/Step10Admission';
+import Step11Career from '../components/institute-registration/Step11Career';
+import Step13Gallery from '../components/institute-registration/Step13Gallery';
+import Step14Verification from '../components/institute-registration/Step14Verification';
 
-const TOTAL_STEPS = 12;
+const TOTAL_STEPS = 14;
 
 interface DraftData {
   step1?: any;
@@ -29,6 +29,8 @@ interface DraftData {
   step10?: any;
   step11?: any;
   step12?: any;
+  step13?: any;
+  step14?: any;
   lastSaved?: string;
 }
 
@@ -269,25 +271,47 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 5 && (
-            <Step5Facilities
-              data={formData.step5}
-              onNext={handleNext}
-              onBack={handleBack}
-              onSaveDraft={handleSaveDraft}
-              loading={saving}
-            />
+            <div className="bg-white p-8 rounded-lg shadow text-center">
+              <h3 className="text-xl font-semibold mb-4">Step 5 - Batches & Schedule</h3>
+              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => handleNext({})}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
           )}
           {currentStep === 6 && (
-            <Step6Faculty
-              data={formData.step6}
-              onNext={handleNext}
-              onBack={handleBack}
-              onSaveDraft={handleSaveDraft}
-              loading={saving}
-            />
+            <div className="bg-white p-8 rounded-lg shadow text-center">
+              <h3 className="text-xl font-semibold mb-4">Step 6 - Learning Experience</h3>
+              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => handleNext({})}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
           )}
           {currentStep === 7 && (
-            <Step7FeesScholarships
+            <Step7Facilities
               data={formData.step7}
               onNext={handleNext}
               onBack={handleBack}
@@ -296,7 +320,7 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 8 && (
-            <Step8Admission
+            <Step8Faculty
               data={formData.step8}
               onNext={handleNext}
               onBack={handleBack}
@@ -305,7 +329,7 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 9 && (
-            <Step9Career
+            <Step9FeesScholarships
               data={formData.step9}
               onNext={handleNext}
               onBack={handleBack}
@@ -314,7 +338,7 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 10 && (
-            <Step10Gallery
+            <Step10Admission
               data={formData.step10}
               onNext={handleNext}
               onBack={handleBack}
@@ -323,15 +347,54 @@ export default function InstituteRegistration() {
             />
           )}
           {currentStep === 11 && (
-            <Step11Verification
+            <Step11Career
               data={formData.step11}
+              onChange={(data) => setFormData({ ...formData, step11: data })}
               onNext={handleNext}
               onBack={handleBack}
               onSaveDraft={handleSaveDraft}
               loading={saving}
             />
           )}
-          {currentStep > 11 && (
+          {currentStep === 12 && (
+            <div className="bg-white p-8 rounded-lg shadow text-center">
+              <h3 className="text-xl font-semibold mb-4">Step 12 - Results & Achievements</h3>
+              <p className="text-gray-600 mb-6">This step is available in the new registration flow.</p>
+              <div className="flex gap-4 justify-center">
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => handleNext({})}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          )}
+          {currentStep === 13 && (
+            <Step13Gallery
+              data={formData.step13}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep === 14 && (
+            <Step14Verification
+              data={formData.step14}
+              onNext={handleNext}
+              onBack={handleBack}
+              onSaveDraft={handleSaveDraft}
+              loading={saving}
+            />
+          )}
+          {currentStep > 14 && (
             <div className="bg-white p-8 rounded-lg shadow text-center">
               <h3 className="text-xl font-semibold mb-4">Step {currentStep} - Coming Soon</h3>
               <p className="text-gray-600 mb-6">This step is under development.</p>
