@@ -30,13 +30,12 @@ const OWNERSHIP_TYPES = [
 
 export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading }: Step1Props) {
   const [formData, setFormData] = useState({
-    name: data?.name || '',
+    instituteName: data?.instituteName || '',
     instituteType: data?.instituteType || '',
-    description: data?.description || '',
-    detailedAbout: data?.detailedAbout || '',
+    about: data?.about || '',
     establishedYear: data?.establishedYear || '',
     ownershipType: data?.ownershipType || '',
-    numberOfBranches: data?.numberOfBranches || 1,
+    totalBranches: data?.totalBranches || 1,
     logoFile: data?.logoFile || '',
     coverImageFile: data?.coverImageFile || '',
     logoPreview: data?.logoPreview || '',
@@ -166,18 +165,18 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
   const validate = () => {
     const newErrors: any = {};
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Institute name is required';
+    if (!formData.instituteName.trim()) {
+      newErrors.instituteName = 'Institute name is required';
     }
 
     if (!formData.instituteType) {
       newErrors.instituteType = 'Institute type is required';
     }
 
-    if (!formData.description.trim()) {
-      newErrors.description = 'Short description is required';
-    } else if (formData.description.length > 200) {
-      newErrors.description = 'Description must be 200 characters or less';
+    if (!formData.about.trim()) {
+      newErrors.about = 'Short description is required';
+    } else if (formData.about.length > 200) {
+      newErrors.about = 'Description must be 200 characters or less';
     }
 
     if (!formData.logoPreview && !formData.logoFile) {
@@ -212,15 +211,15 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
           </label>
           <input
             type="text"
-            name="name"
-            value={formData.name}
+            name="instituteName"
+            value={formData.instituteName}
             onChange={handleChange}
             placeholder="E.g., Brilliant Academy, Tech Training Center"
             className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
-              errors.name ? 'border-red-500' : 'border-night-700'
+              errors.instituteName ? 'border-red-500' : 'border-night-700'
             }`}
           />
-          {errors.name && <p className="text-red-400 text-sm mt-1">{errors.name}</p>}
+          {errors.instituteName && <p className="text-red-400 text-sm mt-1">{errors.instituteName}</p>}
         </div>
 
         {/* Institute Type */}
@@ -250,35 +249,20 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
             Short Description <span className="text-red-400">*</span>
           </label>
           <textarea
-            name="description"
-            value={formData.description}
+            name="about"
+            value={formData.about}
             onChange={handleChange}
             rows={3}
             maxLength={200}
             placeholder="Brief description of your institute (max 200 characters)"
             className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
-              errors.description ? 'border-red-500' : 'border-night-700'
+              errors.about ? 'border-red-500' : 'border-night-700'
             }`}
           />
           <div className="flex justify-between items-center mt-1">
-            {errors.description && <p className="text-red-400 text-sm">{errors.description}</p>}
-            <p className="text-cream-100/50 text-sm ml-auto">{formData.description.length}/200</p>
+            {errors.about && <p className="text-red-400 text-sm">{errors.about}</p>}
+            <p className="text-cream-100/50 text-sm ml-auto">{formData.about.length}/200</p>
           </div>
-        </div>
-
-        {/* Detailed About */}
-        <div>
-          <label className="block text-sm font-semibold text-cream-100 mb-2">
-            Detailed About
-          </label>
-          <textarea
-            name="detailedAbout"
-            value={formData.detailedAbout}
-            onChange={handleChange}
-            rows={5}
-            placeholder="Provide detailed information about your institute..."
-            className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all"
-          />
         </div>
 
         {/* Established Year */}
@@ -323,8 +307,8 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
           </label>
           <input
             type="number"
-            name="numberOfBranches"
-            value={formData.numberOfBranches}
+            name="totalBranches"
+            value={formData.totalBranches}
             onChange={handleChange}
             min="1"
             placeholder="Enter number of branches"
