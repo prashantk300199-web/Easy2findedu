@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Shield, Upload, X, AlertTriangle } from 'lucide-react';
 
 interface Step11Props {
@@ -30,6 +30,36 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
 
   const [errors, setErrors] = useState<any>({});
   const [uploading, setUploading] = useState<string>('');
+  const uploadInProgressRef = useRef<boolean>(false);
+
+  // Sync with parent data prop, but preserve uploaded files during upload
+  useEffect(() => {
+    // Don't overwrite state during active upload
+    if (uploadInProgressRef.current) {
+      return;
+    }
+
+    // Only update if data prop has changed and has actual values
+    if (data) {
+      setFormData(prev => ({
+        ownerName: data.ownerName || prev.ownerName,
+        designation: data.designation || prev.designation,
+        idProofFile: data.idProofFile || prev.idProofFile,
+        idProofPreview: data.idProofPreview || prev.idProofPreview,
+        registrationDocFile: data.registrationDocFile || prev.registrationDocFile,
+        registrationDocPreview: data.registrationDocPreview || prev.registrationDocPreview,
+        gstNumber: data.gstNumber || prev.gstNumber,
+        panNumber: data.panNumber || prev.panNumber,
+        accreditation: data.accreditation || prev.accreditation,
+        affiliation: data.affiliation || prev.affiliation,
+        certificationAuthority: data.certificationAuthority || prev.certificationAuthority,
+        governmentRecognition: data.governmentRecognition || prev.governmentRecognition,
+        licenseNumber: data.licenseNumber || prev.licenseNumber,
+        addressProofFile: data.addressProofFile || prev.addressProofFile,
+        addressProofPreview: data.addressProofPreview || prev.addressProofPreview
+      }));
+    }
+  }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -96,6 +126,8 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
   const uploadDocument = async (file: File, field: string) => {
     try {
       setUploading(field);
+      uploadInProgressRef.current = true;
+
       const token = localStorage.getItem('etf_token');
       const formDataUpload = new FormData();
       formDataUpload.append('file', file);
@@ -124,7 +156,9 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       const result = await response.json();
       const uploadedUrl = result.data?.url || result.url || '';
 
-      // Store the URL
+      console.log('Upload successful:', { field, fieldName, uploadedUrl });
+
+      // Store the URL - this is the critical state update
       if (field === 'idProof') {
         setFormData(prev => ({
           ...prev,
@@ -152,6 +186,10 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       }));
     } finally {
       setUploading('');
+      // Small delay before allowing data prop sync again
+      setTimeout(() => {
+        uploadInProgressRef.current = false;
+      }, 1000);
     }
   };
 
