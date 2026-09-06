@@ -299,7 +299,36 @@ const instituteDraftSchema = new mongoose.Schema({
     licenseNumber: String,
     addressProofFile: String,
     addressProofPreview: String
-  }
+  },
+
+  // Verification Workflow Fields
+  verificationStatus: {
+    type: String,
+    enum: ['draft', 'submitted', 'under_review', 'changes_requested', 'verified', 'rejected', 'suspended'],
+    default: 'draft'
+  },
+  verifiedAt: Date,
+  verifiedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin'
+  },
+  adminFeedback: String,
+  rejectionReason: String,
+  suspensionReason: String,
+  verificationHistory: [{
+    action: String,
+    status: String,
+    admin: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Admin'
+    },
+    adminName: String,
+    reason: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 
 }, {
   timestamps: true,
