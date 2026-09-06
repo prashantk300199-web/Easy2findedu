@@ -48,3 +48,13 @@ export const INSTITUTE_OWNER_STATUS = {
   VERIFIED: "verified",
   BLOCKED: "blocked"
 };
+
+export const INSTITUTE_VERIFICATION_STATUS = {
+  DRAFT: "draft",
+  SUBMITTED: "submitted",
+  UNDER_REVIEW: "under_review",
+  CHANGES_REQUESTED: "changes_requested",
+  VERIFIED: "verified",
+  REJECTED: "rejected",
+  SUSPENDED: "suspended"
+};

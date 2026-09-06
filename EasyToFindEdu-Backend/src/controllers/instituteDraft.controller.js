@@ -177,15 +177,30 @@ export const submitDraft = async (req, res) => {
   try {
     const ownerId = req.owner._id;
 
+    // Find draft that can be submitted (draft or changes_requested)
     const draft = await InstituteDraft.findOne({
-      owner: ownerId,
-      status: 'draft'
+      ownerId: ownerId,
+      $or: [
+        { status: 'draft' },
+        { verificationStatus: 'draft' },
+        { verificationStatus: 'changes_requested' }
+      ]
     });
 
     if (!draft) {
       return res.status(404).json({
         success: false,
         message: 'No draft found to submit'
+      });
+    }
+
+    // Check if already submitted or under review
+    if (draft.verificationStatus === 'submitted' ||
+        draft.verificationStatus === 'under_review' ||
+        draft.verificationStatus === 'verified') {
+      return res.status(400).json({
+        success: false,
+        message: 'Application has already been submitted or is under review'
       });
     }
 
@@ -206,9 +221,27 @@ export const submitDraft = async (req, res) => {
 
     // Update status to submitted
     draft.status = 'submitted';
+    draft.verificationStatus = 'submitted';
+    draft.submittedAt = new Date();
     draft.currentStep = 14;
     draft.completionPercentage = 100;
     draft.lastSavedAt = new Date();
+
+    // Clear admin feedback on resubmission
+    if (draft.adminFeedback) {
+      draft.adminFeedback = '';
+    }
+
+    // Add to verification history
+    if (!draft.verificationHistory) {
+      draft.verificationHistory = [];
+    }
+
+    draft.verificationHistory.push({
+      action: 'submitted',
+      status: 'submitted',
+      timestamp: new Date()
+    });
 
     await draft.save();
 
