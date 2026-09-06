@@ -88,10 +88,30 @@ export default function InstituteRegistration() {
       });
 
       if (res.ok) {
-        const data = await res.json();
-        if (data.data) {
-          setFormData(data.data.draftData || {});
-          setCurrentStep(data.data.currentStep || 1);
+        const response = await res.json();
+        if (response.data) {
+          const draft = response.data;
+
+          // Map backend field names to frontend step structure
+          const mappedData: DraftData = {
+            step1: draft.step1InstituteInfo || {},
+            step2: draft.step2Category || {},
+            step3: draft.step3LocationContact || {},
+            step4: draft.step4Courses || {},
+            step5: draft.step5Batches || {},
+            step6: draft.step6LearningExperience || {},
+            step7: draft.step7Facilities || {},
+            step8: draft.step8Faculty || {},
+            step9: draft.step9Fees || {},
+            step10: draft.step10Admission || {},
+            step11: draft.step11Career || {},
+            step12: draft.step12Results || {},
+            step13: draft.step13Gallery || {},
+            step14: draft.step14Verification || {}
+          };
+
+          setFormData(mappedData);
+          setCurrentStep(draft.currentStep || 1);
         }
       }
     } catch (err) {
