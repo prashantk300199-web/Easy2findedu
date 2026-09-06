@@ -11,7 +11,7 @@ interface Trainer {
   certifications: string;
   achievements: string;
   bio: string;
-  photoFile: File | null;
+  photoFile: string;
   photoPreview: string;
 }
 
@@ -32,7 +32,7 @@ const emptyTrainer: Omit<Trainer, 'id'> = {
   certifications: '',
   achievements: '',
   bio: '',
-  photoFile: null,
+  photoFile: '',
   photoPreview: ''
 };
 
@@ -94,7 +94,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -110,20 +110,60 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
       const previewUrl = URL.createObjectURL(file);
       setCurrentTrainer(prev => ({
         ...prev,
-        photoFile: file,
         photoPreview: previewUrl
       }));
 
       if (errors.photo) {
         setErrors((prev: any) => ({ ...prev, photo: '' }));
       }
+
+      // Upload file immediately to get URL
+      await uploadPhoto(file);
+    }
+  };
+
+  const uploadPhoto = async (file: File) => {
+    try {
+      const token = localStorage.getItem('etf_token');
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('stepNumber', '8');
+      formData.append('fieldName', 'photoFile');
+
+      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const result = await response.json();
+
+      // Store the URL in currentTrainer
+      setCurrentTrainer(prev => ({
+        ...prev,
+        photoFile: result.data?.url || result.url || '',
+        photoPreview: result.data?.url || result.url || prev.photoPreview
+      }));
+    } catch (error) {
+      console.error('Photo upload failed:', error);
+      setErrors((prev: any) => ({
+        ...prev,
+        photo: 'Failed to upload photo. Please try again.'
+      }));
     }
   };
 
   const removePhoto = () => {
     setCurrentTrainer(prev => ({
       ...prev,
-      photoFile: null,
+      photoFile: '',
       photoPreview: ''
     }));
   };

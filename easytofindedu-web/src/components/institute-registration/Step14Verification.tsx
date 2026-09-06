@@ -13,9 +13,9 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
   const [formData, setFormData] = useState({
     ownerName: data?.ownerName || '',
     designation: data?.designation || '',
-    idProofFile: null as File | null,
+    idProofFile: data?.idProofFile || '',
     idProofPreview: data?.idProofPreview || '',
-    registrationDocFile: null as File | null,
+    registrationDocFile: data?.registrationDocFile || '',
     registrationDocPreview: data?.registrationDocPreview || '',
     gstNumber: data?.gstNumber || '',
     panNumber: data?.panNumber || '',
@@ -24,11 +24,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
     certificationAuthority: data?.certificationAuthority || '',
     governmentRecognition: data?.governmentRecognition || '',
     licenseNumber: data?.licenseNumber || '',
-    addressProofFile: null as File | null,
+    addressProofFile: data?.addressProofFile || '',
     addressProofPreview: data?.addressProofPreview || ''
   });
 
   const [errors, setErrors] = useState<any>({});
+  const [uploading, setUploading] = useState<string>('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -39,7 +40,7 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
     const file = e.target.files?.[0];
     if (file) {
       // Validate file size (10MB max for documents)
@@ -65,22 +66,20 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
 
       const previewUrl = file.type.startsWith('image/') ? URL.createObjectURL(file) : '';
 
+      // Set preview immediately
       if (field === 'idProof') {
         setFormData(prev => ({
           ...prev,
-          idProofFile: file,
           idProofPreview: previewUrl
         }));
       } else if (field === 'registrationDoc') {
         setFormData(prev => ({
           ...prev,
-          registrationDocFile: file,
           registrationDocPreview: previewUrl
         }));
       } else if (field === 'addressProof') {
         setFormData(prev => ({
           ...prev,
-          addressProofFile: file,
           addressProofPreview: previewUrl
         }));
       }
@@ -88,6 +87,71 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       if (errors[field]) {
         setErrors((prev: any) => ({ ...prev, [field]: '' }));
       }
+
+      // Upload file immediately
+      await uploadDocument(file, field);
+    }
+  };
+
+  const uploadDocument = async (file: File, field: string) => {
+    try {
+      setUploading(field);
+      const token = localStorage.getItem('etf_token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('stepNumber', '14');
+
+      let fieldName = '';
+      if (field === 'idProof') fieldName = 'idProofFile';
+      else if (field === 'registrationDoc') fieldName = 'registrationDocFile';
+      else if (field === 'addressProof') fieldName = 'addressProofFile';
+
+      formDataUpload.append('fieldName', fieldName);
+
+      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataUpload,
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const result = await response.json();
+      const uploadedUrl = result.data?.url || result.url || '';
+
+      // Store the URL
+      if (field === 'idProof') {
+        setFormData(prev => ({
+          ...prev,
+          idProofFile: uploadedUrl,
+          idProofPreview: uploadedUrl
+        }));
+      } else if (field === 'registrationDoc') {
+        setFormData(prev => ({
+          ...prev,
+          registrationDocFile: uploadedUrl,
+          registrationDocPreview: uploadedUrl
+        }));
+      } else if (field === 'addressProof') {
+        setFormData(prev => ({
+          ...prev,
+          addressProofFile: uploadedUrl,
+          addressProofPreview: uploadedUrl
+        }));
+      }
+    } catch (error) {
+      console.error('Document upload failed:', error);
+      setErrors((prev: any) => ({
+        ...prev,
+        [field]: 'Failed to upload document. Please try again.'
+      }));
+    } finally {
+      setUploading('');
     }
   };
 
@@ -95,19 +159,19 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
     if (field === 'idProof') {
       setFormData(prev => ({
         ...prev,
-        idProofFile: null,
+        idProofFile: '',
         idProofPreview: ''
       }));
     } else if (field === 'registrationDoc') {
       setFormData(prev => ({
         ...prev,
-        registrationDocFile: null,
+        registrationDocFile: '',
         registrationDocPreview: ''
       }));
     } else if (field === 'addressProof') {
       setFormData(prev => ({
         ...prev,
-        addressProofFile: null,
+        addressProofFile: '',
         addressProofPreview: ''
       }));
     }

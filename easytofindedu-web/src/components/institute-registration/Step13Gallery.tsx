@@ -11,7 +11,7 @@ interface Step10Props {
 
 export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loading }: Step10Props) {
   const [formData, setFormData] = useState({
-    galleryFiles: [] as File[],
+    galleryFiles: data?.galleryFiles || [],
     galleryPreviews: data?.galleryPreviews || [],
     videoUrl: data?.videoUrl || '',
     website: data?.website || '',
@@ -22,6 +22,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
   });
 
   const [errors, setErrors] = useState<any>({});
+  const [uploading, setUploading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,7 +33,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
     }
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
 
     // Validate files
@@ -54,21 +55,67 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
       newPreviews.push(URL.createObjectURL(file));
     }
 
+    // Add previews immediately for UX
     setFormData(prev => ({
       ...prev,
-      galleryFiles: [...prev.galleryFiles, ...validFiles],
       galleryPreviews: [...prev.galleryPreviews, ...newPreviews]
     }));
 
     if (validFiles.length > 0 && errors.gallery) {
       setErrors((prev: any) => ({ ...prev, gallery: '' }));
     }
+
+    // Upload files immediately
+    for (const file of validFiles) {
+      await uploadGalleryImage(file);
+    }
+  };
+
+  const uploadGalleryImage = async (file: File) => {
+    try {
+      setUploading(true);
+      const token = localStorage.getItem('etf_token');
+      const formDataUpload = new FormData();
+      formDataUpload.append('file', file);
+      formDataUpload.append('stepNumber', '13');
+      formDataUpload.append('fieldName', 'galleryFiles');
+
+      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formDataUpload,
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
+      const result = await response.json();
+      const uploadedUrl = result.data?.url || result.url || '';
+
+      // Add uploaded URL to galleryFiles
+      setFormData(prev => ({
+        ...prev,
+        galleryFiles: [...prev.galleryFiles, uploadedUrl]
+      }));
+    } catch (error) {
+      console.error('Gallery image upload failed:', error);
+      setErrors((prev: any) => ({
+        ...prev,
+        gallery: 'Failed to upload image. Please try again.'
+      }));
+    } finally {
+      setUploading(false);
+    }
   };
 
   const removeImage = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      galleryFiles: prev.galleryFiles.filter((_: File, i: number) => i !== index),
+      galleryFiles: prev.galleryFiles.filter((_: string, i: number) => i !== index),
       galleryPreviews: prev.galleryPreviews.filter((_: string, i: number) => i !== index)
     }));
   };
