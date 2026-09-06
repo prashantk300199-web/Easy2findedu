@@ -62,8 +62,8 @@ const ReviewAndSubmit: React.FC<ReviewAndSubmitProps> = ({
     if (!formData.step2?.primaryCategory) missing.push('Primary Category');
 
     // Step 3 required fields
-    if (!formData.step3?.officialPhone) missing.push('Official Phone');
-    if (!formData.step3?.officialEmail) missing.push('Official Email');
+    if (!formData.step3?.phone) missing.push('Official Phone');
+    if (!formData.step3?.email) missing.push('Official Email');
     if (!formData.step3?.fullAddress) missing.push('Complete Address');
     if (!formData.step3?.city) missing.push('City');
     if (!formData.step3?.state) missing.push('State');
