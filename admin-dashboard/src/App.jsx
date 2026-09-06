@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import InstituteApplications from './pages/InstituteApplications.jsx';
+import InstituteApplicationReview from './pages/InstituteApplicationReview.jsx';
 
 const API_BASE = 'https://api.easytofindedu.com/api/v1';
 
@@ -273,6 +275,7 @@ function Sidebar({ view, setView, stats }) {
     { id: 'dashboard', label: 'Dashboard', count: null },
     { id: 'approvals', label: 'Pending Approvals', count: stats?.pendingHostels || 0 },
     { id: 'hostels', label: 'All Hostels', count: stats?.totalHostels || 0 },
+    { id: 'institute-applications', label: 'Institute Applications', count: stats?.pendingInstitutes || 0 },
     { id: 'inquiries', label: 'Inquiries', count: null },
     { id: 'owners', label: 'Owners', count: stats?.totalOwners || 0 },
     { id: 'students', label: 'Students', count: stats?.totalStudents || 0 },
@@ -950,6 +953,7 @@ export default function App() {
   const [token, setToken] = useState(localStorage.getItem('admin_token'));
   const [view, setView] = useState('dashboard');
   const [stats, setStats] = useState(null);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
 
   useEffect(() => {
     if (token) {
@@ -964,6 +968,16 @@ export default function App() {
     setToken(null);
   };
 
+  const handleViewApplication = (applicationId) => {
+    setSelectedApplicationId(applicationId);
+    setView('institute-application-review');
+  };
+
+  const handleBackToApplications = () => {
+    setSelectedApplicationId(null);
+    setView('institute-applications');
+  };
+
   if (!token) return <Login onLogin={setToken} />;
 
   return (
@@ -975,6 +989,8 @@ export default function App() {
           {view === 'dashboard' && <Dashboard token={token} />}
           {view === 'approvals' && <Approvals token={token} />}
           {view === 'hostels' && <AllHostels token={token} />}
+          {view === 'institute-applications' && <InstituteApplications token={token} onViewApplication={handleViewApplication} />}
+          {view === 'institute-application-review' && <InstituteApplicationReview token={token} applicationId={selectedApplicationId} onBack={handleBackToApplications} />}
           {view === 'inquiries' && <Inquiries token={token} />}
           {view === 'owners' && <Owners token={token} />}
           {view === 'students' && <Students token={token} />}
