@@ -210,7 +210,7 @@ export default function InstituteRegistration() {
       setError(null);
 
       const token = getToken();
-      const res = await fetch('https://easytofindedu.onrender.com/api/v1/owner/institutes/draft/submit', {
+      const res = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/submit', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
