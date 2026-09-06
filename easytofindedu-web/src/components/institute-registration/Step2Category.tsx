@@ -174,20 +174,16 @@ export default function Step2Category({ data, onNext, onBack, onSaveDraft, loadi
     e.preventDefault();
     if (validate()) {
       onNext({
-        category: {
-          primary: formData.primaryCategory,
-          subcategory: formData.subcategory
-        }
+        primaryCategory: formData.primaryCategory,
+        subcategories: formData.subcategory ? [formData.subcategory] : []
       });
     }
   };
 
   const handleSave = () => {
     onSaveDraft({
-      category: {
-        primary: formData.primaryCategory,
-        subcategory: formData.subcategory
-      }
+      primaryCategory: formData.primaryCategory,
+      subcategories: formData.subcategory ? [formData.subcategory] : []
     });
   };
 
