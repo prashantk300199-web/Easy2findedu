@@ -22,13 +22,14 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
   const [formData, setFormData] = useState({
     phone: data?.phone || '',
     email: data?.email || '',
-    address: data?.address || '',
+    fullAddress: data?.fullAddress || '',
     area: data?.area || '',
+    subarea: data?.subarea || '',
     landmark: data?.landmark || '',
     city: data?.city || '',
     district: data?.district || '',
     state: data?.state || 'Bihar',
-    pinCode: data?.pinCode || '',
+    pincode: data?.pincode || '',
     latitude: data?.latitude || '',
     longitude: data?.longitude || ''
   });
@@ -56,9 +57,9 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
     return phoneRegex.test(phone);
   };
 
-  const validatePinCode = (pinCode: string) => {
-    const pinCodeRegex = /^\d{6}$/;
-    return pinCodeRegex.test(pinCode);
+  const validatePinCode = (pincode: string) => {
+    const pincodeRegex = /^\d{6}$/;
+    return pincodeRegex.test(pincode);
   };
 
   const validate = () => {
@@ -76,8 +77,8 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
       newErrors.email = 'Enter a valid email address';
     }
 
-    if (!formData.address.trim()) {
-      newErrors.address = 'Complete address is required';
+    if (!formData.fullAddress.trim()) {
+      newErrors.fullAddress = 'Complete address is required';
     }
 
     if (!formData.city.trim()) {
@@ -88,10 +89,10 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
       newErrors.state = 'State is required';
     }
 
-    if (!formData.pinCode.trim()) {
-      newErrors.pinCode = 'PIN code is required';
-    } else if (!validatePinCode(formData.pinCode)) {
-      newErrors.pinCode = 'Enter a valid 6-digit PIN code';
+    if (!formData.pincode.trim()) {
+      newErrors.pincode = 'PIN code is required';
+    } else if (!validatePinCode(formData.pincode)) {
+      newErrors.pincode = 'Enter a valid 6-digit PIN code';
     }
 
     if (!formData.latitude || !formData.longitude) {
@@ -134,42 +135,30 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
     e.preventDefault();
     if (validate()) {
       onNext({
-        contact: {
-          phone: formData.phone,
-          email: formData.email
-        },
-        location: {
-          address: formData.address,
-          area: formData.area,
-          landmark: formData.landmark,
-          city: formData.city,
-          district: formData.district,
-          state: formData.state,
-          pinCode: formData.pinCode,
-          latitude: parseFloat(formData.latitude),
-          longitude: parseFloat(formData.longitude)
-        }
+        phone: formData.phone,
+        email: formData.email,
+        fullAddress: formData.fullAddress,
+        area: formData.area,
+        subarea: formData.subarea,
+        landmark: formData.landmark,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode
       });
     }
   };
 
   const handleSave = () => {
     onSaveDraft({
-      contact: {
-        phone: formData.phone,
-        email: formData.email
-      },
-      location: {
-        address: formData.address,
-        area: formData.area,
-        landmark: formData.landmark,
-        city: formData.city,
-        district: formData.district,
-        state: formData.state,
-        pinCode: formData.pinCode,
-        latitude: formData.latitude ? parseFloat(formData.latitude) : null,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : null
-      }
+      phone: formData.phone,
+      email: formData.email,
+      fullAddress: formData.fullAddress,
+      area: formData.area,
+      subarea: formData.subarea,
+      landmark: formData.landmark,
+      city: formData.city,
+      state: formData.state,
+      pincode: formData.pincode
     });
   };
 
@@ -237,16 +226,16 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                 Complete Address <span className="text-red-400">*</span>
               </label>
               <textarea
-                name="address"
-                value={formData.address}
+                name="fullAddress"
+                value={formData.fullAddress}
                 onChange={handleChange}
                 rows={3}
                 placeholder="Building number, street name, etc."
                 className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
-                  errors.address ? 'border-red-500' : 'border-night-700'
+                  errors.fullAddress ? 'border-red-500' : 'border-night-700'
                 }`}
               />
-              {errors.address && <p className="text-red-400 text-sm mt-1">{errors.address}</p>}
+              {errors.fullAddress && <p className="text-red-400 text-sm mt-1">{errors.fullAddress}</p>}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -338,16 +327,16 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
                 </label>
                 <input
                   type="text"
-                  name="pinCode"
-                  value={formData.pinCode}
+                  name="pincode"
+                  value={formData.pincode}
                   onChange={handleChange}
                   placeholder="6-digit PIN code"
                   maxLength={6}
                   className={`w-full px-4 py-3 bg-night-900 border rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 transition-all ${
-                    errors.pinCode ? 'border-red-500' : 'border-night-700'
+                    errors.pincode ? 'border-red-500' : 'border-night-700'
                   }`}
                 />
-                {errors.pinCode && <p className="text-red-400 text-sm mt-1">{errors.pinCode}</p>}
+                {errors.pincode && <p className="text-red-400 text-sm mt-1">{errors.pincode}</p>}
               </div>
             </div>
           </div>
