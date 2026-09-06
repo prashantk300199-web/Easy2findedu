@@ -64,7 +64,9 @@ export default function InstituteOwnerDashboard() {
   const getStatusBadge = () => {
     if (!draftStatus) return null;
 
-    switch (draftStatus.status) {
+    const verificationStatus = draftStatus.verificationStatus || draftStatus.status;
+
+    switch (verificationStatus) {
       case 'draft':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-yellow-900/20 text-yellow-400 rounded-full text-sm border border-yellow-500/30">
@@ -76,14 +78,28 @@ export default function InstituteOwnerDashboard() {
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-900/20 text-blue-400 rounded-full text-sm border border-blue-500/30">
             <FileText className="w-4 h-4" />
+            Submitted
+          </span>
+        );
+      case 'under_review':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-900/20 text-purple-400 rounded-full text-sm border border-purple-500/30">
+            <Clock className="w-4 h-4" />
             Under Review
           </span>
         );
-      case 'approved':
+      case 'changes_requested':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-orange-900/20 text-orange-400 rounded-full text-sm border border-orange-500/30">
+            <AlertCircle className="w-4 h-4" />
+            Changes Requested
+          </span>
+        );
+      case 'verified':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-900/20 text-green-400 rounded-full text-sm border border-green-500/30">
             <CheckCircle className="w-4 h-4" />
-            Approved
+            Verified
           </span>
         );
       case 'rejected':
@@ -91,6 +107,13 @@ export default function InstituteOwnerDashboard() {
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-900/20 text-red-400 rounded-full text-sm border border-red-500/30">
             <AlertCircle className="w-4 h-4" />
             Rejected
+          </span>
+        );
+      case 'suspended':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-900/20 text-gray-400 rounded-full text-sm border border-gray-500/30">
+            <AlertCircle className="w-4 h-4" />
+            Suspended
           </span>
         );
       default:
@@ -179,8 +202,62 @@ export default function InstituteOwnerDashboard() {
               )}
             </div>
 
+            {/* Admin Feedback - Show when changes requested */}
+            {(draftStatus.verificationStatus === 'changes_requested' || draftStatus.status === 'changes_requested') && draftStatus.adminFeedback && (
+              <div className="mb-6 bg-orange-900/20 border border-orange-500/30 rounded-lg p-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-orange-400 mb-2">
+                      Changes Requested by Admin
+                    </h3>
+                    <p className="text-cream-100/80 mb-4">
+                      {draftStatus.adminFeedback}
+                    </p>
+                    <p className="text-sm text-cream-100/60">
+                      Please review the feedback above and make the necessary changes to your application.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Rejection Reason - Show when rejected */}
+            {(draftStatus.verificationStatus === 'rejected' || draftStatus.status === 'rejected') && draftStatus.rejectionReason && (
+              <div className="mb-6 bg-red-900/20 border border-red-500/30 rounded-lg p-6">
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-red-400 mb-2">
+                      Application Rejected
+                    </h3>
+                    <p className="text-cream-100/80">
+                      {draftStatus.rejectionReason}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Verified Success Message */}
+            {(draftStatus.verificationStatus === 'verified' || draftStatus.status === 'verified') && (
+              <div className="mb-6 bg-green-900/20 border border-green-500/30 rounded-lg p-6">
+                <div className="flex items-start gap-3">
+                  <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="text-lg font-semibold text-green-400 mb-2">
+                      Application Verified
+                    </h3>
+                    <p className="text-cream-100/80">
+                      Congratulations! Your institute has been verified and will be published soon.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Actions */}
-            {draftStatus.status === 'draft' && (
+            {(draftStatus.status === 'draft' || draftStatus.verificationStatus === 'draft' || draftStatus.verificationStatus === 'changes_requested') && (
               <div className="flex gap-4">
                 <button
                   onClick={handleContinueEditing}
