@@ -95,11 +95,25 @@ export default function InstituteOwnerDashboard() {
             Changes Requested
           </span>
         );
+      case 'resubmitted':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-900/20 text-indigo-400 rounded-full text-sm border border-indigo-500/30">
+            <FileText className="w-4 h-4" />
+            Resubmitted
+          </span>
+        );
       case 'verified':
         return (
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-green-900/20 text-green-400 rounded-full text-sm border border-green-500/30">
             <CheckCircle className="w-4 h-4" />
             Verified
+          </span>
+        );
+      case 'published':
+        return (
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-900/20 text-emerald-400 rounded-full text-sm border border-emerald-500/30">
+            <CheckCircle className="w-4 h-4" />
+            Published
           </span>
         );
       case 'rejected':
@@ -153,13 +167,33 @@ export default function InstituteOwnerDashboard() {
             className="bg-night-800 border border-night-700 rounded-lg p-8 shadow-2xl"
           >
             <div className="flex items-start justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-semibold text-cream-100 mb-2">
-                  Your Institute Registration
-                </h2>
-                <p className="text-cream-100/60">
-                  Continue where you left off
-                </p>
+              <div className="flex items-start gap-4">
+                {/* Institute Logo */}
+                {draftStatus.step1InstituteInfo?.logoPreview && (
+                  <img
+                    src={draftStatus.step1InstituteInfo.logoPreview}
+                    alt="Institute Logo"
+                    className="w-16 h-16 rounded-lg object-cover border-2 border-gold-500/30"
+                  />
+                )}
+                <div>
+                  <h2 className="text-2xl font-semibold text-cream-100 mb-1">
+                    {draftStatus.step1InstituteInfo?.instituteName || 'Your Institute Registration'}
+                  </h2>
+                  <p className="text-cream-100/60">
+                    {draftStatus.status === 'draft' ? 'Continue where you left off' : `Status: ${draftStatus.status}`}
+                  </p>
+                  {draftStatus.submittedAt && (
+                    <p className="text-sm text-cream-100/50 mt-1">
+                      Submitted: {new Date(draftStatus.submittedAt).toLocaleDateString()}
+                    </p>
+                  )}
+                  {draftStatus.lastSavedAt && draftStatus.status === 'draft' && (
+                    <p className="text-sm text-cream-100/50 mt-1">
+                      Last saved: {new Date(draftStatus.lastSavedAt).toLocaleDateString()}
+                    </p>
+                  )}
+                </div>
               </div>
               {getStatusBadge()}
             </div>
