@@ -192,10 +192,10 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       }));
     } finally {
       setUploading('');
-      // Small delay before allowing data prop sync again
+      // Keep upload lock longer to prevent useEffect from overwriting during save propagation
       setTimeout(() => {
         uploadInProgressRef.current = false;
-      }, 1000);
+      }, 2000); // Increased from 1000ms to 2000ms to allow parent save to complete
     }
   };
 
