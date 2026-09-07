@@ -165,34 +165,25 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
           idProofFile: uploadedUrl,
           idProofPreview: uploadedUrl
         };
-        setFormData(prev => ({
-          ...prev,
-          ...updatedFormData
-        }));
       } else if (field === 'registrationDoc') {
         updatedFormData = {
           registrationDocFile: uploadedUrl,
           registrationDocPreview: uploadedUrl
         };
-        setFormData(prev => ({
-          ...prev,
-          ...updatedFormData
-        }));
       } else if (field === 'addressProof') {
         updatedFormData = {
           addressProofFile: uploadedUrl,
           addressProofPreview: uploadedUrl
         };
-        setFormData(prev => ({
-          ...prev,
-          ...updatedFormData
-        }));
       }
 
-      // Auto-save the uploaded file to backend draft immediately
-      // Use the updated formData by merging with current state
-      const currentData = { ...formData, ...updatedFormData };
-      onSaveDraft(currentData);
+      // Update state and auto-save with the LATEST state
+      setFormData(prev => {
+        const newData = { ...prev, ...updatedFormData };
+        // Auto-save with the updated state (includes ALL previous uploads)
+        onSaveDraft(newData);
+        return newData;
+      });
     } catch (error) {
       console.error('Document upload failed:', error);
       setErrors((prev: any) => ({
