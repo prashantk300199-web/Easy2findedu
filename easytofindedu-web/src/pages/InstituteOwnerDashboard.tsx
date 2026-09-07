@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Edit, FileText, Clock, AlertCircle, Trash2, CheckCircle } from 'lucide-react';
+import { Edit, FileText, Clock, AlertCircle, Trash2, CheckCircle, MapPin, Phone, Mail, Globe, Users, BookOpen, Calendar, Eye } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import * as draftService from '../services/instituteDraft.service';
 
@@ -285,6 +285,117 @@ export default function InstituteOwnerDashboard() {
                     <p className="text-cream-100/80">
                       Congratulations! Your institute has been verified and will be published soon.
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Institute Overview - Show submitted institute details */}
+            {draftStatus.step1InstituteInfo && (draftStatus.status !== 'draft') && (
+              <div className="mb-6 space-y-6">
+                <div className="border-t border-night-700 pt-6">
+                  <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-gold-400" />
+                    Institute Overview
+                  </h3>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Basic Information */}
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm text-cream-100/50 mb-1">Institute Name</p>
+                        <p className="text-cream-100 font-medium">{draftStatus.step1InstituteInfo.instituteName || 'N/A'}</p>
+                      </div>
+
+                      {draftStatus.step2Category && (
+                        <div>
+                          <p className="text-sm text-cream-100/50 mb-1">Category</p>
+                          <p className="text-cream-100 font-medium">
+                            {draftStatus.step2Category.category || 'N/A'}
+                            {draftStatus.step2Category.subcategory && ` - ${draftStatus.step2Category.subcategory}`}
+                          </p>
+                        </div>
+                      )}
+
+                      {draftStatus.step1InstituteInfo.establishedYear && (
+                        <div>
+                          <p className="text-sm text-cream-100/50 mb-1">Established</p>
+                          <p className="text-cream-100 font-medium">{draftStatus.step1InstituteInfo.establishedYear}</p>
+                        </div>
+                      )}
+
+                      {draftStatus.step1InstituteInfo.description && (
+                        <div>
+                          <p className="text-sm text-cream-100/50 mb-1">Description</p>
+                          <p className="text-cream-100/80 text-sm line-clamp-3">{draftStatus.step1InstituteInfo.description}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Contact & Location */}
+                    <div className="space-y-4">
+                      {draftStatus.step3LocationContact && (
+                        <>
+                          {draftStatus.step3LocationContact.address && (
+                            <div className="flex items-start gap-2">
+                              <MapPin className="w-4 h-4 text-gold-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm text-cream-100/50 mb-1">Location</p>
+                                <p className="text-cream-100/80 text-sm">
+                                  {draftStatus.step3LocationContact.address}
+                                  {draftStatus.step3LocationContact.city && `, ${draftStatus.step3LocationContact.city}`}
+                                  {draftStatus.step3LocationContact.state && `, ${draftStatus.step3LocationContact.state}`}
+                                  {draftStatus.step3LocationContact.pincode && ` - ${draftStatus.step3LocationContact.pincode}`}
+                                </p>
+                              </div>
+                            </div>
+                          )}
+
+                          {draftStatus.step3LocationContact.phone && (
+                            <div className="flex items-start gap-2">
+                              <Phone className="w-4 h-4 text-gold-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm text-cream-100/50 mb-1">Phone</p>
+                                <p className="text-cream-100/80 text-sm">{draftStatus.step3LocationContact.phone}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {draftStatus.step3LocationContact.email && (
+                            <div className="flex items-start gap-2">
+                              <Mail className="w-4 h-4 text-gold-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm text-cream-100/50 mb-1">Email</p>
+                                <p className="text-cream-100/80 text-sm">{draftStatus.step3LocationContact.email}</p>
+                              </div>
+                            </div>
+                          )}
+
+                          {draftStatus.step3LocationContact.website && (
+                            <div className="flex items-start gap-2">
+                              <Globe className="w-4 h-4 text-gold-400 mt-1 flex-shrink-0" />
+                              <div>
+                                <p className="text-sm text-cream-100/50 mb-1">Website</p>
+                                <a href={draftStatus.step3LocationContact.website} target="_blank" rel="noopener noreferrer" className="text-gold-400 hover:text-gold-300 text-sm underline">
+                                  {draftStatus.step3LocationContact.website}
+                                </a>
+                              </div>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* View Full Details Button */}
+                  <div className="mt-6 pt-6 border-t border-night-700">
+                    <button
+                      onClick={handleContinueEditing}
+                      className="px-6 py-2 border border-gold-500/30 text-gold-400 rounded-lg hover:bg-gold-900/20 transition-all font-semibold flex items-center justify-center gap-2"
+                    >
+                      <Eye size={18} />
+                      View Full Details
+                    </button>
                   </div>
                 </div>
               </div>
