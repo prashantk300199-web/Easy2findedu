@@ -7,9 +7,21 @@ interface Step1Props {
   addPhoneNumber: () => void;
   removePhoneNumber: (index: number) => void;
   updatePhoneNumber: (index: number, field: 'number' | 'label', value: string) => void;
+  addWardenPhone: () => void;
+  removeWardenPhone: (index: number) => void;
+  updateWardenPhone: (index: number, field: 'number' | 'label', value: string) => void;
 }
 
-export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePhoneNumber, updatePhoneNumber }: Step1Props) {
+export function Step1BasicInfo({
+  formData,
+  setFormData,
+  addPhoneNumber,
+  removePhoneNumber,
+  updatePhoneNumber,
+  addWardenPhone,
+  removeWardenPhone,
+  updateWardenPhone
+}: Step1Props) {
   return (
     <div className="space-y-6">
       <h2 className="flex items-center gap-2 font-display text-2xl text-ink">
@@ -38,9 +50,9 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
           className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
           required
         >
-          <option value="women">Women's Hostel</option>
-          <option value="men">Men's Hostel</option>
-          <option value="co_living">Co-Living</option>
+          <option value="boys">Boys Hostel</option>
+          <option value="girls">Girls Hostel</option>
+          <option value="co_ed">Co-Ed Hostel (Boys+Girls)</option>
         </select>
       </div>
 
@@ -60,15 +72,30 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
       {/* Notice Period & Total Beds */}
       <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm font-semibold text-ink-600">Notice Period (Days) *</label>
-          <input
-            type="number"
-            value={formData.notice_period_days}
-            onChange={(e) => setFormData(prev => ({ ...prev, notice_period_days: parseInt(e.target.value) || 0 }))}
-            min="0"
+          <label className="mb-2 block text-sm font-semibold text-ink-600">Notice Period *</label>
+          <select
+            value={formData.notice_period}
+            onChange={(e) => setFormData(prev => ({ ...prev, notice_period: e.target.value }))}
             className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
             required
-          />
+          >
+            <option value="60">2 Months</option>
+            <option value="30">1 Month</option>
+            <option value="15">15 Days</option>
+            <option value="0">0 Days</option>
+            <option value="custom">Custom</option>
+          </select>
+          {formData.notice_period === 'custom' && (
+            <input
+              type="number"
+              value={formData.custom_notice_period_days || ''}
+              onChange={(e) => setFormData(prev => ({ ...prev, custom_notice_period_days: parseInt(e.target.value) || 0 }))}
+              placeholder="Enter custom days"
+              min="0"
+              className="mt-2 w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+              required
+            />
+          )}
         </div>
         <div>
           <label className="mb-2 block text-sm font-semibold text-ink-600">Total Hostel Beds</label>
@@ -144,16 +171,46 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
           />
         </div>
 
-        {/* Warden Name */}
+        {/* Owner Name */}
         <div>
-          <label className="mb-2 block text-sm font-semibold text-ink-600">Warden Name</label>
+          <label className="mb-2 block text-sm font-semibold text-ink-600">Owner Name *</label>
           <input
             type="text"
-            value={formData.contact_info.warden_name}
-            onChange={(e) => setFormData(prev => ({ ...prev, contact_info: { ...prev.contact_info, warden_name: e.target.value } }))}
-            placeholder="Warden name"
+            value={formData.contact_info.owner_name}
+            onChange={(e) => setFormData(prev => ({ ...prev, contact_info: { ...prev.contact_info, owner_name: e.target.value } }))}
+            placeholder="Owner name"
             className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+            required
           />
+        </div>
+
+        {/* Owner Age and Gender */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-ink-600">Owner Age *</label>
+            <input
+              type="text"
+              value={formData.contact_info.owner_age}
+              onChange={(e) => setFormData(prev => ({ ...prev, contact_info: { ...prev.contact_info, owner_age: e.target.value } }))}
+              placeholder="Age"
+              className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-ink-600">Owner Gender *</label>
+            <select
+              value={formData.contact_info.owner_gender}
+              onChange={(e) => setFormData(prev => ({ ...prev, contact_info: { ...prev.contact_info, owner_gender: e.target.value } }))}
+              className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+              required
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -174,16 +231,6 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-semibold text-ink-600">Warden Contact</label>
-            <input
-              type="tel"
-              value={formData.warden.contact_number}
-              onChange={(e) => setFormData(prev => ({ ...prev, warden: { ...prev.warden, contact_number: e.target.value } }))}
-              placeholder="Contact number"
-              className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
-            />
-          </div>
-          <div>
             <label className="mb-2 block text-sm font-semibold text-ink-600">Warden Email</label>
             <input
               type="email"
@@ -193,6 +240,54 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
               className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
             />
           </div>
+        </div>
+
+        {/* Warden Contact Numbers */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <label className="block text-sm font-semibold text-ink-600">Warden Contact Numbers</label>
+            <button
+              type="button"
+              onClick={addWardenPhone}
+              className="flex items-center gap-2 text-sm font-semibold text-gold-700 hover:text-gold-800"
+            >
+              <PlusCircle size={16} /> Add Phone Number
+            </button>
+          </div>
+
+          {formData.warden.contact_numbers.map((phone, idx) => (
+            <div key={idx} className="flex items-center gap-2">
+              <div className="flex-1 grid gap-2 md:grid-cols-2">
+                <input
+                  type="text"
+                  value={phone.label}
+                  onChange={(e) => updateWardenPhone(idx, 'label', e.target.value)}
+                  placeholder="Label (e.g., Primary)"
+                  className="rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-sm text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+                />
+                <input
+                  type="tel"
+                  value={phone.number}
+                  onChange={(e) => updateWardenPhone(idx, 'number', e.target.value)}
+                  placeholder="Phone number"
+                  className="rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-sm text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+                />
+              </div>
+              {formData.warden.contact_numbers.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeWardenPhone(idx)}
+                  className="rounded-lg p-2 text-red-600 hover:bg-red-50 transition-colors"
+                  title="Remove phone number"
+                >
+                  <Trash2 size={18} />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-semibold text-ink-600">Warden Gender</label>
             <select
@@ -200,6 +295,7 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
               onChange={(e) => setFormData(prev => ({ ...prev, warden: { ...prev.warden, gender: e.target.value } }))}
               className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
             >
+              <option value="">Select Gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
@@ -255,6 +351,7 @@ export function Step1BasicInfo({ formData, setFormData, addPhoneNumber, removePh
               <option value="marble">Marble</option>
               <option value="granite">Granite</option>
               <option value="mosaic">Mosaic</option>
+              <option value="plaster">Plaster</option>
             </select>
           </div>
         </div>

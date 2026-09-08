@@ -54,12 +54,12 @@ export function Step3RoomsMeals({ formData, setFormData, handleMenuCardUpload }:
                   value={room.total_beds}
                   onChange={(e) => {
                     const newRooms = [...formData.rooms];
-                    const beds = parseInt(e.target.value) || 1;
+                    const beds = parseInt(e.target.value) || 0;
                     newRooms[idx].total_beds = beds;
                     newRooms[idx].available_beds_count = beds;
                     setFormData(prev => ({ ...prev, rooms: newRooms }));
                   }}
-                  min="1"
+                  min="0"
                   className="w-full rounded-xl border border-cream-400 bg-white px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
                 />
               </div>
@@ -177,7 +177,7 @@ export function Step3RoomsMeals({ formData, setFormData, handleMenuCardUpload }:
                   className="w-full rounded-xl border border-cream-400 bg-white px-4 py-3 text-sm text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
                 >
                   <option value="in_house_kitchen">In-House Kitchen</option>
-                  <option value="third_party_vendor">Third Party Vendor</option>
+                  <option value="somewhere_else_cooked">Somewhere Else Cooked</option>
                 </select>
               </div>
               <div>
