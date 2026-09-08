@@ -110,7 +110,7 @@ export interface MealPlan {
 
 export interface Warden {
   name: string;
-  contact_number: string;
+  contact_numbers: PhoneNumber[];
   email: string;
   gender: string;
   age: string;
@@ -120,12 +120,15 @@ export interface FormData {
   name: string;
   hostel_type: string;
   description: string;
-  notice_period_days: number;
+  notice_period: string;
+  custom_notice_period_days?: number;
   total_hostel_beds: number;
   contact_info: {
     phone_numbers: PhoneNumber[];
     email: string;
-    warden_name: string;
+    owner_name: string;
+    owner_age: string;
+    owner_gender: string;
   };
   warden: Warden;
   address: {
@@ -208,9 +211,10 @@ export interface FormData {
 
 export const getInitialFormData = (): FormData => ({
   name: '',
-  hostel_type: 'women',
+  hostel_type: 'boys',
   description: '',
-  notice_period_days: 30,
+  notice_period: '30',
+  custom_notice_period_days: undefined,
   total_hostel_beds: 0,
   contact_info: {
     phone_numbers: [
@@ -218,9 +222,17 @@ export const getInitialFormData = (): FormData => ({
       { number: '', label: 'Alternative' }
     ],
     email: '',
-    warden_name: ''
+    owner_name: '',
+    owner_age: '',
+    owner_gender: ''
   },
-  warden: { name: '', contact_number: '', email: '', gender: 'male', age: '' },
+  warden: {
+    name: '',
+    contact_numbers: [{ number: '', label: 'Primary' }],
+    email: '',
+    gender: '',
+    age: ''
+  },
   address: {
     line1: '',
     line2: '',

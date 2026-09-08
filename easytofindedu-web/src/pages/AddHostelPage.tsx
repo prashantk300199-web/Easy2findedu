@@ -176,6 +176,36 @@ export function AddHostelPage() {
     }));
   };
 
+  const addWardenPhone = () => {
+    setFormData(prev => ({
+      ...prev,
+      warden: {
+        ...prev.warden,
+        contact_numbers: [...prev.warden.contact_numbers, { number: '', label: `Phone ${prev.warden.contact_numbers.length + 1}` }]
+      }
+    }));
+  };
+
+  const removeWardenPhone = (index: number) => {
+    if (formData.warden.contact_numbers.length <= 1) return;
+    setFormData(prev => ({
+      ...prev,
+      warden: {
+        ...prev.warden,
+        contact_numbers: prev.warden.contact_numbers.filter((_, i) => i !== index)
+      }
+    }));
+  };
+
+  const updateWardenPhone = (index: number, field: 'number' | 'label', value: string) => {
+    const newPhones = [...formData.warden.contact_numbers];
+    newPhones[index][field] = value;
+    setFormData(prev => ({
+      ...prev,
+      warden: { ...prev.warden, contact_numbers: newPhones }
+    }));
+  };
+
   useEffect(() => {
     return () => { previews.forEach(u => URL.revokeObjectURL(u)); };
   }, []);
@@ -203,12 +233,26 @@ export function AddHostelPage() {
     // Transform data for backend
     const transformedData = {
       ...formData,
+      notice_period_days: formData.notice_period === 'custom'
+        ? (formData.custom_notice_period_days || 0)
+        : parseInt(formData.notice_period),
       contact_info: {
         phone: formData.contact_info.phone_numbers[0]?.number || '',
         alternative_phone: formData.contact_info.phone_numbers[1]?.number || '',
         additional_phones: formData.contact_info.phone_numbers.slice(2).map(p => p.number).filter(Boolean),
         email: formData.contact_info.email,
-        warden_name: formData.contact_info.warden_name
+        owner_name: formData.contact_info.owner_name,
+        owner_age: formData.contact_info.owner_age,
+        owner_gender: formData.contact_info.owner_gender
+      },
+      warden: {
+        name: formData.warden.name,
+        contact_number: formData.warden.contact_numbers[0]?.number || '',
+        alternative_contact: formData.warden.contact_numbers[1]?.number || '',
+        additional_contacts: formData.warden.contact_numbers.slice(2).map(p => p.number).filter(Boolean),
+        email: formData.warden.email,
+        gender: formData.warden.gender,
+        age: formData.warden.age
       },
       common_amenities: [
         ...formData.washroom_amenities,
@@ -404,6 +448,9 @@ export function AddHostelPage() {
                   addPhoneNumber={addPhoneNumber}
                   removePhoneNumber={removePhoneNumber}
                   updatePhoneNumber={updatePhoneNumber}
+                  addWardenPhone={addWardenPhone}
+                  removeWardenPhone={removeWardenPhone}
+                  updateWardenPhone={updateWardenPhone}
                 />
               </motion.div>
             )}
