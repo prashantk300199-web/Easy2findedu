@@ -1,4 +1,4 @@
-import { Building2, UserCheck, PlusCircle, Trash2, Phone } from 'lucide-react';
+import { Building2, UserCheck, PlusCircle, Trash2, Phone, Globe } from 'lucide-react';
 import type { FormData, PhoneNumber } from '../../lib/hostelFormTypes';
 
 interface Step1Props {
@@ -354,6 +354,49 @@ export function Step1BasicInfo({
               <option value="plaster">Plaster</option>
             </select>
           </div>
+        </div>
+      </div>
+      {/* Social Media & Online Presence */}
+      <div className="space-y-4 border-t border-cream-400 pt-6">
+        <h3 className="flex items-center gap-2 font-semibold text-ink">
+          <Globe size={20} /> Social Media & Online Presence
+        </h3>
+        <p className="text-sm text-ink-500">Add your hostel's social media links (all fields are optional)</p>
+
+        {/* YouTube */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink-600">YouTube</label>
+          <input
+            type="url"
+            value={formData.social_media.youtube}
+            onChange={(e) => setFormData(prev => ({ ...prev, social_media: { ...prev.social_media, youtube: e.target.value } }))}
+            placeholder="https://www.youtube.com/@yourchannel"
+            className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+          />
+        </div>
+
+        {/* Instagram */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink-600">Instagram</label>
+          <input
+            type="url"
+            value={formData.social_media.instagram}
+            onChange={(e) => setFormData(prev => ({ ...prev, social_media: { ...prev.social_media, instagram: e.target.value } }))}
+            placeholder="https://www.instagram.com/yourhostel"
+            className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+          />
+        </div>
+
+        {/* Facebook */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-ink-600">Facebook</label>
+          <input
+            type="url"
+            value={formData.social_media.facebook}
+            onChange={(e) => setFormData(prev => ({ ...prev, social_media: { ...prev.social_media, facebook: e.target.value } }))}
+            placeholder="https://www.facebook.com/yourhostel"
+            className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
+          />
         </div>
       </div>
     </div>

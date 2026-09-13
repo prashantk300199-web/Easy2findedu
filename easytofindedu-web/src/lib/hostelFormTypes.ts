@@ -116,6 +116,12 @@ export interface Warden {
   age: string;
 }
 
+export interface SocialMedia {
+  youtube: string;
+  instagram: string;
+  facebook: string;
+}
+
 export interface FormData {
   name: string;
   hostel_type: string;
@@ -197,6 +203,7 @@ export interface FormData {
     flooring_type: string;
     number_of_floors: number;
   };
+  social_media: SocialMedia;
   legal_docs: {
     hostel_registration: boolean;
     form_3: boolean;
@@ -304,6 +311,11 @@ export const getInitialFormData = (): FormData => ({
     building_age_years: 0,
     flooring_type: 'tiles',
     number_of_floors: 1
+  },
+  social_media: {
+    youtube: '',
+    instagram: '',
+    facebook: '',
   },
   legal_docs: {
     hostel_registration: false,

@@ -270,6 +270,11 @@ export interface Hostel {
   };
   building_details?: { building_age_years?: number; number_of_floors?: number; flooring_type?: string };
   rent?: { registration_fee?: number; security_deposit_type?: string };
+  social_media?: {
+    youtube?: string;
+    instagram?: string;
+    facebook?: string;
+  };
   is_open?: boolean;
   notice_period_days?: number;
   legal_docs?: Record<string, boolean>;
