@@ -1,4 +1,4 @@
-const API_BASE = 'https://api.easytofindedu.com';
+const API_BASE = 'https://api.easytofindedu.com/api/admin';
 
 /**
  * Get all institute applications with filters
