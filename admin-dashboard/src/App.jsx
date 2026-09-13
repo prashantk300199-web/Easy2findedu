@@ -583,7 +583,7 @@ function Approvals({ token }) {
   const loadPending = () => {
     setLoading(true);
     setError('');
-    apiCall('/admin/hostels/pending', token)
+    apiCall('/admin/hostels?status=pending', token)
       .then((d) => setHostels(d.data?.hostels || d.hostels || []))
       .catch((err) => setError(err.message || 'Failed to load pending hostels'))
       .finally(() => setLoading(false));
@@ -862,7 +862,7 @@ function Inquiries({ token }) {
   const loadInquiries = () => {
     setLoading(true);
     setError('');
-    apiCall('/admin/inquiries', token)
+    apiCall('/admin/hostels/inquiries/all', token)
       .then((d) => setInquiries(d.data?.inquiries || d.inquiries || []))
       .catch((err) => setError(err.message || 'Failed to load inquiries'))
       .finally(() => setLoading(false));
@@ -929,7 +929,7 @@ function Owners({ token }) {
   const loadOwners = () => {
     setLoading(true);
     setError('');
-    apiCall('/admin/users/owners', token)
+    apiCall('/admin/owners', token)
       .then((d) => setOwners(d.data?.owners || d.owners || []))
       .catch((err) => setError(err.message || 'Failed to load owners'))
       .finally(() => setLoading(false));
