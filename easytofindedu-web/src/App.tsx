@@ -25,6 +25,15 @@ import DashboardRouter from './pages/DashboardRouter';
 import InstituteRegistration from './pages/InstituteRegistration';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WishlistPage } from './components/WishlistButton';
+// Student career pages
+import CareerExplorerPage from './pages/student/CareerExplorerPage';
+import CareerExplorerDetailPage from './pages/student/CareerExplorerDetailPage';
+import CareerRecommendationsPage from './pages/student/CareerRecommendationsPage';
+import CareerComparePage from './pages/student/CareerComparePage';
+import CareerRoadmapPage from './pages/student/CareerRoadmapPage';
+import CareerAreaPage from './pages/student/CareerAreaPage';
+import CareerIDontKnowPage from './pages/student/CareerIDontKnowPage';
+import CareerChatPage from './pages/student/CareerChatPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -33,7 +42,7 @@ function ScrollToTop() {
 }
 
 // Routes that open with a full-bleed dark hero — no top offset needed.
-const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses'];
+const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance'];
 // Pages with their own full-screen layout — no navbar/footer.
 const STANDALONE_ROUTES = ['/login'];
 const DASHBOARD_ROUTES_PREFIX = ['/dashboard', '/hostel-dashboard', '/institute-dashboard', '/institute-registration', '/institute-owner', '/admin'];
@@ -96,6 +105,14 @@ function AnimatedRoutes() {
           <Route path="/hostels/add" element={<AddHostelPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           <Route path="/career-guidance" element={<CareerGuidancePage />} />
+          <Route path="/career-explorer" element={<CareerExplorerPage />} />
+          <Route path="/career-explorer/:nodeId" element={<CareerExplorerDetailPage />} />
+          <Route path="/career/recommendations" element={<CareerRecommendationsPage />} />
+          <Route path="/career/compare" element={<CareerComparePage />} />
+          <Route path="/career/roadmap/:nodeId" element={<CareerRoadmapPage />} />
+          <Route path="/career/explore-area/:area" element={<CareerAreaPage />} />
+          <Route path="/career/i-dont-know" element={<CareerIDontKnowPage />} />
+          <Route path="/career/chat" element={<CareerChatPage />} />
           <Route path="/abroad" element={<ProspectPage kind="abroad" />} />
           <Route path="/online-courses" element={<ProspectPage kind="online" />} />
           <Route path="/journal" element={<JournalPage />} />

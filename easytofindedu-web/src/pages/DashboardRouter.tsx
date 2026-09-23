@@ -27,7 +27,7 @@ export default function DashboardRouter() {
         navigate('/hostel-dashboard', { replace: true });
         break;
       default:
-        navigate('/login');
+        navigate('/career-guidance', { replace: true });
     }
   }, [user, navigate]);
 
