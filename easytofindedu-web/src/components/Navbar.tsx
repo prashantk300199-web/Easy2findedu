@@ -13,6 +13,7 @@ const LINKS = [
   { to: '/institutes', label: 'Institutes' },
   { to: '/colleges', label: 'Colleges' },
   { to: '/career-guidance', label: 'Career Guidance' },
+  { to: '/career-explorer', label: 'Explore Careers' },
   { to: '/abroad', label: 'Abroad' },
   { to: '/online-courses', label: 'Online' },
 ];
@@ -27,7 +28,7 @@ export function Navbar() {
 
   // The homepage opens on a dark full-bleed hero, so the bar starts light there.
   // All pages that open with a full-bleed dark hero need a light navbar.
-  const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses'];
+  const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance'];
   const overHero = (location.pathname === '/' || HERO_ROUTES.includes(location.pathname)) && !scrolled;
 
   // Fetch wallet coins if user is logged in
@@ -120,6 +121,26 @@ export function Navbar() {
                       )}
                     >
                       ❤️ Wishlist
+                    </Link>
+                    <Link
+                      to="/career/chat"
+                      className={cx(
+                        'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-all duration-300 hover:scale-105',
+                        overHero
+                          ? 'border-gold-500/30 bg-gold-500/10 hover:border-gold-500/50 hover:bg-gold-500/20'
+                          : 'border-gold-600/25 bg-gold-50 hover:border-gold-600/40 hover:bg-gold-100'
+                      )}
+                    >
+                      {/* Chat bubble icon */}
+                      <svg className={cx('w-3.5 h-3.5', overHero ? 'text-gold-300' : 'text-gold-600')} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                      </svg>
+                      <span className={cx(
+                        'text-[12px] font-medium',
+                        overHero ? 'text-gold-300' : 'text-gold-700'
+                      )}>
+                        AI Counselor
+                      </span>
                     </Link>
                     {coins !== null && (
                       <button
@@ -222,6 +243,13 @@ export function Navbar() {
                       className="flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm uppercase tracking-wide transition-colors"
                     >
                       ❤️ My Wishlist
+                    </Link>
+                    <Link
+                      to="/career/chat"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm uppercase tracking-wide transition-colors"
+                    >
+                      💬 AI Counselor
                     </Link>
                     {coins !== null && (
                       <button
