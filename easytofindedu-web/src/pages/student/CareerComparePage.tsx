@@ -11,8 +11,8 @@ function mathLevel(tags: string[] = []): 'Low' | 'Medium' | 'High' {
 }
 
 const ROWS = [
-  { key: 'difficultyLevel', label: 'Difficulty', render: (v: string) => v ? <span className="capitalize">{v.replace('_', ' ')}</span> : null },
-  { key: 'duration', label: 'Duration', render: (v: CareerNode['duration']) => v ? `${v.value} ${v.unit || 'months'}` : null },
+  { key: 'difficultyLevel', label: 'Difficulty', render: (v: unknown) => v ? <span className="capitalize">{(v as string).replace('_', ' ')}</span> : null },
+  { key: 'duration', label: 'Duration', render: (v: unknown) => v ? `${(v as CareerNode['duration']).value} ${((v as CareerNode['duration']).unit || 'months')}` : null },
   { key: 'mathLevel', label: 'Math / Programming', isTag: true },
 ];
 
@@ -167,7 +167,7 @@ export default function CareerComparePage() {
               <tr key={row.key} className="border-t border-night-200/30">
                 <td className="py-4 pr-6 text-sm text-night-700/60 font-medium sticky left-0 bg-cream z-10">{row.label}</td>
                 {nodes.map((node) => {
-                  const value = (node as Record<string, unknown>)[row.key];
+                  const value = (node as unknown as Record<string, unknown>)[row.key];
                   return (
                     <td key={node._id} className="py-4 px-4 text-center">
                       {row.render ? row.render(value as string | number) : null}

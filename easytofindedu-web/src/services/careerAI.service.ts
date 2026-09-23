@@ -40,6 +40,7 @@ export interface Conversation {
   messageCount: number;
   createdAt: string;
   updatedAt: string;
+  messages?: AIMessage[];
 }
 
 export interface QuickPrompt {

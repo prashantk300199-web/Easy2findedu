@@ -186,13 +186,13 @@ export default function CareerExplorerDetailPage() {
                 <div className="bg-night-100 rounded-xl p-6">
                   <h3 className="font-display text-lg text-night-800 mb-4">Eligibility</h3>
                   <div className="grid grid-cols-2 gap-4 text-sm">
-                    {node.eligibility.qualifications?.length > 0 && (
+                    {(node.eligibility?.qualifications?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-night-600/50 mb-1">Qualification</p>
                         <p className="text-night-800">{node.eligibility.qualifications.join(', ')}</p>
                       </div>
                     )}
-                    {node.eligibility.streams?.length > 0 && (
+                    {(node.eligibility?.streams?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-night-600/50 mb-1">Streams</p>
                         <p className="text-night-800 capitalize">{node.eligibility.streams.join(', ')}</p>
@@ -264,18 +264,18 @@ export default function CareerExplorerDetailPage() {
               {node.eligibility && (
                 <div className="mb-6">
                   <p className="text-xs text-night-600/50 font-medium mb-2">Eligibility</p>
-                  {node.eligibility.qualifications?.length > 0 && (
+                  {(node.eligibility?.qualifications?.length ?? 0) > 0 && (
                     <div className="flex flex-wrap gap-1.5 mb-2">
-                      {node.eligibility.qualifications.map((q) => (
+                      {(node.eligibility?.qualifications ?? []).map((q) => (
                         <span key={q} className="px-3 py-1 rounded-full text-xs bg-night-100 border border-night-200/40 text-night-700 capitalize">
                           {q.replace(/_/g, ' ')}
                         </span>
                       ))}
                     </div>
                   )}
-                  {node.eligibility.streams?.length > 0 && (
+                  {(node.eligibility?.streams?.length ?? 0) > 0 && (
                     <div className="flex flex-wrap gap-1.5">
-                      {node.eligibility.streams.map((s) => (
+                      {(node.eligibility?.streams ?? []).map((s) => (
                         <span key={s} className="px-3 py-1 rounded-full text-xs bg-gold-50 border border-gold-200/40 text-gold-700 capitalize">
                           {s}
                         </span>

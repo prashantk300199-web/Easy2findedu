@@ -38,14 +38,20 @@ export function SectionMark({
   );
 }
 
-export function Spinner({ label = 'Loading', light = false }: { label?: string; light?: boolean }) {
+export function Spinner({ label = 'Loading', light = false, size = 'md' }: { label?: string; light?: boolean; size?: 'xs' | 'sm' | 'md' | 'lg' }) {
+  const sizeClasses = {
+    xs: 'h-4 w-4',
+    sm: 'h-6 w-6',
+    md: 'h-10 w-10',
+    lg: 'h-16 w-16',
+  };
   return (
     <div className="flex flex-col items-center justify-center gap-6 py-32" role="status">
-      <div className="relative h-10 w-10">
+      <div className={`relative ${sizeClasses[size]}`}>
         <span className="absolute inset-0 rotate-45 border border-gold-500/40" />
         <span className="absolute inset-0 animate-spin rounded-full border border-transparent border-t-gold-500" />
       </div>
-      <p className={light ? 'overline-light' : 'overline'}>{label}</p>
+      {label && <p className={light ? 'overline-light' : 'overline'}>{label}</p>}
     </div>
   );
 }
