@@ -12,7 +12,7 @@ import {
   type AIMessage,
   type QuickPrompt,
 } from '../../services/careerAI.service';
-import { Spinner } from '../primitives';
+import { Spinner } from '../../components/primitives';
 
 interface ChatBubbleProps {
   message: AIMessage;
