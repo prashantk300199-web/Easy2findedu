@@ -12,7 +12,7 @@ function mathLevel(tags: string[] = []): 'Low' | 'Medium' | 'High' {
 
 const ROWS = [
   { key: 'difficultyLevel', label: 'Difficulty', render: (v: unknown) => v ? <span className="capitalize">{(v as string).replace('_', ' ')}</span> : null },
-  { key: 'duration', label: 'Duration', render: (v: unknown) => v ? `${(v as CareerNode['duration']).value} ${((v as CareerNode['duration']).unit || 'months')}` : null },
+  { key: 'duration', label: 'Duration', render: (v: unknown) => v ? `${(v as CareerNode['duration'])?.value ?? ''} ${((v as CareerNode['duration'])?.unit ?? 'months')}` : null },
   { key: 'mathLevel', label: 'Math / Programming', isTag: true },
 ];
 
