@@ -189,13 +189,13 @@ export default function CareerExplorerDetailPage() {
                     {(node.eligibility?.qualifications?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-night-600/50 mb-1">Qualification</p>
-                        <p className="text-night-800">{node.eligibility.qualifications.join(', ')}</p>
+                        <p className="text-night-800">{(node.eligibility?.qualifications ?? []).join(', ')}</p>
                       </div>
                     )}
                     {(node.eligibility?.streams?.length ?? 0) > 0 && (
                       <div>
                         <p className="text-night-600/50 mb-1">Streams</p>
-                        <p className="text-night-800 capitalize">{node.eligibility.streams.join(', ')}</p>
+                        <p className="text-night-800 capitalize">{(node.eligibility?.streams ?? []).join(', ')}</p>
                       </div>
                     )}
                     {node.eligibility.minPercentage && (
