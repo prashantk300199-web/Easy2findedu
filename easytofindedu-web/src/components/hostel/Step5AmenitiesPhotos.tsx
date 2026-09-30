@@ -220,7 +220,6 @@ export function Step5AmenitiesPhotos({ formData, setFormData, toggleAmenity, pho
             { key: 'character_certificate', label: 'Character Certificate' },
             { key: 'trade_license', label: 'Trade License' },
             { key: 'fire_noc', label: 'Fire NOC' },
-            { key: 'hostel_association_member', label: 'Hostel Association Member' },
             { key: 'member_of_hostel_wellfare_association', label: 'Hostel Welfare Association Member' }
           ].map(doc => (
             <div key={doc.key} className="flex items-center justify-between rounded-xl bg-cream-50 px-4 py-3">

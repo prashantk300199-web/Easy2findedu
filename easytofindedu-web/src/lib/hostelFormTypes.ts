@@ -104,7 +104,6 @@ export interface MealPlan {
   frequency: string;
   meal_type: string;
   service_type: string;
-  monthly_cost?: number;
   menu_file?: File;
 }
 
@@ -211,7 +210,6 @@ export interface FormData {
     character_certificate: boolean;
     trade_license: boolean;
     fire_noc: boolean;
-    hostel_association_member: boolean;
     member_of_hostel_wellfare_association: boolean;
   };
 }
@@ -263,8 +261,7 @@ export const getInitialFormData = (): FormData => ({
   meal_plans: [{
     frequency: '3_times',
     meal_type: 'veg',
-    service_type: 'in_house_kitchen',
-    monthly_cost: 0
+    service_type: 'in_house_kitchen'
   }],
   in_room_amenities: [],
   washroom_amenities: [],
@@ -324,7 +321,6 @@ export const getInitialFormData = (): FormData => ({
     character_certificate: false,
     trade_license: false,
     fire_noc: false,
-    hostel_association_member: false,
     member_of_hostel_wellfare_association: false
   }
 });
