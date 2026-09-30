@@ -180,22 +180,7 @@ export function Step3RoomsMeals({ formData, setFormData, handleMenuCardUpload }:
                   <option value="somewhere_else_cooked">Somewhere Else Cooked</option>
                 </select>
               </div>
-              <div>
-                <label className="mb-2 block text-sm font-semibold text-ink-600">Monthly Cost (₹)</label>
-                <input
-                  type="number"
-                  value={meal.monthly_cost || ''}
-                  onChange={(e) => {
-                    const newMeals = [...formData.meal_plans];
-                    newMeals[idx].monthly_cost = parseInt(e.target.value) || 0;
-                    setFormData(prev => ({ ...prev, meal_plans: newMeals }));
-                  }}
-                  min="0"
-                  placeholder="Optional"
-                  className="w-full rounded-xl border border-cream-400 bg-white px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
-                />
               </div>
-            </div>
 
             {/* Menu Card Upload */}
             <div>
@@ -240,8 +225,7 @@ export function Step3RoomsMeals({ formData, setFormData, handleMenuCardUpload }:
             meal_plans: [...prev.meal_plans, {
               frequency: '3_times',
               meal_type: 'veg',
-              service_type: 'in_house_kitchen',
-              monthly_cost: 0
+              service_type: 'in_house_kitchen'
             }]
           }))}
           className="flex items-center gap-2 rounded-xl bg-gold-700 px-4 py-3 font-semibold text-white transition-colors hover:bg-gold-800"
