@@ -1,4 +1,4 @@
-const API = import.meta.env.VITE_API_BASE_URL ?? 'https://api.easytofindedu.com/api/v1';
+const API = import.meta.env.VITE_API_BASE_URL ?? 'https://easytofindedu.onrender.com/api/v1';
 
 function getToken(): string | null {
   return localStorage.getItem('etf_token');
