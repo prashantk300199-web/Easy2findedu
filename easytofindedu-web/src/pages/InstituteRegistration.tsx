@@ -229,8 +229,8 @@ export default function InstituteRegistration() {
       // Show success message
       alert('Institute submitted successfully! Your institute will be reviewed by our team.');
 
-      // Redirect to dashboard
-      navigate('/dashboard');
+      // Redirect to the institute owner dashboard
+      navigate('/institute-dashboard');
     } catch (err: any) {
       setError(err.message);
       alert(`Submission failed: ${err.message}`);
