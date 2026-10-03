@@ -30,34 +30,34 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
 
   const [errors, setErrors] = useState<any>({});
   const [uploading, setUploading] = useState<string>('');
-  const uploadInProgressRef = useRef<boolean>(false);
 
-  // Sync with parent data prop, but preserve uploaded files during upload
+  // Only sync the parent's loaded draft into local state on FIRST mount.
+  // After that, the local state is the source of truth for this step —
+  // re-syncing on every parent prop change would race with the user's
+  // uploads and wipe previews. The parent's data prop is only used to
+  // initialise the form once.
+  const initialSyncDone = useRef(false);
   useEffect(() => {
-    // Don't overwrite state during active upload
-    if (uploadInProgressRef.current) {
-      return;
-    }
-
-    // Only update if data prop has changed and has actual values
+    if (initialSyncDone.current) return;
     if (data) {
       setFormData(prev => ({
-        ownerName: data.ownerName || prev.ownerName,
-        designation: data.designation || prev.designation,
-        idProofFile: data.idProofFile || prev.idProofFile,
-        idProofPreview: data.idProofPreview || prev.idProofPreview,
-        registrationDocFile: data.registrationDocFile || prev.registrationDocFile,
-        registrationDocPreview: data.registrationDocPreview || prev.registrationDocPreview,
-        gstNumber: data.gstNumber || prev.gstNumber,
-        panNumber: data.panNumber || prev.panNumber,
-        accreditation: data.accreditation || prev.accreditation,
-        affiliation: data.affiliation || prev.affiliation,
-        certificationAuthority: data.certificationAuthority || prev.certificationAuthority,
-        governmentRecognition: data.governmentRecognition || prev.governmentRecognition,
-        licenseNumber: data.licenseNumber || prev.licenseNumber,
-        addressProofFile: data.addressProofFile || prev.addressProofFile,
-        addressProofPreview: data.addressProofPreview || prev.addressProofPreview
+        ownerName: data.ownerName ?? prev.ownerName,
+        designation: data.designation ?? prev.designation,
+        idProofFile: data.idProofFile ?? prev.idProofFile,
+        idProofPreview: data.idProofPreview ?? prev.idProofPreview,
+        registrationDocFile: data.registrationDocFile ?? prev.registrationDocFile,
+        registrationDocPreview: data.registrationDocPreview ?? prev.registrationDocPreview,
+        gstNumber: data.gstNumber ?? prev.gstNumber,
+        panNumber: data.panNumber ?? prev.panNumber,
+        accreditation: data.accreditation ?? prev.accreditation,
+        affiliation: data.affiliation ?? prev.affiliation,
+        certificationAuthority: data.certificationAuthority ?? prev.certificationAuthority,
+        governmentRecognition: data.governmentRecognition ?? prev.governmentRecognition,
+        licenseNumber: data.licenseNumber ?? prev.licenseNumber,
+        addressProofFile: data.addressProofFile ?? prev.addressProofFile,
+        addressProofPreview: data.addressProofPreview ?? prev.addressProofPreview,
       }));
+      initialSyncDone.current = true;
     }
   }, [data]);
 
@@ -126,7 +126,6 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
   const uploadDocument = async (file: File, field: string) => {
     try {
       setUploading(field);
-      uploadInProgressRef.current = true;
 
       const token = localStorage.getItem('etf_token');
       const formDataUpload = new FormData();
@@ -156,34 +155,27 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       const result = await response.json();
       const uploadedUrl = result.data?.url || result.url || '';
 
-      console.log('Upload successful:', { field, fieldName, uploadedUrl });
-
-      // Store the URL - this is the critical state update
-      let updatedFormData = {};
-      if (field === 'idProof') {
-        updatedFormData = {
-          idProofFile: uploadedUrl,
-          idProofPreview: uploadedUrl
-        };
-      } else if (field === 'registrationDoc') {
-        updatedFormData = {
-          registrationDocFile: uploadedUrl,
-          registrationDocPreview: uploadedUrl
-        };
-      } else if (field === 'addressProof') {
-        updatedFormData = {
-          addressProofFile: uploadedUrl,
-          addressProofPreview: uploadedUrl
-        };
+      if (!uploadedUrl) {
+        throw new Error('Upload succeeded but no URL returned');
       }
 
-      // Update state and auto-save with the LATEST state
-      setFormData(prev => {
-        const newData = { ...prev, ...updatedFormData };
-        // Auto-save with the updated state (includes ALL previous uploads)
-        onSaveDraft(newData);
-        return newData;
-      });
+      console.log('Upload successful:', { field, fieldName, uploadedUrl });
+
+      // Store the URL in local state only. Do NOT auto-save here.
+      // Auto-saving during upload was causing a state race that wiped
+      // the preview. The user saves explicitly via "Save Draft" or
+      // "Save & Continue", which sends the full step data including
+      // these file URLs.
+      if (field === 'idProof') {
+        setFormData(prev => ({ ...prev, idProofFile: uploadedUrl, idProofPreview: uploadedUrl }));
+      } else if (field === 'registrationDoc') {
+        setFormData(prev => ({ ...prev, registrationDocFile: uploadedUrl, registrationDocPreview: uploadedUrl }));
+      } else if (field === 'addressProof') {
+        setFormData(prev => ({ ...prev, addressProofFile: uploadedUrl, addressProofPreview: uploadedUrl }));
+      }
+
+      // Clear any stale validation error for this field
+      setErrors((prev: any) => (prev[field] ? { ...prev, [field]: '' } : prev));
     } catch (error) {
       console.error('Document upload failed:', error);
       setErrors((prev: any) => ({
@@ -192,10 +184,6 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       }));
     } finally {
       setUploading('');
-      // Keep upload lock longer to prevent useEffect from overwriting during save propagation
-      setTimeout(() => {
-        uploadInProgressRef.current = false;
-      }, 2000); // Increased from 1000ms to 2000ms to allow parent save to complete
     }
   };
 
