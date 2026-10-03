@@ -696,7 +696,7 @@ function DashboardView({ onError }: { onError: (e: Error) => never }) {
         get('/admin/dashboard/overview'),
         get('/admin/hostels/dashboard'),
         get('/institute-applications/stats', APP_API_BASE),
-        get('/students/stats/summary'),
+        get('/admin/students/stats/summary'),
         get('/admin/hostels?limit=5&sort=-createdAt'),
         get('/institute-applications?limit=5', APP_API_BASE),
       ]);
@@ -1071,6 +1071,39 @@ function InstituteReviewView({
       />
 
       {/* Action bar — always visible, scrolls into view */}
+      {/* Documents-missing warning — shown when the previews are blob URLs or the
+          file URLs were never persisted. Approval will be blocked by the backend. */}
+      {(() => {
+        const logoBlob = app.step1InstituteInfo?.logoPreview?.startsWith('blob:');
+        const idBlob = app.step14Verification?.idProofPreview?.startsWith('blob:');
+        const regBlob = app.step14Verification?.registrationDocPreview?.startsWith('blob:');
+        const noLogoFile = !app.step1InstituteInfo?.logoFile;
+        const noIdFile = !app.step14Verification?.idProofFile;
+        const noRegFile = !app.step14Verification?.registrationDocFile;
+        const anyMissing = logoBlob || idBlob || regBlob || noLogoFile || noIdFile || noRegFile;
+        if (!anyMissing) return null;
+        const missing: string[] = [];
+        if (logoBlob || noLogoFile) missing.push('Institute logo');
+        if (idBlob || noIdFile) missing.push('Government ID proof');
+        if (regBlob || noRegFile) missing.push('Registration document');
+        return (
+          <div className="border border-wine/40 bg-wine/5 p-4 sm:p-5 flex items-start gap-3">
+            <AlertCircle size={18} className="text-wine flex-shrink-0 mt-0.5" />
+            <div className="min-w-0">
+              <p className="font-display text-base text-cream-100">Documents incomplete</p>
+              <p className="mt-1 text-sm text-cream-100/70 break-words">
+                Missing or not yet uploaded to cloud storage:{' '}
+                <span className="text-cream-100">{missing.join(', ')}</span>.
+              </p>
+              <p className="mt-1 text-xs text-cream-100/50 break-words">
+                Approve will be rejected by the server. Use "Request Changes"
+                to ask the applicant to re-upload.
+              </p>
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="border border-night-700 bg-night-900 p-4 sm:p-5 flex flex-wrap items-center gap-3">
         {canApprove && (
           <>
@@ -1114,7 +1147,22 @@ function InstituteReviewView({
             {app.step1InstituteInfo?.logoPreview && (
               <div className="mt-4">
                 <p className="overline text-cream-100/40 mb-2">Logo</p>
-                <img src={app.step1InstituteInfo.logoPreview} alt="Logo" className="h-20 w-20 object-cover border border-night-600" />
+                {app.step1InstituteInfo.logoPreview.startsWith('blob:') ? (
+                  <div className="border border-dashed border-wine/40 bg-wine/5 p-4 max-w-md text-sm">
+                    <p className="text-cream-100/80">Logo not available in the admin view.</p>
+                    <p className="text-xs text-cream-100/50 mt-1 break-words">
+                      The applicant selected a logo but the upload did not
+                      complete to cloud storage. Ask the applicant to
+                      re-upload via "Request Changes".
+                    </p>
+                  </div>
+                ) : (
+                  <img
+                    src={app.step1InstituteInfo.logoPreview}
+                    alt="Logo"
+                    className="h-20 w-20 object-cover border border-night-600"
+                  />
+                )}
               </div>
             )}
           </ApplicationStepSection>
@@ -1468,20 +1516,39 @@ function DataGrid({ items }: { items: Array<[string, any, 'link'?] | [string, an
 }
 
 function DocumentPreview({ label, url }: { label: string; url: string }) {
-  const isImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(url);
+  const isBlob = typeof url === 'string' && url.startsWith('blob:');
+  const looksLikeImage = /\.(jpg|jpeg|png|gif|webp|svg)(\?|$)/i.test(url) || isBlob;
+
   return (
     <div className="min-w-0">
       <p className="overline text-cream-100/40 mb-2">{label}</p>
-      {isImage ? (
+      {isBlob ? (
+        <div className="border border-dashed border-wine/40 bg-wine/5 p-4 text-sm">
+          <p className="text-cream-100/80 break-words">
+            Document not available in the admin view.
+          </p>
+          <p className="text-xs text-cream-100/50 mt-1 break-words">
+            The applicant uploaded this file but the upload did not complete to
+            cloud storage. Ask the applicant to re-upload via "Request Changes".
+          </p>
+        </div>
+      ) : looksLikeImage ? (
         <a href={url} target="_blank" rel="noopener noreferrer" className="block">
-          <img src={url} alt={label} className="max-h-48 w-auto max-w-full border border-night-600" />
+          <img
+            src={url}
+            alt={label}
+            className="max-h-48 w-auto max-w-full border border-night-600"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
         </a>
       ) : (
         <a
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 text-sm text-gold-400 hover:text-gold-300 underline"
+          className="inline-flex items-center gap-2 text-sm text-gold-400 hover:text-gold-300 underline break-all"
         >
           <FileText size={14} className="flex-shrink-0" />
           View document
@@ -1802,7 +1869,7 @@ function StudentsView({ onError }: { onError: (e: Error) => never }) {
       params.set('limit', '20');
       if (search) params.set('search', search);
       if (status) params.set('status', status);
-      const data = await get(`/students?${params.toString()}`);
+      const data = await get(`/admin/students?${params.toString()}`);
       setStudents(data?.data?.students || []);
       setPagination(data?.data?.pagination || { current_page: 1, total_pages: 1, total_results: 0, per_page: 20 });
     } catch (err: any) {
@@ -1820,7 +1887,7 @@ function StudentsView({ onError }: { onError: (e: Error) => never }) {
     setDetail(null);
     setDetailLoading(true);
     try {
-      const data = await get(`/students/${s._id}`);
+      const data = await get(`/admin/students/${s._id}`);
       setDetail(data?.data || s);
     } catch (err: any) {
       setDetail(s);
@@ -2104,7 +2171,7 @@ function AnalyticsView({ onError }: { onError: (e: Error) => never }) {
         get('/admin/dashboard/overview'),
         get('/admin/hostels/dashboard'),
         get('/institute-applications/stats', APP_API_BASE),
-        get('/students/stats/summary'),
+        get('/admin/students/stats/summary'),
       ]);
       if (a.status === 'fulfilled') setOverview(a.value?.data ?? null);
       if (b.status === 'fulfilled') setHostelStats(b.value?.data ?? null);
