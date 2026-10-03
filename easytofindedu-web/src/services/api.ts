@@ -6,7 +6,8 @@ import { API_BASE_URL } from '../lib/api';
  */
 
 const getAuthToken = () => {
-  return localStorage.getItem('token');
+  // App-wide token key (matches AuthContext + the AI Counselor service).
+  return localStorage.getItem('etf_token');
 };
 
 const api = {
