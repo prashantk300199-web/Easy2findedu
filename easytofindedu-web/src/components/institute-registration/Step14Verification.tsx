@@ -148,15 +148,19 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
         credentials: 'include'
       });
 
+      let responseBody: any = null;
       if (!response.ok) {
-        throw new Error('Upload failed');
+        try { responseBody = await response.json(); } catch { /* ignore */ }
+        const msg = responseBody?.message || `Upload failed (HTTP ${response.status})`;
+        throw new Error(msg);
       }
 
       const result = await response.json();
       const uploadedUrl = result.data?.url || result.url || '';
 
       if (!uploadedUrl) {
-        throw new Error('Upload succeeded but no URL returned');
+        const msg = result?.message || 'Upload succeeded but no URL returned';
+        throw new Error(msg);
       }
 
       console.log('Upload successful:', { field, fieldName, uploadedUrl });
@@ -176,11 +180,12 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
 
       // Clear any stale validation error for this field
       setErrors((prev: any) => (prev[field] ? { ...prev, [field]: '' } : prev));
-    } catch (error) {
+    } catch (error: any) {
       console.error('Document upload failed:', error);
+      const detail = error?.message ? `: ${error.message}` : '';
       setErrors((prev: any) => ({
         ...prev,
-        [field]: 'Failed to upload document. Please try again.'
+        [field]: `Failed to upload document${detail}. Please try again.`
       }));
     } finally {
       setUploading('');
