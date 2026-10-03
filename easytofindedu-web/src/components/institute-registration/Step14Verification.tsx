@@ -225,26 +225,36 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
       newErrors.designation = 'Designation is required';
     }
 
-    if (!formData.idProofFile && !formData.idProofPreview) {
-      newErrors.idProof = 'Government ID proof is required';
+    if (!formData.idProofFile) {
+      newErrors.idProof = 'Government ID proof is required. Please wait for the upload to complete.';
     }
 
-    if (!formData.registrationDocFile && !formData.registrationDocPreview) {
-      newErrors.registrationDoc = 'Institute registration document is required';
+    if (!formData.registrationDocFile) {
+      newErrors.registrationDoc = 'Institute registration document is required. Please wait for the upload to complete.';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const isUploading = uploading === 'idProof' || uploading === 'registrationDoc' || uploading === 'addressProof';
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isUploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     if (validate()) {
       onNext(formData);
     }
   };
 
   const handleSave = () => {
+    if (isUploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     onSaveDraft(formData);
   };
 
@@ -265,7 +275,7 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
           <div className="border border-night-700 bg-night-900 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                {preview ? (
+                {preview && !preview.startsWith('blob:') ? (
                   <img
                     src={preview}
                     alt={label}
@@ -278,17 +288,26 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
                 )}
                 <div>
                   <p className="text-sm font-medium text-cream-100">
-                    {file?.name || 'Document uploaded'}
+                    {file?.name || (preview?.startsWith('blob:') ? 'Uploading…' : 'Document uploaded')}
                   </p>
                   <p className="text-xs text-cream-100/50">
-                    {file && (file.size / 1024).toFixed(2)} KB
+                    {uploading === field ? (
+                      <span className="text-gold-400">Uploading to cloud storage…</span>
+                    ) : file ? (
+                      `${(file.size / 1024).toFixed(2)} KB`
+                    ) : preview?.startsWith('blob:') ? (
+                      <span className="text-gold-400">Awaiting upload to finish…</span>
+                    ) : (
+                      'Uploaded'
+                    )}
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => removeFile(field)}
-                className="text-red-400 hover:text-red-300 transition-colors"
+                disabled={uploading === field}
+                className="text-red-400 hover:text-red-300 transition-colors disabled:opacity-30"
               >
                 <X size={20} />
               </button>
@@ -543,17 +562,17 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
           <button
             type="button"
             onClick={handleSave}
-            disabled={loading}
+            disabled={loading || isUploading}
             className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50"
           >
-            {loading ? 'Saving...' : 'Save Draft'}
+            {loading ? 'Saving...' : isUploading ? 'Uploading…' : 'Save Draft'}
           </button>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || isUploading}
             className="flex-1 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? 'Saving...' : 'Save & Continue'}
+            {loading ? 'Saving...' : isUploading ? 'Uploading…' : 'Save & Continue'}
           </button>
         </div>
       </form>
