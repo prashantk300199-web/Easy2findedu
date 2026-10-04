@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Edit2, Trash2, Users, Upload, X } from 'lucide-react';
+import { uploadDraftFile, isBlobUrl } from '../../lib/upload';
 
 interface Trainer {
   id: string;
@@ -61,6 +62,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
   const [trainers, setTrainers] = useState<Trainer[]>(data?.trainers || []);
   const [isAdding, setIsAdding] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [currentTrainer, setCurrentTrainer] = useState<Omit<Trainer, 'id'>>(emptyTrainer);
   const [errors, setErrors] = useState<any>({});
 
@@ -117,46 +119,29 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
         setErrors((prev: any) => ({ ...prev, photo: '' }));
       }
 
-      // Upload file immediately to get URL
-      await uploadPhoto(file);
-    }
-  };
-
-  const uploadPhoto = async (file: File) => {
-    try {
-      const token = localStorage.getItem('etf_token');
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('stepNumber', '8');
-      formData.append('fieldName', 'photoFile');
-
-      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
+      // Upload to cloud storage and only then write the real URL.
+      // Until that returns, the slot shows the blob preview + an
+      // 'Uploading…' state and the form cannot be submitted.
+      setUploadingPhoto(true);
+      try {
+        const url = await uploadDraftFile({
+          file,
+          stepNumber: 8,
+          fieldName: 'photoFile',
+        });
+        setCurrentTrainer(prev => ({
+          ...prev,
+          photoFile: url,
+          photoPreview: url,
+        }));
+      } catch (err: any) {
+        setErrors((prev: any) => ({
+          ...prev,
+          photo: `Upload failed: ${err?.message || 'unknown error'}. Please try again.`,
+        }));
+      } finally {
+        setUploadingPhoto(false);
       }
-
-      const result = await response.json();
-
-      // Store the URL in currentTrainer
-      setCurrentTrainer(prev => ({
-        ...prev,
-        photoFile: result.data?.url || result.url || '',
-        photoPreview: result.data?.url || result.url || prev.photoPreview
-      }));
-    } catch (error) {
-      console.error('Photo upload failed:', error);
-      setErrors((prev: any) => ({
-        ...prev,
-        photo: 'Failed to upload photo. Please try again.'
-      }));
     }
   };
 
@@ -461,15 +446,23 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                   <div className="mt-2">
                     {currentTrainer.photoPreview ? (
                       <div className="relative inline-block">
-                        <img
-                          src={currentTrainer.photoPreview}
-                          alt="Trainer preview"
-                          className="w-32 h-32 rounded-full object-cover border-2 border-gold-500/30"
-                        />
+                        {!isBlobUrl(currentTrainer.photoPreview) ? (
+                          <img
+                            src={currentTrainer.photoPreview}
+                            alt="Trainer preview"
+                            className="w-32 h-32 rounded-full object-cover border-2 border-gold-500/30"
+                          />
+                        ) : (
+                          <div className="w-32 h-32 rounded-full border-2 border-dashed border-gold-500/30 bg-night-900 flex flex-col items-center justify-center text-xs text-cream-100/60">
+                            <Upload size={20} className="text-gold-400 mb-1" />
+                            {uploadingPhoto ? 'Uploading…' : 'Awaiting…'}
+                          </div>
+                        )}
                         <button
                           type="button"
                           onClick={removePhoto}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
+                          disabled={uploadingPhoto}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg disabled:opacity-30"
                         >
                           <X size={16} />
                         </button>
@@ -483,6 +476,7 @@ export default function Step6Faculty({ data, onNext, onBack, onSaveDraft, loadin
                           accept="image/*"
                           onChange={handleFileChange}
                           className="hidden"
+                          disabled={uploadingPhoto}
                         />
                       </label>
                     )}
