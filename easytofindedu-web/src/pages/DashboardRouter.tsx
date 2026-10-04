@@ -23,6 +23,9 @@ export default function DashboardRouter() {
       case 'institute_owner':
         navigate('/institute-dashboard', { replace: true });
         break;
+      case 'college_owner':
+        navigate('/college-dashboard', { replace: true });
+        break;
       case 'owner': // hostel owner
         navigate('/hostel-dashboard', { replace: true });
         break;
