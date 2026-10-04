@@ -23,6 +23,8 @@ import { AdminDashboard } from './pages/AdminDashboard';
 import InstituteOwnerDashboard from './pages/InstituteOwnerDashboard';
 import DashboardRouter from './pages/DashboardRouter';
 import InstituteRegistration from './pages/InstituteRegistration';
+import CollegeOwnerDashboard from './pages/CollegeOwnerDashboard';
+import CollegeOwnerRegistrationNew from './pages/CollegeOwnerRegistrationNew';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WishlistPage } from './components/WishlistButton';
 // Student career pages
@@ -45,7 +47,7 @@ function ScrollToTop() {
 const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance'];
 // Pages with their own full-screen layout — no navbar/footer.
 const STANDALONE_ROUTES = ['/login'];
-const DASHBOARD_ROUTES_PREFIX = ['/dashboard', '/hostel-dashboard', '/institute-dashboard', '/institute-registration', '/institute-owner', '/admin'];
+const DASHBOARD_ROUTES_PREFIX = ['/dashboard', '/hostel-dashboard', '/institute-dashboard', '/institute-registration', '/institute-owner', '/college-dashboard', '/college-registration', '/college-owner', '/admin'];
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -64,6 +66,9 @@ function AnimatedRoutes() {
         <Route path="/institute-registration" element={<InstituteRegistration />} />
         <Route path="/institute-owner/register" element={<InstituteRegistration />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/college-dashboard" element={<CollegeOwnerDashboard />} />
+        <Route path="/college-registration" element={<CollegeOwnerRegistrationNew />} />
+        <Route path="/college-owner/register" element={<CollegeOwnerRegistrationNew />} />
       </Routes>
     );
   }

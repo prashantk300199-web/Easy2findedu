@@ -7,7 +7,7 @@ import { IMG } from '../lib/images';
 /* ─── types ──────────────────────────────────────────────── */
 
 type Tab = 'student' | 'partner';
-type PartnerKind = 'owner' | 'institute_owner';
+type PartnerKind = 'owner' | 'institute_owner' | 'college_owner';
 type Step = 'auth' | 'otp';
 type AuthMode = 'login' | 'register';
 
@@ -133,6 +133,7 @@ export function LoginPage() {
 
   const afterAuth = () => {
     if (role === 'institute_owner') navigate('/institute-dashboard');
+    else if (role === 'college_owner') navigate('/college-dashboard');
     else if (role === 'owner') navigate('/dashboard');
     else navigate('/');
   };
@@ -157,8 +158,14 @@ export function LoginPage() {
           ...(form.referralCode && { referralCode: form.referralCode }), // Include referral code if provided
         };
         await auth.register(data, role);
-        setPendingEmail(form.email);
-        setStep('otp');
+        // College owner has no email verification step — register() already
+        // saved the user/token, so just navigate. Other roles need OTP.
+        if (role === 'college_owner') {
+          afterAuth();
+        } else {
+          setPendingEmail(form.email);
+          setStep('otp');
+        }
       }
     } catch { /* error shown from context */ }
   }
@@ -218,7 +225,7 @@ export function LoginPage() {
     });
   }
 
-  const partnerLabel = partnerKind === 'owner' ? 'Hostel Owner' : 'Institute Owner';
+  const partnerLabel = partnerKind === 'owner' ? 'Hostel Owner' : partnerKind === 'institute_owner' ? 'Institute Owner' : 'College Owner';
 
   async function completeGoogleLogin() {
     if (!pendingGoogle) {
@@ -307,19 +314,19 @@ export function LoginPage() {
 
               {/* Partner kind toggle */}
               {tab === 'partner' && step === 'auth' && (
-                <div className="mb-8 flex gap-3">
-                  {(['owner', 'institute_owner'] as PartnerKind[]).map((k) => (
+                <div className="mb-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {(['owner', 'institute_owner', 'college_owner'] as PartnerKind[]).map((k) => (
                     <button
                       key={k}
                       type="button"
                       onClick={() => setPartnerKind(k)}
-                      className={`flex-1 py-3 text-[12px] uppercase tracking-wide2 border transition-colors duration-300 ${
+                      className={`py-3 text-[12px] uppercase tracking-wide2 border transition-colors duration-300 ${
                         partnerKind === k
                           ? 'border-gold-500 bg-gold-500 text-night-800'
                           : 'border-cream-300 text-ink-500 hover:border-gold-500/50'
                       }`}
                     >
-                      {k === 'owner' ? 'Hostel Owner' : 'Institute Owner'}
+                      {k === 'owner' ? 'Hostel Owner' : k === 'institute_owner' ? 'Institute Owner' : 'College Owner'}
                     </button>
                   ))}
                 </div>

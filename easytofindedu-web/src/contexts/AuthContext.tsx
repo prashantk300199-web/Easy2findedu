@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useState, type ReactNode } from
 
 const BASE = import.meta.env.VITE_API_BASE_URL ?? 'https://easytofindedu.onrender.com/api/v1';
 
-export type UserRole = 'student' | 'owner' | 'institute_owner';
+export type UserRole = 'student' | 'owner' | 'institute_owner' | 'college_owner';
 
 export interface AuthUser {
   _id: string;
@@ -63,6 +63,16 @@ const ROLE_CONFIG: Record<UserRole, { register: string; login: string; verifyOtp
     resendOtp: `${BASE}/institute/auth/resend-otp`,
     logout: `${BASE}/institute/auth/logout`,
   },
+  college_owner: {
+    // College owner flow has no OTP — register and login both return a token
+    // immediately. verifyOtp/resendOtp endpoints are not actually used but
+    // must exist in the type to satisfy the record shape.
+    register: `${BASE}/college/auth/register`,
+    login: `${BASE}/college/auth/login`,
+    verifyOtp: `${BASE}/college/auth/verify-otp`,
+    resendOtp: `${BASE}/college/auth/resend-otp`,
+    logout: `${BASE}/college/auth/logout`,
+  },
 };
 
 const USER_KEY = 'etf_user';
@@ -94,6 +104,7 @@ const COOKIE_NAMES: Record<UserRole, string> = {
   student: 'studentToken',
   owner: 'token',
   institute_owner: 'instituteOwnerToken',
+  college_owner: 'collegeOwnerToken',
 };
 
 async function post(url: string, body: object, token?: string | null) {
@@ -140,8 +151,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(async (data: RegisterData, role: UserRole) => {
     setLoading();
     try {
-      await post(ROLE_CONFIG[role].register, data);
-      setState((s) => ({ ...s, loading: false }));
+      const res = await post(ROLE_CONFIG[role].register, data);
+      // College owner registration has no OTP step — backend returns
+      // { token, owner } immediately, so we set the user here.
+      // Other roles require OTP verification before login.
+      if (res.data?.token && res.data?.owner) {
+        setUser({ ...res.data.owner, role }, res.data.token);
+      } else {
+        setState((s) => ({ ...s, loading: false }));
+      }
+      return res;
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Registration failed');
       throw e;
