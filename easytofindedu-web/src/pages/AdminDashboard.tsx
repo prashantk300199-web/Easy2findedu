@@ -122,6 +122,9 @@ interface InstituteApplication {
   step1InstituteInfo?: any;
   step2Category?: any;
   step3LocationContact?: any;
+  step4Courses?: any;
+  step5Batches?: any;
+  step6LearningExperience?: any;
   step7Facilities?: any;
   step8Faculty?: any;
   step9Fees?: any;
@@ -130,6 +133,7 @@ interface InstituteApplication {
   step12Results?: any;
   step13Gallery?: any;
   step14Verification?: any;
+  [key: string]: any;
 }
 
 interface Pagination {
