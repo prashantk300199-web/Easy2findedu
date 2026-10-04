@@ -49,6 +49,13 @@ const FACILITY_LABELS: Record<string, string> = {
 };
 
 export function facilityList(institute: Institute): string[] {
+  // Prefer the raw facilityList from the registration form — preserves
+  // custom strings like "Dance Studio" that don't map to the booleans
+  // object. Fall back to the booleans for backwards-compat with records
+  // that only have the mapped shape.
+  if (Array.isArray(institute.facilityList) && institute.facilityList.length > 0) {
+    return institute.facilityList.filter(Boolean);
+  }
   const f = institute.facilities;
   if (!f) return [];
   return Object.entries(f)
