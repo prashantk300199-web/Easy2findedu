@@ -55,6 +55,9 @@ export interface Institute {
     distanceFromLandmarks?: { landmarkName?: string; distanceInKm?: number }[];
   };
   facilities?: InstituteFacilities;
+  // Custom facility strings from the registration flow that don't map
+  // to the booleans object above (e.g. "Dance Studio", "Mirrors").
+  facilityList?: string[];
   academicInfo?: {
     studentFacultyRatio?: string;
     teachingMethodology?: string;
