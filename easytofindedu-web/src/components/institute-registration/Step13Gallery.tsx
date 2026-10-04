@@ -81,8 +81,8 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
         fieldName: 'galleryFiles',
       });
       // Add uploaded URL to galleryFiles (replaces the matching blob preview)
-      setFormData(prev => {
-        const blobIdx = prev.galleryPreviews.findIndex((p) => p.startsWith('blob:'));
+      setFormData((prev: any) => {
+        const blobIdx = prev.galleryPreviews.findIndex((p: string) => p.startsWith('blob:'));
         const nextPreviews = [...prev.galleryPreviews];
         if (blobIdx >= 0) nextPreviews[blobIdx] = uploadedUrl;
         else nextPreviews.push(uploadedUrl);
@@ -99,9 +99,9 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
         gallery: `Upload failed: ${error?.message || 'unknown error'}. Please try again.`
       }));
       // Drop the failed blob preview so the user can retry
-      setFormData(prev => ({
+      setFormData((prev: any) => ({
         ...prev,
-        galleryPreviews: prev.galleryPreviews.filter((p) => !p.startsWith('blob:') || p !== URL.createObjectURL(file))
+        galleryPreviews: prev.galleryPreviews.filter((p: string) => !p.startsWith('blob:') || p !== URL.createObjectURL(file))
       }));
     } finally {
       setUploading(false);
@@ -160,7 +160,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (uploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     if (validate()) {
@@ -170,7 +170,7 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
 
   const handleSave = () => {
     if (uploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     onSaveDraft(formData);

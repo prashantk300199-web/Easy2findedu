@@ -164,7 +164,7 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isUploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     if (validate()) {
@@ -174,7 +174,7 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
 
   const handleSave = () => {
     if (isUploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     onSaveDraft(formData);

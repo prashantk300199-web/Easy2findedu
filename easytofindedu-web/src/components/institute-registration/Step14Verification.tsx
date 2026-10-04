@@ -242,7 +242,7 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (isUploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     if (validate()) {
@@ -252,7 +252,7 @@ export default function Step11Verification({ data, onNext, onBack, onSaveDraft, 
 
   const handleSave = () => {
     if (isUploading) {
-      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      setErrors((prev: any) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
       return;
     }
     onSaveDraft(formData);

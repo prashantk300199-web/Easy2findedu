@@ -42,7 +42,7 @@ const STEP_LABELS = [
   'Verification',
 ];
 
-function formatDate(value) {
+function formatDate(value: string | undefined) {
   if (!value) return '';
   return new Date(value).toLocaleDateString('en-IN', {
     day: 'numeric',
@@ -51,7 +51,7 @@ function formatDate(value) {
   });
 }
 
-function daysSince(iso) {
+function daysSince(iso: string | undefined) {
   if (!iso) return 0;
   const ms = Date.now() - new Date(iso).getTime();
   return Math.max(0, Math.floor(ms / (1000 * 60 * 60 * 24)));
