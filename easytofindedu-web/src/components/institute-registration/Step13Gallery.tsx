@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Image, Video, Globe, Upload, X } from 'lucide-react';
+import { uploadDraftFile, isBlobUrl } from '../../lib/upload';
 
 interface Step10Props {
   data?: any;
@@ -74,38 +75,33 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
   const uploadGalleryImage = async (file: File) => {
     try {
       setUploading(true);
-      const token = localStorage.getItem('etf_token');
-      const formDataUpload = new FormData();
-      formDataUpload.append('file', file);
-      formDataUpload.append('stepNumber', '13');
-      formDataUpload.append('fieldName', 'galleryFiles');
-
-      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formDataUpload,
-        credentials: 'include'
+      const uploadedUrl = await uploadDraftFile({
+        file,
+        stepNumber: 13,
+        fieldName: 'galleryFiles',
       });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const result = await response.json();
-      const uploadedUrl = result.data?.url || result.url || '';
-
-      // Add uploaded URL to galleryFiles
-      setFormData(prev => ({
-        ...prev,
-        galleryFiles: [...prev.galleryFiles, uploadedUrl]
-      }));
-    } catch (error) {
+      // Add uploaded URL to galleryFiles (replaces the matching blob preview)
+      setFormData(prev => {
+        const blobIdx = prev.galleryPreviews.findIndex((p) => p.startsWith('blob:'));
+        const nextPreviews = [...prev.galleryPreviews];
+        if (blobIdx >= 0) nextPreviews[blobIdx] = uploadedUrl;
+        else nextPreviews.push(uploadedUrl);
+        return {
+          ...prev,
+          galleryFiles: [...prev.galleryFiles, uploadedUrl],
+          galleryPreviews: nextPreviews,
+        };
+      });
+    } catch (error: any) {
       console.error('Gallery image upload failed:', error);
       setErrors((prev: any) => ({
         ...prev,
-        gallery: 'Failed to upload image. Please try again.'
+        gallery: `Upload failed: ${error?.message || 'unknown error'}. Please try again.`
+      }));
+      // Drop the failed blob preview so the user can retry
+      setFormData(prev => ({
+        ...prev,
+        galleryPreviews: prev.galleryPreviews.filter((p) => !p.startsWith('blob:') || p !== URL.createObjectURL(file))
       }));
     } finally {
       setUploading(false);
@@ -163,12 +159,20 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (uploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     if (validate()) {
       onNext(formData);
     }
   };
 
   const handleSave = () => {
+    if (uploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     onSaveDraft(formData);
   };
 
@@ -212,15 +216,23 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {formData.galleryPreviews.map((preview: string, index: number) => (
                   <div key={index} className="relative group">
-                    <img
-                      src={preview}
-                      alt={`Gallery ${index + 1}`}
-                      className="w-full h-32 object-cover rounded-lg border border-night-700"
-                    />
+                    {!isBlobUrl(preview) ? (
+                      <img
+                        src={preview}
+                        alt={`Gallery ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg border border-night-700"
+                      />
+                    ) : (
+                      <div className="w-full h-32 rounded-lg border-2 border-dashed border-gold-500/30 bg-night-900 flex flex-col items-center justify-center text-xs text-cream-100/60">
+                        <Upload size={18} className="text-gold-400 mb-1" />
+                        {uploading ? 'Uploading…' : 'Awaiting…'}
+                      </div>
+                    )}
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
-                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                      disabled={uploading}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg disabled:opacity-30"
                     >
                       <X size={16} />
                     </button>
@@ -378,17 +390,17 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
           <button
             type="button"
             onClick={handleSave}
-            disabled={loading}
+            disabled={loading || uploading}
             className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
-            {loading ? 'Saving...' : 'Save Draft'}
+            {loading ? 'Saving...' : uploading ? 'Uploading…' : 'Save Draft'}
           </button>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || uploading}
             className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
-            {loading ? 'Saving...' : 'Save & Continue'}
+            {loading ? 'Saving...' : uploading ? 'Uploading…' : 'Save & Continue'}
           </button>
         </div>
       </form>

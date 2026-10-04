@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
+import { uploadDraftFile, isBlobUrl } from '../../lib/upload';
 
 interface Step1Props {
   data?: any;
@@ -56,6 +57,8 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
     }
   };
 
+  const [uploading, setUploading] = useState<'logo' | 'coverImage' | null>(null);
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'coverImage') => {
     const file = e.target.files?.[0];
     if (file) {
@@ -97,69 +100,38 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
         setErrors((prev: any) => ({ ...prev, [type]: '' }));
       }
 
-      // Upload file immediately to get URL
-      await uploadFile(file, type);
-    }
-  };
-
-  const uploadFile = async (file: File, type: 'logo' | 'coverImage') => {
-    try {
-      const token = localStorage.getItem('etf_token');
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('stepNumber', '1');
-      formData.append('fieldName', type === 'logo' ? 'logoFile' : 'coverImageFile');
-
-      const response = await fetch('https://easytofindedu.onrender.com/api/v1/institute/draft/upload', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`
-        },
-        body: formData,
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Upload failed');
-      }
-
-      const result = await response.json();
-
-      // Store the URL in formData
-      if (type === 'logo') {
-        setFormData(prev => ({
+      // Upload to cloud storage and only then write the real URL.
+      // Until that returns, the slot shows the blob preview + an
+      // 'Uploading…' state and the form cannot be submitted.
+      setUploading(type);
+      try {
+        const url = await uploadDraftFile({
+          file,
+          stepNumber: 1,
+          fieldName: type === 'logo' ? 'logoFile' : 'coverImageFile',
+        });
+        if (type === 'logo') {
+          setFormData(prev => ({ ...prev, logoFile: url, logoPreview: url }));
+        } else {
+          setFormData(prev => ({ ...prev, coverImageFile: url, coverImagePreview: url }));
+        }
+      } catch (err: any) {
+        setErrors((prev: any) => ({
           ...prev,
-          logoFile: result.data.url
+          [type]: `Upload failed: ${err?.message || 'unknown error'}. Please try again.`,
         }));
-      } else {
-        setFormData(prev => ({
-          ...prev,
-          coverImageFile: result.data.url
-        }));
+      } finally {
+        setUploading(null);
       }
-    } catch (error) {
-      console.error('File upload error:', error);
-      setErrors((prev: any) => ({
-        ...prev,
-        [type]: 'Failed to upload file. Please try again.'
-      }));
     }
   };
 
   const removeFile = (type: 'logo' | 'coverImage') => {
-    if (type === 'logo') {
-      setFormData(prev => ({
-        ...prev,
-        logoFile: '',
-        logoPreview: ''
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        coverImageFile: '',
-        coverImagePreview: ''
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [`${type}File`]: '',
+      [`${type}Preview`]: '',
+    }));
   };
 
   const validate = () => {
@@ -179,22 +151,32 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
       newErrors.about = 'Description must be 200 characters or less';
     }
 
-    if (!formData.logoPreview && !formData.logoFile) {
-      newErrors.logo = 'Institute logo is required';
+    if (!formData.logoFile) {
+      newErrors.logo = 'Institute logo is required. Please wait for the upload to complete.';
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const isUploading = uploading !== null;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (isUploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     if (validate()) {
       onNext(formData);
     }
   };
 
   const handleSave = () => {
+    if (isUploading) {
+      setErrors((prev) => ({ ...prev, _form: 'A file is still uploading. Please wait.' }));
+      return;
+    }
     onSaveDraft(formData);
   };
 
@@ -324,15 +306,23 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
           <div className="mt-2">
             {formData.logoPreview ? (
               <div className="relative inline-block">
-                <img
-                  src={formData.logoPreview}
-                  alt="Logo preview"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-gold-500/30"
-                />
+                {!isBlobUrl(formData.logoPreview) ? (
+                  <img
+                    src={formData.logoPreview}
+                    alt="Logo preview"
+                    className="w-32 h-32 object-cover rounded-lg border-2 border-gold-500/30"
+                  />
+                ) : (
+                  <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gold-500/30 bg-night-900 flex flex-col items-center justify-center text-xs text-cream-100/60">
+                    <Upload size={20} className="text-gold-400 mb-1" />
+                    {uploading === 'logo' ? 'Uploading…' : 'Awaiting upload…'}
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => removeFile('logo')}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
+                  disabled={uploading === 'logo'}
+                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg disabled:opacity-30"
                 >
                   <X size={16} />
                 </button>
@@ -349,8 +339,12 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
                   accept="image/*"
                   onChange={(e) => handleFileChange(e, 'logo')}
                   className="hidden"
+                  disabled={uploading === 'logo'}
                 />
               </label>
+            )}
+            {uploading === 'logo' && (
+              <p className="text-xs text-gold-400 mt-1">Uploading logo to cloud storage…</p>
             )}
           </div>
           {errors.logo && <p className="text-red-400 text-sm mt-1">{errors.logo}</p>}
@@ -364,15 +358,23 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
           <div className="mt-2">
             {formData.coverImagePreview ? (
               <div className="relative inline-block w-full">
-                <img
-                  src={formData.coverImagePreview}
-                  alt="Cover preview"
-                  className="w-full h-48 object-cover rounded-lg border-2 border-gold-500/30"
-                />
+                {!isBlobUrl(formData.coverImagePreview) ? (
+                  <img
+                    src={formData.coverImagePreview}
+                    alt="Cover preview"
+                    className="w-full h-48 object-cover rounded-lg border-2 border-gold-500/30"
+                  />
+                ) : (
+                  <div className="w-full h-48 rounded-lg border-2 border-dashed border-gold-500/30 bg-night-900 flex flex-col items-center justify-center text-xs text-cream-100/60">
+                    <Upload size={20} className="text-gold-400 mb-1" />
+                    {uploading === 'coverImage' ? 'Uploading…' : 'Awaiting upload…'}
+                  </div>
+                )}
                 <button
                   type="button"
                   onClick={() => removeFile('coverImage')}
-                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg"
+                  disabled={uploading === 'coverImage'}
+                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition-colors shadow-lg disabled:opacity-30"
                 >
                   <X size={16} />
                 </button>
@@ -389,8 +391,12 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
                   accept="image/*"
                   onChange={(e) => handleFileChange(e, 'coverImage')}
                   className="hidden"
+                  disabled={uploading === 'coverImage'}
                 />
               </label>
+            )}
+            {uploading === 'coverImage' && (
+              <p className="text-xs text-gold-400 mt-1">Uploading cover image to cloud storage…</p>
             )}
           </div>
           {errors.coverImage && <p className="text-red-400 text-sm mt-1">{errors.coverImage}</p>}
@@ -401,17 +407,17 @@ export default function Step1InstituteInfo({ data, onNext, onSaveDraft, loading 
           <button
             type="button"
             onClick={handleSave}
-            disabled={loading}
+            disabled={loading || isUploading}
             className="px-6 py-3 border border-night-700 text-cream-100 rounded-lg hover:bg-night-700 disabled:opacity-50 transition-all font-semibold"
           >
-            {loading ? 'Saving...' : 'Save Draft'}
+            {loading ? 'Saving...' : isUploading ? 'Uploading…' : 'Save Draft'}
           </button>
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || isUploading}
             className="flex-1 px-6 py-3 bg-gold-500 text-night-900 rounded-lg hover:bg-gold-400 disabled:opacity-50 transition-all font-bold shadow-goldGlow"
           >
-            {loading ? 'Saving...' : 'Save & Continue'}
+            {loading ? 'Saving...' : isUploading ? 'Uploading…' : 'Save & Continue'}
           </button>
         </div>
       </form>
