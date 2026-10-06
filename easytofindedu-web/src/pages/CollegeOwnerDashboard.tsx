@@ -202,12 +202,17 @@ export default function CollegeOwnerDashboard() {
         {/* Hero */}
         <div className="border-b border-night-800 pb-8 mb-10 flex items-end justify-between gap-4 flex-wrap">
           <div>
-            <div className="overline mb-2">College Owner</div>
-            <h1 className="text-[36px] md:text-[42px] font-display font-semibold text-cream-100 leading-tight">
+            <div className="overline mb-2" style={{ color: '#C9A96A' }}>College Owner</div>
+            <h1
+              className="text-[36px] md:text-[42px] font-display font-semibold leading-tight"
+              style={{ color: '#FBF8F2' }}
+            >
               Welcome back
-              <span className="block text-gold-500 italic mt-1">{user?.name || 'College Owner'}</span>
+              <span className="block italic mt-1" style={{ color: '#C9A96A' }}>
+                {user?.name || 'College Owner'}
+              </span>
             </h1>
-            <p className="mt-3 text-sm text-cream-100/60">
+            <p className="mt-3 text-sm" style={{ color: 'rgba(251, 248, 242, 0.7)' }}>
               {collegeName} · {draftStatus ? `Step ${draftStatus.currentStep || 1} of ${TOTAL_STEPS}` : 'Not started'}
             </p>
           </div>
