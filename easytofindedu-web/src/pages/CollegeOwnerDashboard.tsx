@@ -117,7 +117,13 @@ function EmptyState({ title, hint }: { title: string; hint: string }) {
     <div className="border border-night-700 bg-night-900/50 p-12 text-center">
       <Building2 className="mx-auto text-gold-500 mb-4" size={32} />
       <h3 className="font-display text-2xl text-cream-100 mb-2">{title}</h3>
-      <p className="text-sm text-cream-100/60">{hint}</p>
+      <p className="text-sm text-cream-100/60 mb-6">{hint}</p>
+      <a
+        href="/college-registration"
+        className="inline-block px-6 py-3 bg-gold-500 text-night-800 hover:bg-gold-400 text-[12px] uppercase tracking-wide2 font-semibold"
+      >
+        Start College Onboarding
+      </a>
     </div>
   );
 }
@@ -197,10 +203,11 @@ export default function CollegeOwnerDashboard() {
         <div className="border-b border-night-800 pb-8 mb-10 flex items-end justify-between gap-4 flex-wrap">
           <div>
             <div className="overline mb-2">College Owner</div>
-            <h1 className="font-display text-4xl">
-              Welcome back, {user?.name || 'College Owner'}
+            <h1 className="text-[36px] md:text-[42px] font-display font-semibold text-cream-100 leading-tight">
+              Welcome back
+              <span className="block text-gold-500 italic mt-1">{user?.name || 'College Owner'}</span>
             </h1>
-            <p className="mt-2 text-sm text-cream-100/60">
+            <p className="mt-3 text-sm text-cream-100/60">
               {collegeName} · {draftStatus ? `Step ${draftStatus.currentStep || 1} of ${TOTAL_STEPS}` : 'Not started'}
             </p>
           </div>
