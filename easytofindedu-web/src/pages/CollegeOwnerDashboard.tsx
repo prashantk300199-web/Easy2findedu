@@ -34,7 +34,7 @@ const STEP_LABELS = [
 ];
 
 const STATUS_BADGE = {
-  draft: { label: 'Draft', classes: 'border-night-700 bg-night-800/40 text-cream-100/80', icon: Edit2 },
+  draft: { label: 'Draft', classes: 'border-night-700 bg-night-800/40 text-white/80', icon: Edit2 },
   submitted: { label: 'Submitted', classes: 'border-blue-400/40 bg-blue-400/5 text-blue-300', icon: Clock },
   under_review: { label: 'Under Review', classes: 'border-blue-400/40 bg-blue-400/5 text-blue-300', icon: Eye },
   changes_requested: { label: 'Changes Requested', classes: 'border-amber-400/40 bg-amber-400/5 text-amber-300', icon: AlertCircle },
@@ -69,7 +69,7 @@ function ProgressTimeline({
     <div>
       <div className="flex items-center justify-between mb-3">
         <span className="overline">Application progress</span>
-        <span className="text-sm text-cream-100/70">{completionPercentage}% complete</span>
+        <span className="text-sm text-white/70">{completionPercentage}% complete</span>
       </div>
       <div className="relative h-1.5 bg-night-800 mb-6">
         <motion.div
@@ -89,7 +89,7 @@ function ProgressTimeline({
               className={`border px-2 py-2 text-[10px] uppercase tracking-overline text-center ${
                 reached
                   ? 'border-gold-500/60 bg-gold-500/10 text-gold-300'
-                  : 'border-night-700 bg-night-800/30 text-cream-100/40'
+                  : 'border-night-700 bg-night-800/30 text-white/40'
               }`}
               title={`Step ${stepNum} of ${TOTAL_STEPS}: ${label}`}
             >
@@ -107,7 +107,7 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="border border-night-700 bg-night-900/50 px-5 py-4">
       <div className="overline mb-1">{label}</div>
-      <div className="font-display text-2xl text-cream-100">{value}</div>
+      <div className="font-display text-2xl text-white">{value}</div>
     </div>
   );
 }
@@ -116,8 +116,8 @@ function EmptyState({ title, hint }: { title: string; hint: string }) {
   return (
     <div className="border border-night-700 bg-night-900/50 p-12 text-center">
       <Building2 className="mx-auto text-gold-500 mb-4" size={32} />
-      <h3 className="font-display text-2xl text-cream-100 mb-2">{title}</h3>
-      <p className="text-sm text-cream-100/60 mb-6">{hint}</p>
+      <h3 className="font-display text-2xl text-white mb-2">{title}</h3>
+      <p className="text-sm text-white/60 mb-6">{hint}</p>
       <a
         href="/college-registration"
         className="inline-block px-6 py-3 bg-gold-500 text-night-800 hover:bg-gold-400 text-[12px] uppercase tracking-wide2 font-semibold"
@@ -177,7 +177,7 @@ export default function CollegeOwnerDashboard() {
       <div className="min-h-screen bg-night-950 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="w-10 h-10 text-gold-500 animate-spin mb-4" />
-          <p className="text-cream-100/60">Loading your dashboard…</p>
+          <p className="text-white/60">Loading your dashboard…</p>
         </div>
       </div>
     );
@@ -197,7 +197,10 @@ export default function CollegeOwnerDashboard() {
   const collegeName = step1.collegeName || 'Your college';
 
   return (
-    <div className="min-h-screen bg-night-950 text-cream-100">
+    <div
+      className="min-h-screen text-white"
+      style={{ backgroundColor: '#050912' }}
+    >
       <div className="max-w-6xl mx-auto px-6 py-12">
         {/* Hero */}
         <div className="border-b border-night-800 pb-8 mb-10 flex items-end justify-between gap-4 flex-wrap">
@@ -254,7 +257,7 @@ export default function CollegeOwnerDashboard() {
                 <div className="flex items-center gap-2 mb-2 text-amber-300 overline">
                   <AlertCircle size={16} /> Changes Required
                 </div>
-                <p className="text-cream-100/80">{draftStatus.adminFeedback}</p>
+                <p className="text-white/80">{draftStatus.adminFeedback}</p>
               </div>
             )}
 
@@ -263,7 +266,7 @@ export default function CollegeOwnerDashboard() {
                 <div className="flex items-center gap-2 mb-2 text-red-300 overline">
                   <XCircle size={16} /> Application Rejected
                 </div>
-                <p className="text-cream-100/80">{draftStatus.rejectionReason || 'No reason provided.'}</p>
+                <p className="text-white/80">{draftStatus.rejectionReason || 'No reason provided.'}</p>
               </div>
             )}
 
@@ -272,7 +275,7 @@ export default function CollegeOwnerDashboard() {
                 <div className="flex items-center gap-2 mb-2 text-orange-300 overline">
                   <ShieldOff size={16} /> College Suspended
                 </div>
-                <p className="text-cream-100/80">Your college is currently suspended and hidden from the public site.</p>
+                <p className="text-white/80">Your college is currently suspended and hidden from the public site.</p>
               </div>
             )}
 
@@ -281,7 +284,7 @@ export default function CollegeOwnerDashboard() {
                 <div className="flex items-center gap-2 text-green-300 overline">
                   <CheckCircle size={16} /> Application Verified
                 </div>
-                <p className="text-cream-100/80 mt-2">
+                <p className="text-white/80 mt-2">
                   Your college is live on the public site. You can still edit your application.
                 </p>
               </div>
@@ -310,7 +313,7 @@ export default function CollegeOwnerDashboard() {
               <button
                 type="button"
                 onClick={loadDraftStatus}
-                className="px-6 py-3 border border-night-700 text-cream-100/70 hover:border-cream-300 hover:text-cream-100 text-[12px] uppercase tracking-wide2"
+                className="px-6 py-3 border border-night-700 text-white/70 hover:border-cream-300 hover:text-white text-[12px] uppercase tracking-wide2"
               >
                 <RefreshCw size={14} className="inline mr-2" />
                 Refresh
