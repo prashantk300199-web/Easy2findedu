@@ -72,21 +72,21 @@ export default function Step8Placements({ data, onNext, onBack, onSaveDraft, loa
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Placements</h2>
-      <p className="text-cream-100/60 mb-8">Provide placement information where available.</p>
+      <h2 className="font-display text-3xl text-white mb-2">Placements</h2>
+      <p className="text-white/70 mb-8">Provide placement information where available.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
           <div className="border border-night-700 p-4 bg-night-900/40">
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" name="placementCell" checked={formData.placementCell} onChange={handleChange} className="w-5 h-5" />
-              <span className="text-cream-100">Placement Cell</span>
+              <span className="text-white">Placement Cell</span>
             </label>
           </div>
           <div className="border border-night-700 p-4 bg-night-900/40">
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" name="placementAssistance" checked={formData.placementAssistance} onChange={handleChange} className="w-5 h-5" />
-              <span className="text-cream-100">Placement Assistance</span>
+              <span className="text-white">Placement Assistance</span>
             </label>
           </div>
         </div>
@@ -98,57 +98,57 @@ export default function Step8Placements({ data, onNext, onBack, onSaveDraft, loa
         </div>
 
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Top Recruiters</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Top Recruiters</label>
           <input
             name="topRecruiters"
             value={formData.topRecruiters}
             onChange={handleChange}
             placeholder="Comma-separated: TCS, Infosys, Wipro…"
-            className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+            className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
           />
         </div>
 
         <div className="border border-night-700 p-4 bg-night-900/40">
           <label className="flex items-center gap-3 cursor-pointer">
             <input type="checkbox" name="internshipOpportunities" checked={formData.internshipOpportunities} onChange={handleChange} className="w-5 h-5" />
-            <span className="text-cream-100">Internship Opportunities Available</span>
+            <span className="text-white">Internship Opportunities Available</span>
           </label>
         </div>
 
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Placement Description</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Placement Description</label>
           <textarea
             name="placementDescription"
             value={formData.placementDescription}
             onChange={handleChange}
             rows={3}
-            className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+            className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
             placeholder="Brief overview of the placement program"
           />
         </div>
 
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Placement Report Document</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Placement Report Document</label>
           {formData.placementReportFile ? (
             <div className="flex items-center gap-3 bg-night-900 border border-night-700 p-3">
-              <span className="text-sm text-cream-100/80 flex-1 truncate">{formData.placementReportFile}</span>
-              <a href={formData.placementReportFile} target="_blank" rel="noreferrer" className="text-gold-400 text-sm hover:underline">View</a>
+              <span className="text-sm text-white/80 flex-1 truncate">{formData.placementReportFile}</span>
+              <a href={formData.placementReportFile} target="_blank" rel="noreferrer" className="text-[#D9C08E] text-sm hover:underline">View</a>
               <button type="button" onClick={() => setFormData((p) => ({ ...p, placementReportFile: '' }))} className="text-red-400">
                 <X size={16} />
               </button>
             </div>
           ) : (
             <label className="flex items-center gap-3 bg-night-900 border border-night-700 border-dashed p-3 cursor-pointer">
-              <Upload size={18} className="text-gold-400" />
-              <span className="text-sm text-cream-100/70">{uploading ? 'Uploading…' : 'Click to upload PDF / image'}</span>
+              <Upload size={18} className="text-[#D9C08E]" />
+              <span className="text-sm text-white/70">{uploading ? 'Uploading…' : 'Click to upload PDF / image'}</span>
               <input type="file" accept="image/*,application/pdf" onChange={handleReportUpload} disabled={uploading} className="hidden" />
             </label>
           )}
         </div>
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
-          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -163,9 +163,9 @@ export default function Step8Placements({ data, onNext, onBack, onSaveDraft, loa
 function Field({ label, type = 'text', name, value, onChange, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input type={type} name={name} value={value} onChange={onChange} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }

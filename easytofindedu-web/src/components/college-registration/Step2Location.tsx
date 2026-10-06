@@ -64,18 +64,18 @@ export default function Step2Location({ data, onNext, onBack, onSaveDraft, loadi
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Location & Campus</h2>
-      <p className="text-cream-100/60 mb-8">Where is your college located?</p>
+      <h2 className="font-display text-3xl text-white mb-2">Location & Campus</h2>
+      <p className="text-white/70 mb-8">Where is your college located?</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Full Address *</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Full Address *</label>
           <textarea
             name="fullAddress"
             value={formData.fullAddress}
             onChange={handleChange}
             rows={3}
-            className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+            className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
             placeholder="Street address, building, area"
           />
           {errors.fullAddress && <p className="text-red-400 text-sm mt-1">{errors.fullAddress}</p>}
@@ -94,29 +94,29 @@ export default function Step2Location({ data, onNext, onBack, onSaveDraft, loadi
         </div>
 
         <div className="border-t border-night-700 pt-6">
-          <h3 className="font-display text-xl text-cream-100 mb-4">Campus Details</h3>
+          <h3 className="font-display text-xl text-white mb-4">Campus Details</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <Field label="Campus Name" name="campusName" value={formData.campusName} onChange={handleChange} placeholder="e.g. Main Campus, North Campus" required={false} />
             <Field label="Campus Type" name="campusType" value={formData.campusType} onChange={handleChange} placeholder="e.g. Urban, Rural, Suburban" required={false} />
           </div>
           <div className="mt-4">
-            <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Campus Description</label>
+            <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Campus Description</label>
             <textarea
               name="campusDescription"
               value={formData.campusDescription}
               onChange={handleChange}
               rows={3}
-              className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+              className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
               placeholder="Short description of your campus"
             />
           </div>
         </div>
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             Previous
           </button>
-          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -131,14 +131,14 @@ export default function Step2Location({ data, onNext, onBack, onSaveDraft, loadi
 function Field({ label, name, value, onChange, placeholder, required = true, error }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input
         name={name}
         value={value}
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
       />
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </div>

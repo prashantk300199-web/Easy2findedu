@@ -83,12 +83,12 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Gallery & Media</h2>
-      <p className="text-cream-100/60 mb-8">Upload images of your campus and infrastructure.</p>
+      <h2 className="font-display text-3xl text-white mb-2">Gallery & Media</h2>
+      <p className="text-white/70 mb-8">Upload images of your campus and infrastructure.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Campus Images</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Campus Images</label>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
             {previews.map((src, i) => (
               <div key={i} className="relative group">
@@ -104,8 +104,8 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
             ))}
           </div>
           <label className="flex items-center gap-3 border border-night-700 border-dashed p-4 cursor-pointer hover:bg-night-900/40">
-            <Upload size={18} className="text-gold-400" />
-            <span className="text-cream-100/70 text-sm">{uploading ? 'Uploading…' : 'Click to upload image'}</span>
+            <Upload size={18} className="text-[#D9C08E]" />
+            <span className="text-white/70 text-sm">{uploading ? 'Uploading…' : 'Click to upload image'}</span>
             <input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} className="hidden" />
           </label>
         </div>
@@ -120,8 +120,8 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
         </div>
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
-          <button type="button" onClick={() => onSaveDraft({ galleryFiles: files, galleryPreviews: files, ...social })} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={() => onSaveDraft({ galleryFiles: files, galleryPreviews: files, ...social })} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -136,9 +136,9 @@ export default function Step10Gallery({ data, onNext, onBack, onSaveDraft, loadi
 function Field({ label, name, value, onChange, placeholder, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input name={name} value={value || ''} onChange={onChange} placeholder={placeholder} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }
