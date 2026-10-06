@@ -160,6 +160,26 @@ export interface College {
     foodIncluded?: boolean;
     otherFees?: number;
   };
+  // Owner-submitted courses (set by the approval transform when a
+  // college is submitted via the 12-step registration). Each entry is
+  // a self-contained object with name, degree, fees, etc. — no link
+  // to the CollegeCourse master DB.
+  ownerCourses?: Array<{
+    name?: string;
+    degree?: string;
+    stream?: string;
+    specialization?: string;
+    duration?: string;
+    durationType?: string;
+    eligibility?: string;
+    admissionMode?: string;
+    entranceExam?: string;
+    intakeSeats?: number;
+    courseFee?: number;
+    applicationDeadline?: string;
+    description?: string;
+    brochureFile?: string;
+  }>;
 }
 
 export interface Blog {
