@@ -54,8 +54,8 @@ export default function Step7Hostel({ data, onNext, onBack, onSaveDraft, loading
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Hostel</h2>
-      <p className="text-cream-100/60 mb-8">Do you offer hostel facilities?</p>
+      <h2 className="font-display text-3xl text-white mb-2">Hostel</h2>
+      <p className="text-white/70 mb-8">Do you offer hostel facilities?</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="border border-night-700 p-4 bg-night-900/40">
@@ -67,7 +67,7 @@ export default function Step7Hostel({ data, onNext, onBack, onSaveDraft, loading
               onChange={handleChange}
               className="w-5 h-5"
             />
-            <span className="text-cream-100">Yes, hostel facilities are available on campus</span>
+            <span className="text-white">Yes, hostel facilities are available on campus</span>
           </label>
         </div>
 
@@ -77,13 +77,13 @@ export default function Step7Hostel({ data, onNext, onBack, onSaveDraft, loading
               <div className="border border-night-700 p-4 bg-night-900/40">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input type="checkbox" name="boysHostel" checked={formData.boysHostel} onChange={handleChange} className="w-5 h-5" />
-                  <span className="text-cream-100">Boys Hostel</span>
+                  <span className="text-white">Boys Hostel</span>
                 </label>
               </div>
               <div className="border border-night-700 p-4 bg-night-900/40">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input type="checkbox" name="girlsHostel" checked={formData.girlsHostel} onChange={handleChange} className="w-5 h-5" />
-                  <span className="text-cream-100">Girls Hostel</span>
+                  <span className="text-white">Girls Hostel</span>
                 </label>
               </div>
             </div>
@@ -106,8 +106,8 @@ export default function Step7Hostel({ data, onNext, onBack, onSaveDraft, loading
         )}
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
-          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -122,9 +122,9 @@ export default function Step7Hostel({ data, onNext, onBack, onSaveDraft, loading
 function Field({ label, type = 'text', name, value, onChange, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input type={type} name={name} value={value} onChange={onChange} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }
@@ -132,9 +132,9 @@ function Field({ label, type = 'text', name, value, onChange, required = true }:
 function SelectField({ label, name, value, onChange, options, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <select name={name} value={value || ''} onChange={onChange} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none">
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none">
         <option value="">Select…</option>
         {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
       </select>
@@ -145,9 +145,9 @@ function SelectField({ label, name, value, onChange, options, required = true }:
 function Textarea({ label, name, value, onChange, rows = 3, placeholder, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <textarea name={name} value={value} onChange={onChange} rows={rows} placeholder={placeholder} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }

@@ -135,8 +135,8 @@ export default function Step1BasicInfo({ data, onNext, onSaveDraft, loading }: S
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">College Basic Information</h2>
-      <p className="text-cream-100/60 mb-8">Start with the basics about your college.</p>
+      <h2 className="font-display text-3xl text-white mb-2">College Basic Information</h2>
+      <p className="text-white/70 mb-8">Start with the basics about your college.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Field label="Official College Name *" name="collegeName" value={formData.collegeName} onChange={handleChange} error={errors.collegeName} />
@@ -150,7 +150,7 @@ export default function Step1BasicInfo({ data, onNext, onSaveDraft, loading }: S
         <SelectField label="Ownership Type" name="ownershipType" value={formData.ownershipType} onChange={handleChange} options={OWNERSHIP_TYPES} required={false} />
 
         <div>
-          <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">About College *</label>
+          <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">About College *</label>
           <textarea
             name="about"
             value={formData.about}
@@ -158,7 +158,7 @@ export default function Step1BasicInfo({ data, onNext, onSaveDraft, loading }: S
             rows={4}
             maxLength={1000}
             placeholder="Brief description of your college (max 1000 characters)"
-            className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+            className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
           />
           {errors.about && <p className="text-red-400 text-sm mt-1">{errors.about}</p>}
         </div>
@@ -205,7 +205,7 @@ export default function Step1BasicInfo({ data, onNext, onSaveDraft, loading }: S
 function Field({ label, type = 'text', name, value, onChange, placeholder, required = true, error }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input
         type={type}
         name={name}
@@ -213,7 +213,7 @@ function Field({ label, type = 'text', name, value, onChange, placeholder, requi
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
       />
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </div>
@@ -223,13 +223,13 @@ function Field({ label, type = 'text', name, value, onChange, placeholder, requi
 function SelectField({ label, name, value, onChange, options, required = true, error }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <select
         name={name}
         value={value}
         onChange={onChange}
         required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
       >
         <option value="">Select…</option>
         {options.map((opt: string) => (
@@ -244,14 +244,14 @@ function SelectField({ label, name, value, onChange, options, required = true, e
 function FileField({ label, preview, uploading, onChange, onRemove, error, aspect = 'w-32 h-32' }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       {preview ? (
         <div className="relative inline-block">
           {!isBlobUrl(preview) ? (
             <img src={preview} alt={label} className={`${aspect} object-cover border-2 border-gold-500/30`} />
           ) : (
-            <div className={`${aspect} border-2 border-dashed border-gold-500/30 bg-night-900 flex items-center justify-center text-xs text-cream-100/60`}>
-              <Upload size={20} className="text-gold-400 mr-2" /> {uploading ? 'Uploading…' : 'Awaiting'}
+            <div className={`${aspect} border-2 border-dashed border-gold-500/30 bg-night-900 flex items-center justify-center text-xs text-white/70`}>
+              <Upload size={20} className="text-[#D9C08E] mr-2" /> {uploading ? 'Uploading…' : 'Awaiting'}
             </div>
           )}
           <button type="button" onClick={onRemove} disabled={uploading}
@@ -261,9 +261,9 @@ function FileField({ label, preview, uploading, onChange, onRemove, error, aspec
         </div>
       ) : (
         <label className={`flex flex-col items-center justify-center w-full border-2 border-night-700 border-dashed p-6 cursor-pointer hover:bg-night-900/50 ${aspect}`}>
-          <Upload className="text-gold-400 mb-2" size={24} />
-          <span className="text-sm text-cream-100">Click to upload</span>
-          <span className="text-xs text-cream-100/50 mt-1">PNG / JPG up to 5 MB</span>
+          <Upload className="text-[#D9C08E] mb-2" size={24} />
+          <span className="text-sm text-white">Click to upload</span>
+          <span className="text-xs text-white/50 mt-1">PNG / JPG up to 5 MB</span>
           <input type="file" accept="image/*" onChange={onChange} disabled={uploading} className="hidden" />
         </label>
       )}

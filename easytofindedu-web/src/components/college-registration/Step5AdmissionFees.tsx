@@ -57,8 +57,8 @@ export default function Step5AdmissionFees({ data, onNext, onBack, onSaveDraft, 
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Fees & Admissions</h2>
-      <p className="text-cream-100/60 mb-8">Structured admission information and fees.</p>
+      <h2 className="font-display text-3xl text-white mb-2">Fees & Admissions</h2>
+      <p className="text-white/70 mb-8">Structured admission information and fees.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Textarea label="Admission Process *" name="admissionProcess" value={formData.admissionProcess} onChange={handleChange} error={errors.admissionProcess} rows={3} placeholder="e.g. Online application followed by entrance test" />
@@ -75,8 +75,8 @@ export default function Step5AdmissionFees({ data, onNext, onBack, onSaveDraft, 
         <Textarea label="Important Admission Information" name="importantInfo" value={formData.importantInfo} onChange={handleChange} rows={3} required={false} />
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
-          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={() => onSaveDraft(formData)} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -91,9 +91,9 @@ export default function Step5AdmissionFees({ data, onNext, onBack, onSaveDraft, 
 function Textarea({ label, name, value, onChange, error, rows = 3, placeholder, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <textarea name={name} value={value} onChange={onChange} rows={rows} placeholder={placeholder} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
       {error && <p className="text-red-400 text-sm mt-1">{error}</p>}
     </div>
   );
@@ -102,9 +102,9 @@ function Textarea({ label, name, value, onChange, error, rows = 3, placeholder, 
 function DateField({ label, name, value, onChange }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input type="date" name={name} value={value || ''} onChange={onChange}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }

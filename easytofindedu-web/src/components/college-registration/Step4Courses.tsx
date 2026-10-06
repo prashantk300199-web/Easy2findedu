@@ -79,14 +79,14 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Courses & Programs</h2>
-      <p className="text-cream-100/60 mb-8">Add the courses/programs your college offers.</p>
+      <h2 className="font-display text-3xl text-white mb-2">Courses & Programs</h2>
+      <p className="text-white/70 mb-8">Add the courses/programs your college offers.</p>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {courses.map((c, i) => (
           <div key={i} className="border border-night-700 p-5 bg-night-900/40 space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="font-display text-xl text-cream-100">Course #{i + 1}</h3>
+              <h3 className="font-display text-xl text-white">Course #{i + 1}</h3>
               {courses.length > 1 && (
                 <button type="button" onClick={() => removeCourse(i)} className="text-red-400 hover:text-red-300">
                   <Trash2 size={18} />
@@ -110,27 +110,27 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Description</label>
+              <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Description</label>
               <textarea
                 value={c.description}
                 onChange={(e) => update(i, 'description', e.target.value)}
                 rows={2}
-                className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none"
+                className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">Brochure / Document</label>
+              <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">Brochure / Document</label>
               {c.brochureFile ? (
                 <div className="flex items-center gap-3 bg-night-900 border border-night-700 p-3">
-                  <span className="text-sm text-cream-100/80 flex-1 truncate">{c.brochureFile}</span>
-                  <a href={c.brochureFile} target="_blank" rel="noreferrer" className="text-gold-400 text-sm hover:underline">View</a>
+                  <span className="text-sm text-white/80 flex-1 truncate">{c.brochureFile}</span>
+                  <a href={c.brochureFile} target="_blank" rel="noreferrer" className="text-[#D9C08E] text-sm hover:underline">View</a>
                   <button type="button" onClick={() => update(i, 'brochureFile', '')} className="text-red-400"><X size={16} /></button>
                 </div>
               ) : (
                 <label className="flex items-center gap-3 bg-night-900 border border-night-700 border-dashed p-3 cursor-pointer">
-                  <Upload size={18} className="text-gold-400" />
-                  <span className="text-sm text-cream-100/70">{uploading === i ? 'Uploading…' : 'Click to upload'}</span>
+                  <Upload size={18} className="text-[#D9C08E]" />
+                  <span className="text-sm text-white/70">{uploading === i ? 'Uploading…' : 'Click to upload'}</span>
                   <input type="file" accept="image/*,application/pdf" onChange={(e) => handleBrochure(e, i)} disabled={uploading === i} className="hidden" />
                 </label>
               )}
@@ -139,13 +139,13 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
         ))}
 
         <button type="button" onClick={addCourse}
-          className="w-full border border-dashed border-gold-500/40 p-4 text-gold-400 hover:bg-gold-500/5 flex items-center justify-center gap-2">
+          className="w-full border border-dashed border-gold-500/40 p-4 text-[#D9C08E] hover:bg-gold-500/5 flex items-center justify-center gap-2">
           <Plus size={18} /> Add another course
         </button>
 
         <div className="flex gap-4 pt-6">
-          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
-          <button type="button" onClick={() => onSaveDraft({ courses })} disabled={loading} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">
+          <button type="button" onClick={onBack} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={() => onSaveDraft({ courses })} disabled={loading} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">
             {loading ? 'Saving…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading} className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold">
@@ -160,9 +160,9 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
 function Field({ label, type = 'text', value, onChange, placeholder, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <input type={type} value={value || ''} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none" />
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none" />
     </div>
   );
 }
@@ -170,9 +170,9 @@ function Field({ label, type = 'text', value, onChange, placeholder, required = 
 function Select({ label, value, onChange, options, required = true }: any) {
   return (
     <div>
-      <label className="block text-[11px] uppercase tracking-overline text-gold-600 mb-2">{label}</label>
+      <label className="block text-[11px] uppercase tracking-overline text-[#B39055] mb-2">{label}</label>
       <select value={value || ''} onChange={(e) => onChange(e.target.value)} required={required}
-        className="w-full bg-night-900 border border-night-700 text-cream-100 p-3 focus:border-gold-500 focus:outline-none">
+        className="w-full bg-night-900 border border-night-700 text-white p-3 focus:border-gold-500 focus:outline-none">
         <option value="">Select…</option>
         {options.map((o: string) => <option key={o} value={o}>{o}</option>)}
       </select>

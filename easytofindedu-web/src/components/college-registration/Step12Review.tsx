@@ -13,11 +13,11 @@ function Section({ title, stepNumber, onEdit, children }: any) {
   return (
     <div className="border border-night-700 p-5 bg-night-900/40 mb-4">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="font-display text-xl text-cream-100">{title}</h3>
+        <h3 className="font-display text-xl text-white">{title}</h3>
         <button
           type="button"
           onClick={() => onEdit && stepNumber && onEdit(stepNumber)}
-          className="flex items-center gap-1 text-gold-400 text-sm hover:underline"
+          className="flex items-center gap-1 text-[#D9C08E] text-sm hover:underline"
         >
           <Edit2 size={14} /> Edit
         </button>
@@ -31,7 +31,7 @@ function Row({ label, value }: any) {
   return (
     <div className="border-t border-night-800 py-2 grid grid-cols-3 gap-3">
       <div className="overline">{label}</div>
-      <div className="col-span-2 text-sm text-cream-100/80">{value || '—'}</div>
+      <div className="col-span-2 text-sm text-white/80">{value || '—'}</div>
     </div>
   );
 }
@@ -71,8 +71,8 @@ export default function Step12Review({ formData, loading, onNext, onBack, onEdit
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
-      <h2 className="font-display text-3xl text-cream-100 mb-2">Review & Submit</h2>
-      <p className="text-cream-100/60 mb-8">Please review all information before submitting for verification.</p>
+      <h2 className="font-display text-3xl text-white mb-2">Review & Submit</h2>
+      <p className="text-white/70 mb-8">Please review all information before submitting for verification.</p>
 
       <Section title="College Basic Information" step={onEdit} arg={1}>
         <Row label="College Name" value={s1.collegeName} />
@@ -169,14 +169,14 @@ export default function Step12Review({ formData, loading, onNext, onBack, onEdit
         <label className="flex items-start gap-3 mb-6 cursor-pointer">
           <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)}
             className="mt-1 w-5 h-5" />
-          <span className="text-cream-100/80 text-sm">
+          <span className="text-white/80 text-sm">
             I confirm that the information provided is accurate and complete to the best of my knowledge. I understand that
             submitting false information may result in rejection or suspension of my application.
           </span>
         </label>
 
         <div className="flex gap-4">
-          <button type="button" onClick={onBack} disabled={submitting} className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 font-semibold">Previous</button>
+          <button type="button" onClick={onBack} disabled={submitting} className="px-6 py-3 border border-night-700 text-white hover:bg-night-700 font-semibold">Previous</button>
           <button type="button" onClick={handleSubmit} disabled={!agreed || submitting || loading}
             className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 font-bold disabled:opacity-50 flex items-center justify-center gap-2">
             {submitting ? 'Submitting…' : (
