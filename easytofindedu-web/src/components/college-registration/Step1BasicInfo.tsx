@@ -187,11 +187,13 @@ export default function Step1BasicInfo({ data, onNext, onSaveDraft, loading }: S
 
         <div className="flex gap-4 pt-6">
           <button type="button" onClick={handleSave} disabled={loading || !!uploading}
-            className="px-6 py-3 border border-night-700 text-cream-100 hover:bg-night-700 disabled:opacity-50 font-semibold">
+            style={{ color: '#FBF8F2', borderColor: '#0C1424' }}
+            className="px-6 py-3 border hover:opacity-80 disabled:opacity-50 font-semibold">
             {loading ? 'Saving…' : uploading ? 'Uploading…' : 'Save Draft'}
           </button>
           <button type="submit" disabled={loading || !!uploading}
-            className="flex-1 px-6 py-3 bg-gold-500 text-night-900 hover:bg-gold-400 disabled:opacity-50 font-bold">
+            style={{ backgroundColor: '#C9A96A', color: '#050912' }}
+            className="flex-1 px-6 py-3 hover:opacity-90 disabled:opacity-50 font-bold">
             {loading ? 'Saving…' : uploading ? 'Uploading…' : 'Save & Continue'}
           </button>
         </div>

@@ -273,23 +273,29 @@ export default function CollegeOwnerRegistration() {
   }
 
   return (
-    <div className="min-h-screen bg-night-950 py-8">
+    <div
+      className="min-h-screen py-8 text-white"
+      style={{ backgroundColor: '#050912' }}
+    >
       <div className="max-w-4xl mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div>
-              <h1 className="font-display text-4xl text-cream-100 mb-2">
+              <h1
+                className="text-4xl font-semibold mb-2"
+                style={{ fontFamily: '"Playfair Display", Georgia, serif', color: '#FBF8F2' }}
+              >
                 College Onboarding
               </h1>
-              <p className="text-cream-100/60">
+              <p className="text-sm" style={{ color: 'rgba(251, 248, 242, 0.7)' }}>
                 Step {currentStep} of {TOTAL_STEPS}
               </p>
             </div>
 
             <div className="flex items-center gap-4">
               {autoSaving && (
-                <div className="flex items-center gap-2 text-gold-400">
+                <div className="flex items-center gap-2" style={{ color: '#C9A96A' }}>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span className="text-sm">Auto-saving…</span>
                 </div>
@@ -301,7 +307,7 @@ export default function CollegeOwnerRegistration() {
                 </div>
               )}
               {lastSaved && !autoSaving && !saveSuccess && (
-                <div className="flex items-center gap-2 text-cream-100/60">
+                <div className="flex items-center gap-2" style={{ color: 'rgba(251, 248, 242, 0.7)' }}>
                   <Clock className="w-4 h-4" />
                   <span className="text-sm">Last saved: {lastSaved.toLocaleTimeString()}</span>
                 </div>
@@ -316,15 +322,16 @@ export default function CollegeOwnerRegistration() {
           </div>
 
           <div className="relative">
-            <div className="h-2 bg-night-800 rounded-full overflow-hidden">
+            <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#070C18' }}>
               <motion.div
-                className="h-full bg-gradient-to-r from-gold-500 to-gold-400"
+                className="h-full"
+                style={{ background: 'linear-gradient(to right, #C9A96A, #D9C08E)' }}
                 initial={{ width: 0 }}
                 animate={{ width: `${completionPercentage}%` }}
                 transition={{ duration: 0.5 }}
               />
             </div>
-            <p className="text-xs text-cream-100/60 mt-1 text-right">
+            <p className="text-xs mt-1 text-right" style={{ color: 'rgba(251, 248, 242, 0.7)' }}>
               {completionPercentage}% Complete
             </p>
           </div>
