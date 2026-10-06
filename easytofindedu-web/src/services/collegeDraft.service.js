@@ -1,7 +1,8 @@
 import api from './api';
 
-const BASE = import.meta.env.VITE_API_BASE_URL ?? 'https://easytofindedu.onrender.com/api/v1';
-const ENDPOINT = `${BASE}/college-draft`;
+// Path only — api.post/api.get/etc. prepend the API base. Using a full URL
+// here would double up "https://...onrender.com/api/v1" on the path.
+const ENDPOINT = '/college-draft';
 
 /**
  * College draft service — 1:1 mirror of instituteDraft.service.js
