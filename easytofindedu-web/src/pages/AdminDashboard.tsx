@@ -136,6 +136,33 @@ interface InstituteApplication {
   [key: string]: any;
 }
 
+interface CollegeApplication {
+  _id: string;
+  owner?: { _id: string; name: string; email: string; phone?: string };
+  status: string;
+  verificationStatus: string;
+  currentStep: number;
+  completionPercentage: number;
+  submittedAt?: string;
+  lastSavedAt?: string;
+  adminFeedback?: string;
+  rejectionReason?: string;
+  verifiedAt?: string;
+  verificationHistory?: Array<{ action: string; status: string; adminName?: string; reason?: string; timestamp: string }>;
+  step1BasicInfo?: { collegeName?: string; shortName?: string; institutionType?: string; ownershipType?: string; establishedYear?: number; about?: string; website?: string; contactEmail?: string; contactPhone?: string };
+  step2Location?: { fullAddress?: string; city?: string; state?: string; district?: string; pincode?: string; country?: string };
+  step3Affiliation?: any;
+  step4Courses?: any;
+  step5AdmissionFees?: any;
+  step6Facilities?: any;
+  step7Hostel?: any;
+  step8Placements?: any;
+  step9Scholarships?: any;
+  step10Gallery?: any;
+  step11Documents?: any;
+  [key: string]: any;
+}
+
 interface Pagination {
   current_page: number;
   total_pages: number;
@@ -264,6 +291,19 @@ export function AdminDashboard() {
           onError={requireLogin}
         />
       )}
+      {view === 'college-applications' && (
+        <CollegeApplicationsView
+          onOpen={(id) => setView({ kind: 'college-review', id } as any)}
+          onError={requireLogin}
+        />
+      )}
+      {typeof view === 'object' && (view as any).kind === 'college-review' && (
+        <CollegeReviewView
+          applicationId={(view as any).id as string}
+          onBack={() => setView('college-applications')}
+          onError={requireLogin}
+        />
+      )}
       {view === 'hostel-approvals' && <HostelApprovalsView onError={requireLogin} />}
       {view === 'all-hostels' && <AllHostelsView onError={requireLogin} />}
       {view === 'hostel-owners' && <HostelOwnersView onError={requireLogin} />}
@@ -278,6 +318,8 @@ type ViewKey =
   | 'dashboard'
   | 'institute-applications'
   | { kind: 'institute-review'; id: string }
+  | 'college-applications'
+  | { kind: 'college-review'; id: string }
   | 'hostel-approvals'
   | 'all-hostels'
   | 'hostel-owners'
@@ -412,6 +454,7 @@ function Shell({
   const navItems: Array<{ key: ViewKey; label: string; icon: any }> = [
     { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { key: 'institute-applications', label: 'Institute Apps', icon: Building2 },
+    { key: 'college-applications', label: 'College Apps', icon: Building2 },
     { key: 'hostel-approvals', label: 'Hostel Approvals', icon: ShieldOff },
     { key: 'all-hostels', label: 'All Hostels', icon: Hotel },
     { key: 'hostel-owners', label: 'Hostel Owners', icon: Users },
@@ -421,7 +464,7 @@ function Shell({
   ];
 
   const activeKey: string = typeof view === 'string' ? view : (view as any).kind;
-  const isOnReview = activeKey === 'institute-review';
+  const isOnReview = activeKey === 'institute-review' || activeKey === 'college-review';
 
   return (
     <div className="bg-night-950 min-h-screen w-full flex flex-col lg:flex-row">
@@ -436,7 +479,7 @@ function Shell({
         <nav className="flex lg:flex-col overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto flex-1 p-2 lg:p-3 gap-1">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const active = activeKey === item.key || (item.key === 'institute-applications' && isOnReview);
+            const active = activeKey === item.key || ((item.key === 'institute-applications' || item.key === 'college-applications') && isOnReview);
             return (
               <button
                 key={typeof item.key === 'string' ? item.key : 'institute-review'}
@@ -503,6 +546,7 @@ function getViewLabel(view: ViewKey): string {
     return ({
       'dashboard': 'Overview',
       'institute-applications': 'Institute Applications',
+      'college-applications': 'College Applications',
       'hostel-approvals': 'Hostel Approvals',
       'all-hostels': 'All Hostels',
       'hostel-owners': 'Hostel Owners',
@@ -2280,6 +2324,592 @@ function GrowthBlock({ title, data }: { title: string; data: Array<{ _id: number
           return <div key={i} className="flex-1 min-w-[8px] bg-gold-500/40" style={{ height: h }} title={`${m?.count ?? 0}`} />;
         })}
       </div>
+    </div>
+  );
+}
+
+/* ============================================================
+ * College Applications — list
+ * ============================================================ */
+
+function CollegeApplicationsView({
+  onOpen,
+  onError,
+}: {
+  onOpen: (id: string) => void;
+  onError: (e: Error) => never;
+}) {
+  const [apps, setApps] = useState<CollegeApplication[]>([]);
+  const [pagination, setPagination] = useState<Pagination>({ current_page: 1, total_pages: 1, total_results: 0, per_page: 10 });
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState('');
+  const [searchInput, setSearchInput] = useState('');
+  const [status, setStatus] = useState('');
+
+  const load = useCallback(async (page = 1) => {
+    try {
+      setError(null);
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('limit', '10');
+      if (search) params.set('search', search);
+      if (status) params.set('status', status);
+      const data = await get(`/college-applications?${params.toString()}`, APP_API_BASE);
+      setApps(data?.data?.applications || []);
+      setPagination(data?.data?.pagination || { current_page: 1, total_pages: 1, total_results: 0, per_page: 10 });
+    } catch (err: any) {
+      try { onError(err); } catch { setError(err?.message || 'Failed to load applications'); }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [search, status, onError]);
+
+  useEffect(() => { load(1); }, [load]);
+  const handleSearch = (e: React.FormEvent) => { e.preventDefault(); setSearch(searchInput); };
+
+  if (loading) return <CenteredSpinner label="Loading applications" />;
+
+  return (
+    <div className="space-y-6 min-w-0">
+      {error && <ErrorState message={error} onRetry={() => load(pagination.current_page)} />}
+
+      <PageHeader
+        title="College Applications"
+        subtitle="Review, approve, reject, or request changes to college registration applications."
+        onRefresh={() => { setRefreshing(true); load(pagination.current_page); }}
+        refreshing={refreshing}
+      />
+
+      {/* Filters */}
+      <div className="border border-night-700 bg-night-900 p-4 flex flex-col lg:flex-row gap-3 min-w-0">
+        <form onSubmit={handleSearch} className="flex-1 flex gap-2 min-w-0">
+          <div className="relative flex-1 min-w-0">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-cream-100/40" />
+            <input
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="Search college, city, state…"
+              className="w-full bg-night-800 border border-night-600 pl-9 pr-3 py-2 text-sm text-cream-100 placeholder:text-cream-100/30 focus:border-gold-500 focus:outline-none"
+            />
+          </div>
+          <button
+            type="submit"
+            className="px-5 py-2 border border-gold-500/50 text-[10px] uppercase tracking-wide2 text-gold-400 hover:bg-gold-500 hover:text-night-900 transition-colors flex-shrink-0"
+          >
+            Search
+          </button>
+        </form>
+
+        <div className="flex gap-1 overflow-x-auto pb-1 lg:pb-0 flex-shrink-0">
+          {['', 'submitted', 'under_review', 'changes_requested', 'verified', 'rejected'].map((s) => (
+            <button
+              key={s || 'all'}
+              onClick={() => setStatus(s)}
+              className={`flex-shrink-0 px-3 py-2 text-[10px] uppercase tracking-wide2 transition-colors whitespace-nowrap ${
+                status === s
+                  ? 'bg-gold-500 text-night-900'
+                  : 'border border-night-600 text-cream-100/60 hover:border-gold-500 hover:text-gold-400'
+              }`}
+            >
+              {s ? s.replace('_', ' ') : 'All'}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {apps.length === 0 ? (
+        <EmptyState title="No applications found" hint="Try adjusting your filters." />
+      ) : (
+        <div className="space-y-3 min-w-0">
+          {apps.map((a) => (
+            <div
+              key={a._id}
+              className="border border-night-700 bg-night-900 p-4 sm:p-5 hover:border-gold-500/40 transition-colors min-w-0"
+            >
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-display text-lg text-cream-100 break-words">
+                    {a.step1BasicInfo?.collegeName || 'Untitled College'}
+                  </h3>
+                  <p className="text-sm text-cream-100/60 mt-1 break-words">
+                    {a.step2Location?.city ? `${a.step2Location.city}${a.step2Location.state ? `, ${a.step2Location.state}` : ''}` : 'Location not provided'}
+                    {a.owner?.name && ` · by ${a.owner.name}`}
+                  </p>
+                  <p className="text-xs text-cream-100/40 mt-2">
+                    Submitted {a.submittedAt ? new Date(a.submittedAt).toLocaleDateString('en-IN') : '—'}
+                    {' · '}
+                    Step {a.currentStep}/12 · {a.completionPercentage}%
+                  </p>
+                </div>
+                <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2 flex-shrink-0">
+                  <StatusBadge status={a.verificationStatus || a.status} />
+                  <button
+                    onClick={() => onOpen(a._id)}
+                    className="inline-flex items-center gap-2 border border-gold-500/40 px-4 py-2 text-[10px] uppercase tracking-wide2 text-gold-400 hover:bg-gold-500 hover:text-night-900 transition-colors"
+                  >
+                    <Eye size={12} />
+                    Review
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {pagination.total_pages > 1 && (
+        <div className="mt-6 flex items-center justify-center gap-3 flex-wrap">
+          <button
+            disabled={pagination.current_page <= 1}
+            onClick={() => load(pagination.current_page - 1)}
+            className="inline-flex items-center gap-1 px-3 py-2 border border-night-600 text-xs text-cream-100/70 hover:border-gold-500 hover:text-gold-400 transition-colors disabled:opacity-30"
+          >
+            <ChevronLeft size={14} />
+            Prev
+          </button>
+          <span className="text-xs text-cream-100/50">
+            Page {pagination.current_page} of {pagination.total_pages} · {pagination.total_results} total
+          </span>
+          <button
+            disabled={pagination.current_page >= pagination.total_pages}
+            onClick={() => load(pagination.current_page + 1)}
+            className="inline-flex items-center gap-1 px-3 py-2 border border-night-600 text-xs text-cream-100/70 hover:border-gold-500 hover:text-gold-400 transition-colors disabled:opacity-30"
+          >
+            Next
+            <ChevronRight size={14} />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ============================================================
+ * College Application Review
+ * ============================================================ */
+
+function CollegeReviewView({
+  applicationId,
+  onBack,
+  onError,
+}: {
+  applicationId: string;
+  onBack: () => void;
+  onError: (e: Error) => never;
+}) {
+  const [app, setApp] = useState<CollegeApplication | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const [modal, setModal] = useState<'changes' | 'reject' | 'suspend' | null>(null);
+  const [modalText, setModalText] = useState('');
+
+  const load = useCallback(async () => {
+    try {
+      setError(null);
+      const [appRes, histRes] = await Promise.allSettled([
+        get(`/college-applications/${applicationId}`, APP_API_BASE),
+        get(`/college-applications/${applicationId}/history`, APP_API_BASE),
+      ]);
+      if (appRes.status === 'fulfilled') setApp(appRes.value?.data || null);
+      if (histRes.status === 'fulfilled') setHistory(histRes.value?.data || []);
+    } catch (err: any) {
+      try { onError(err); } catch { setError(err?.message || 'Failed to load application'); }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [applicationId, onError]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const doAction = async (action: 'approve' | 'request-changes' | 'reject' | 'suspend', body?: any) => {
+    if (!app) return;
+    setProcessing(true);
+    setError(null);
+    try {
+      await patch(`/college-applications/${app._id}/${action}`, body || {}, APP_API_BASE);
+      await load();
+      setModal(null);
+      setModalText('');
+    } catch (err: any) {
+      setError(err?.message || 'Action failed');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleApprove = () => {
+    if (!confirm('Approve this college application? A College record will be created and the listing will be live.')) return;
+    doAction('approve');
+  };
+  const handleChanges = () => {
+    if (!modalText.trim()) { setError('Please enter feedback for the changes.'); return; }
+    doAction('request-changes', { feedback: modalText.trim() });
+  };
+  const handleReject = () => {
+    if (!modalText.trim()) { setError('Please enter a rejection reason.'); return; }
+    doAction('reject', { reason: modalText.trim() });
+  };
+  const handleSuspend = () => {
+    if (!modalText.trim()) { setError('Please enter a suspension reason.'); return; }
+    doAction('suspend', { reason: modalText.trim() });
+  };
+
+  if (loading) return <CenteredSpinner label="Loading application" />;
+  if (!app) return <EmptyState title="Application not found" hint="It may have been deleted." />;
+
+  const status = app.verificationStatus || app.status;
+  const canApprove = status === 'submitted' || status === 'changes_requested' || status === 'under_review';
+  const canReject = status !== 'verified' && status !== 'rejected';
+  const canSuspend = status === 'verified';
+  const canRequestChanges = status !== 'verified' && status !== 'rejected';
+
+  const s1: any = app.step1BasicInfo || {};
+  const s2: any = app.step2Location || {};
+  const s3: any = app.step3Affiliation || {};
+  const s4: any = app.step4Courses || {};
+  const s5: any = app.step5AdmissionFees || {};
+  const s6: any = app.step6Facilities || {};
+  const s7: any = app.step7Hostel || {};
+  const s8: any = app.step8Placements || {};
+  const s9: any = app.step9Scholarships || {};
+  const s10: any = app.step10Gallery || {};
+  const s11: any = app.step11Documents || {};
+
+  return (
+    <div className="space-y-6 min-w-0">
+      <PageHeader
+        title={s1.collegeName || 'College Application'}
+        subtitle={`Owner: ${app.owner?.name || 'Unknown'}${app.owner?.email ? ` · ${app.owner.email}` : ''}`}
+        onRefresh={() => { setRefreshing(true); load(); }}
+        refreshing={refreshing}
+        actions={
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 border border-night-600 px-4 py-2 text-[10px] uppercase tracking-wide2 text-cream-100/70 hover:border-gold-500 hover:text-gold-400 transition-colors"
+          >
+            <ChevronLeft size={12} /> Back
+          </button>
+        }
+      />
+
+      {error && (
+        <div className="border-l-2 border-wine bg-wine/10 px-5 py-3 text-sm text-cream-100/80">
+          {error}
+        </div>
+      )}
+
+      {/* Status + actions */}
+      <div className="border border-night-700 bg-night-900 p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex flex-wrap items-center gap-3">
+          <StatusBadge status={status} />
+          <span className="text-sm text-cream-100/60">
+            Step {app.currentStep}/12 · {app.completionPercentage}% complete
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {canApprove && (
+            <button
+              onClick={handleApprove}
+              disabled={processing}
+              className="inline-flex items-center gap-2 border border-green-500/50 px-4 py-2 text-[10px] uppercase tracking-wide2 text-green-300 hover:bg-green-500 hover:text-night-900 transition-colors disabled:opacity-50"
+            >
+              <CheckCircle size={12} /> Approve
+            </button>
+          )}
+          {canRequestChanges && (
+            <button
+              onClick={() => setModal('changes')}
+              disabled={processing}
+              className="inline-flex items-center gap-2 border border-amber-500/50 px-4 py-2 text-[10px] uppercase tracking-wide2 text-amber-300 hover:bg-amber-500 hover:text-night-900 transition-colors disabled:opacity-50"
+            >
+              <AlertCircle size={12} /> Request Changes
+            </button>
+          )}
+          {canReject && (
+            <button
+              onClick={() => setModal('reject')}
+              disabled={processing}
+              className="inline-flex items-center gap-2 border border-red-500/50 px-4 py-2 text-[10px] uppercase tracking-wide2 text-red-300 hover:bg-red-500 hover:text-night-900 transition-colors disabled:opacity-50"
+            >
+              <XCircle size={12} /> Reject
+            </button>
+          )}
+          {canSuspend && (
+            <button
+              onClick={() => setModal('suspend')}
+              disabled={processing}
+              className="inline-flex items-center gap-2 border border-orange-500/50 px-4 py-2 text-[10px] uppercase tracking-wide2 text-orange-300 hover:bg-orange-500 hover:text-night-900 transition-colors disabled:opacity-50"
+            >
+              <ShieldOff size={12} /> Suspend
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Admin feedback banners */}
+      {status === 'changes_requested' && app.adminFeedback && (
+        <div className="border border-amber-500/40 bg-amber-500/5 p-5">
+          <p className="overline text-amber-300 mb-2">Changes requested</p>
+          <p className="text-cream-100/80">{app.adminFeedback}</p>
+        </div>
+      )}
+      {status === 'rejected' && (
+        <div className="border border-red-500/40 bg-red-500/5 p-5">
+          <p className="overline text-red-300 mb-2">Application rejected</p>
+          <p className="text-cream-100/80">{app.rejectionReason || 'No reason provided.'}</p>
+        </div>
+      )}
+
+      {/* Sections */}
+      <Section title="College Basic Information">
+        <Field label="College Name" value={s1.collegeName} />
+        <Field label="Short Name" value={s1.shortName} />
+        <Field label="Institution Type" value={s1.institutionType} />
+        <Field label="Ownership" value={s1.ownershipType} />
+        <Field label="Established" value={s1.establishedYear} />
+        <Field label="About" value={s1.about} />
+        <Field label="Website" value={s1.website} />
+        <Field label="Contact Email" value={s1.contactEmail} />
+        <Field label="Contact Phone" value={s1.contactPhone} />
+        {s1.logoFile && (
+          <div className="pt-3">
+            <span className="overline text-gold-400">Logo</span>
+            <img src={s1.logoFile} alt="Logo" className="mt-2 w-32 h-32 object-cover border border-night-700" />
+          </div>
+        )}
+      </Section>
+
+      <Section title="Location & Campus">
+        <Field label="Full Address" value={s2.fullAddress} />
+        <Field label="City" value={s2.city} />
+        <Field label="State" value={s2.state} />
+        <Field label="District" value={s2.district} />
+        <Field label="PIN Code" value={s2.pincode} />
+        <Field label="Google Maps" value={s2.googleMapsLink} />
+      </Section>
+
+      <Section title="Affiliation & Recognition">
+        <Field label="Affiliated University" value={s3?.affiliatedUniversity} />
+        <Field label="NAAC Grade" value={s3?.accreditationGrade} />
+        <Field label="NIRF Rank" value={s3?.nirfRank} />
+        <Field label="UGC / AICTE / NAAC / NBA" value={[
+          s3?.ugcRecognized && 'UGC',
+          s3?.aicteApproved && 'AICTE',
+          s3?.naacAccredited && 'NAAC',
+          s3?.nbaAccredited && 'NBA',
+        ].filter(Boolean).join(', ') || '—'} />
+      </Section>
+
+      <Section title={`Courses (${(s4?.courses || []).length})`}>
+        {(s4?.courses || []).length === 0 ? (
+          <p className="text-sm text-cream-100/60">No courses added.</p>
+        ) : (
+          <div className="space-y-2">
+            {(s4?.courses || []).map((c: any, i: number) => (
+              <div key={i} className="border border-night-700 p-3 text-sm">
+                <div className="font-medium text-cream-100">{c.courseName}</div>
+                <div className="text-cream-100/60 text-xs">
+                  {[c.degree, c.stream, c.specialization, c.duration, c.eligibility, c.admissionMode, c.entranceExam, c.intakeSeats && `${c.intakeSeats} seats`, c.courseFee && `₹${c.courseFee}/yr`].filter(Boolean).join(' · ')}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      <Section title="Admission & Fees">
+        <Field label="Admission Process" value={s5?.admissionProcess} />
+        <Field label="Entrance Exams" value={s5?.entranceExams} />
+        <Field label="Eligibility" value={s5?.eligibilityRequirements} />
+        <Field label="Fee Structure" value={s5?.feeStructureNote} />
+      </Section>
+
+      <Section title="Facilities">
+        <Field label="Selected" value={[
+          s6?.library && 'Library',
+          s6?.laboratories && 'Laboratories',
+          s6?.sportsFacilities && 'Sports',
+          s6?.cafeteria && 'Cafeteria',
+          s6?.auditorium && 'Auditorium',
+          s6?.medicalFacilities && 'Medical',
+          s6?.wifi && 'Wi-Fi',
+          s6?.transportation && 'Transportation',
+          s6?.clubsActivities && 'Clubs',
+        ].filter(Boolean).join(', ') || '—'} />
+        {s6?.otherFacilities && <Field label="Other" value={s6.otherFacilities} />}
+      </Section>
+
+      <Section title="Hostel">
+        <Field label="Available" value={s7?.isAvailable ? 'Yes' : 'No'} />
+        {s7?.isAvailable && (
+          <>
+            <Field label="Boys / Girls" value={[s7?.boysHostel && 'Boys', s7?.girlsHostel && 'Girls'].filter(Boolean).join(', ')} />
+            <Field label="Capacity" value={s7?.totalCapacity} />
+            <Field label="Monthly Fee" value={s7?.hostelFees} />
+            <Field label="Room Types" value={s7?.roomTypes} />
+            <Field label="Facilities" value={s7?.hostelFacilities} />
+            <Field label="Rules" value={s7?.hostelRules} />
+          </>
+        )}
+      </Section>
+
+      <Section title="Placements">
+        <Field label="Average Package" value={s8?.averagePackage ? `${s8.averagePackage} LPA` : ''} />
+        <Field label="Highest Package" value={s8?.highestPackage ? `${s8.highestPackage} LPA` : ''} />
+        <Field label="Placement Rate" value={s8?.placementRate ? `${s8.placementRate}%` : ''} />
+        <Field label="Top Recruiters" value={s8?.topRecruiters} />
+        <Field label="Internship" value={s8?.internshipOpportunities ? 'Available' : 'Not available'} />
+      </Section>
+
+      <Section title={`Scholarships (${(s9?.scholarships || []).length})`}>
+        {(s9?.scholarships || []).length === 0 ? (
+          <p className="text-sm text-cream-100/60">No scholarships added.</p>
+        ) : (
+          <div className="space-y-2">
+            {(s9?.scholarships || []).map((s: any, i: number) => (
+              <div key={i} className="border border-night-700 p-3 text-sm">
+                <div className="font-medium text-cream-100">{s.name}</div>
+                <div className="text-cream-100/60 text-xs">
+                  {[s.eligibility, s.amount, s.deadline].filter(Boolean).join(' · ')}
+                </div>
+                {s.description && <p className="text-cream-100/80 mt-2">{s.description}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      <Section title={`Gallery (${(s10?.galleryFiles || []).length} images)`}>
+        {(s10?.galleryFiles || []).length === 0 ? (
+          <p className="text-sm text-cream-100/60">No images.</p>
+        ) : (
+          <div className="grid grid-cols-3 md:grid-cols-4 gap-2">
+            {(s10?.galleryFiles || []).map((src: string, i: number) => (
+              <a href={src} key={i} target="_blank" rel="noreferrer">
+                <img src={src} alt={`Gallery ${i + 1}`} className="w-full h-24 object-cover border border-night-700 hover:border-gold-500/40" />
+              </a>
+            ))}
+          </div>
+        )}
+        {s10?.videoUrl && <Field label="Video URL" value={s10.videoUrl} />}
+      </Section>
+
+      <Section title={`Documents (${(s11?.documents || []).length})`}>
+        {(s11?.documents || []).length === 0 ? (
+          <p className="text-sm text-cream-100/60">No documents uploaded.</p>
+        ) : (
+          <div className="space-y-2">
+            {(s11?.documents || []).map((d: any, i: number) => (
+              <div key={i} className="border border-night-700 p-3 text-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <div className="font-medium text-cream-100">{d.documentName}</div>
+                  <div className="text-cream-100/60 text-xs">{d.category} · status: {d.status}</div>
+                </div>
+                {d.documentFile && (
+                  <a href={d.documentFile} target="_blank" rel="noreferrer" className="text-gold-400 text-xs uppercase tracking-wide2 hover:underline">
+                    View file →
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      {/* Verification history */}
+      <Section title="Verification History">
+        {history.length === 0 ? (
+          <p className="text-sm text-cream-100/60">No history entries yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {history.map((h: any, i: number) => (
+              <div key={i} className="border border-night-700 p-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-cream-100">{h.action || h.status}</span>
+                  {h.adminName && <span className="text-cream-100/60">by {h.adminName}</span>}
+                </div>
+                <div className="text-cream-100/50 text-xs mt-1">
+                  {h.timestamp ? new Date(h.timestamp).toLocaleString() : ''}
+                </div>
+                {h.reason && <p className="text-cream-100/80 mt-2">{h.reason}</p>}
+              </div>
+            ))}
+          </div>
+        )}
+      </Section>
+
+      {/* Modals for request-changes / reject / suspend */}
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-950/80 backdrop-blur-sm p-4">
+          <div className="bg-night-900 border border-night-700 max-w-md w-full p-6">
+            <h3 className="font-display text-xl text-cream-100 mb-3">
+              {modal === 'changes' && 'Request Changes'}
+              {modal === 'reject' && 'Reject Application'}
+              {modal === 'suspend' && 'Suspend College'}
+            </h3>
+            <p className="text-sm text-cream-100/60 mb-4">
+              {modal === 'changes' && 'Tell the owner what they need to fix. They will be able to update and resubmit.'}
+              {modal === 'reject' && 'Provide a rejection reason. This will be visible to the owner.'}
+              {modal === 'suspend' && 'Provide a suspension reason. The college will be hidden from the public site.'}
+            </p>
+            <textarea
+              value={modalText}
+              onChange={(e) => setModalText(e.target.value)}
+              rows={4}
+              placeholder="Type your message…"
+              className="w-full bg-night-800 border border-night-600 p-3 text-sm text-cream-100 focus:border-gold-500 focus:outline-none"
+            />
+            <div className="mt-4 flex gap-2 justify-end">
+              <button
+                onClick={() => { setModal(null); setModalText(''); }}
+                className="px-4 py-2 border border-night-600 text-xs text-cream-100/70 hover:border-gold-500 hover:text-gold-400"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={modal === 'changes' ? handleChanges : modal === 'reject' ? handleReject : handleSuspend}
+                disabled={!modalText.trim() || processing}
+                className="px-4 py-2 bg-gold-500 text-night-900 text-xs uppercase tracking-wide2 font-semibold hover:opacity-90 disabled:opacity-50"
+              >
+                {modal === 'changes' && 'Send Request'}
+                {modal === 'reject' && 'Reject'}
+                {modal === 'suspend' && 'Suspend'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="border border-night-700 bg-night-900 p-5">
+      <h2 className="font-display text-xl text-cream-100 mb-4">{title}</h2>
+      <div className="space-y-2 text-sm">{children}</div>
+    </div>
+  );
+}
+
+function Field({ label, value }: { label: string; value?: string | number | null }) {
+  if (value === undefined || value === null || value === '') return (
+    <div className="grid grid-cols-3 gap-3 border-b border-night-800 py-1.5">
+      <span className="text-cream-100/50 text-xs uppercase tracking-overline">{label}</span>
+      <span className="col-span-2 text-cream-100/40 text-xs italic">— not provided —</span>
+    </div>
+  );
+  return (
+    <div className="grid grid-cols-3 gap-3 border-b border-night-800 py-1.5">
+      <span className="text-cream-100/50 text-xs uppercase tracking-overline">{label}</span>
+      <span className="col-span-2 text-cream-100/90 break-words">{value}</span>
     </div>
   );
 }
