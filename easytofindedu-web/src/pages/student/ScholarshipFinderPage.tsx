@@ -130,6 +130,12 @@ function StatusBadge({ status }: { status: string }) {
 
 function ScholarshipCard({ s }: { s: Scholarship }) {
   const isDark = (s.computedStatus === 'closed' || s.computedStatus === 'expired');
+  const educationLevels = Array.isArray(s.eligibility?.educationLevels)
+    ? s.eligibility.educationLevels.filter((l) => l !== 'any')
+    : [];
+  const categories = Array.isArray(s.eligibility?.categories)
+    ? s.eligibility.categories.filter((c) => c !== 'any' && c !== 'general')
+    : [];
   return (
     <Link
       to={`/career/scholarships/${s.slug || s._id}`}
@@ -166,12 +172,12 @@ function ScholarshipCard({ s }: { s: Scholarship }) {
 
         {/* Meta: education level + category */}
         <div className="flex flex-wrap gap-1.5 mb-4">
-          {s.eligibility?.educationLevels?.filter(l => l !== 'any').slice(0, 2).map((l) => (
+          {educationLevels.slice(0, 2).map((l) => (
             <span key={l} className="px-2 py-0.5 rounded text-[10px] bg-cream-100/5 text-cream-100/60 border border-cream-100/10">
               {l.replace('_', ' ').replace('class ', 'Class ')}
             </span>
           ))}
-          {s.eligibility?.categories?.filter(c => c !== 'any' && c !== 'general').slice(0, 2).map((c) => (
+          {categories.slice(0, 2).map((c) => (
             <span key={c} className="px-2 py-0.5 rounded text-[10px] bg-cream-100/5 text-cream-100/60 border border-cream-100/10 uppercase">
               {c}
             </span>
