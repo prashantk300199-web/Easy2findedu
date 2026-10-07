@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { submitAnswers as apiSubmitAnswers } from '../services/career.service';
@@ -199,6 +199,32 @@ function WelcomeStep({ onStart }: { onStart: () => void }) {
         </button>
       </Magnetic>
       <p className="mt-4 text-cream-100/40 text-sm">Takes about 3–5 minutes</p>
+
+      {/* Career Guidance quick links */}
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-3 w-full max-w-3xl">
+        <Link
+          to="/career-explorer"
+          className="px-4 py-3 rounded-xl bg-night-800/60 border border-cream-100/10 hover:border-gold-500/40 transition-colors text-left"
+        >
+          <p className="text-[10px] uppercase tracking-wider text-gold-400 mb-1">Career Explorer</p>
+          <p className="text-sm text-cream-100/80">Browse & compare careers</p>
+        </Link>
+        <Link
+          to="/career/chat"
+          className="px-4 py-3 rounded-xl bg-night-800/60 border border-cream-100/10 hover:border-gold-500/40 transition-colors text-left"
+        >
+          <p className="text-[10px] uppercase tracking-wider text-gold-400 mb-1">AI Counselor</p>
+          <p className="text-sm text-cream-100/80">Ask anything about your future</p>
+        </Link>
+        <Link
+          to="/career/scholarships"
+          className="px-4 py-3 rounded-xl bg-night-800/60 border border-cream-100/10 hover:border-gold-500/40 transition-colors text-left"
+        >
+          <p className="text-[10px] uppercase tracking-wider text-gold-400 mb-1">Scholarship Finder</p>
+          <p className="text-sm text-cream-100/80">Real scholarships, verified sources</p>
+        </Link>
+      </div>
+
       <p className="mt-8 text-cream-100/25 text-sm">Not sure where to start?</p>
       <a
         href="/career/i-dont-know"

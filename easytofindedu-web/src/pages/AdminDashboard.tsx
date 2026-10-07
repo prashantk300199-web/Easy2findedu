@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ScholarshipsAdminView } from './admin/ScholarshipsAdminView';
 import {
   LayoutDashboard,
   Building2,
@@ -310,6 +311,7 @@ export function AdminDashboard() {
       {view === 'institute-owners' && <InstituteOwnersView onError={requireLogin} />}
       {view === 'students' && <StudentsView onError={requireLogin} />}
       {view === 'analytics' && <AnalyticsView onError={requireLogin} />}
+      {view === 'scholarships' && <ScholarshipsAdminView />}
     </Shell>
   );
 }
@@ -325,7 +327,8 @@ type ViewKey =
   | 'hostel-owners'
   | 'institute-owners'
   | 'students'
-  | 'analytics';
+  | 'analytics'
+  | 'scholarships';
 
 /* ============================================================
  * Login Screen
@@ -460,6 +463,7 @@ function Shell({
     { key: 'hostel-owners', label: 'Hostel Owners', icon: Users },
     { key: 'institute-owners', label: 'Institute Owners', icon: Users },
     { key: 'students', label: 'Students', icon: GraduationCap },
+    { key: 'scholarships', label: 'Scholarships', icon: GraduationCap },
     { key: 'analytics', label: 'Analytics', icon: TrendingUp },
   ];
 
@@ -553,6 +557,7 @@ function getViewLabel(view: ViewKey): string {
       'institute-owners': 'Institute Owners',
       'students': 'Registered Students',
       'analytics': 'Analytics',
+      'scholarships': 'Scholarships',
     } as Record<string, string>)[view] || 'Admin';
   }
   return 'Application Review';

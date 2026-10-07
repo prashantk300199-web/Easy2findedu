@@ -36,6 +36,8 @@ import CareerRoadmapPage from './pages/student/CareerRoadmapPage';
 import CareerAreaPage from './pages/student/CareerAreaPage';
 import CareerIDontKnowPage from './pages/student/CareerIDontKnowPage';
 import CareerChatPage from './pages/student/CareerChatPage';
+import ScholarshipFinderPage from './pages/student/ScholarshipFinderPage';
+import ScholarshipDetailPage from './pages/student/ScholarshipDetailPage';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -44,7 +46,7 @@ function ScrollToTop() {
 }
 
 // Routes that open with a full-bleed dark hero — no top offset needed.
-const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance'];
+const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance', '/career/chat', '/career/scholarships', '/career-explorer', '/career/recommendations', '/career/compare', '/career/i-dont-know'];
 // Pages with their own full-screen layout — no navbar/footer.
 const STANDALONE_ROUTES = ['/login'];
 const DASHBOARD_ROUTES_PREFIX = ['/dashboard', '/hostel-dashboard', '/institute-dashboard', '/institute-registration', '/institute-owner', '/college-dashboard', '/college-registration', '/college-owner', '/admin'];
@@ -118,6 +120,8 @@ function AnimatedRoutes() {
           <Route path="/career/explore-area/:area" element={<CareerAreaPage />} />
           <Route path="/career/i-dont-know" element={<CareerIDontKnowPage />} />
           <Route path="/career/chat" element={<CareerChatPage />} />
+          <Route path="/career/scholarships" element={<ScholarshipFinderPage />} />
+          <Route path="/career/scholarships/:id" element={<ScholarshipDetailPage />} />
           <Route path="/abroad" element={<ProspectPage kind="abroad" />} />
           <Route path="/online-courses" element={<ProspectPage kind="online" />} />
           <Route path="/journal" element={<JournalPage />} />
