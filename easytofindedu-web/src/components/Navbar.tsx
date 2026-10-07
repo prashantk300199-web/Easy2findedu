@@ -28,8 +28,8 @@ export function Navbar() {
 
   // The homepage opens on a dark full-bleed hero, so the bar starts light there.
   // All pages that open with a full-bleed dark hero need a light navbar.
-  const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance'];
-  const overHero = (location.pathname === '/' || HERO_ROUTES.includes(location.pathname)) && !scrolled;
+  const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance', '/career/chat', '/career/scholarships', '/career-explorer', '/career/recommendations', '/career/compare', '/career/i-dont-know'];
+  const overHero = (location.pathname === '/' || HERO_ROUTES.includes(location.pathname) || location.pathname.startsWith('/career/scholarships/') || location.pathname.startsWith('/career-explorer/') || location.pathname.startsWith('/career/explore-area/') || location.pathname.startsWith('/career/roadmap/')) && !scrolled;
 
   // Fetch wallet coins if user is logged in
   useEffect(() => {
