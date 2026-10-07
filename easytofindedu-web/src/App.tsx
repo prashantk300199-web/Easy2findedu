@@ -27,6 +27,7 @@ import CollegeOwnerDashboard from './pages/CollegeOwnerDashboard';
 import CollegeOwnerRegistrationNew from './pages/CollegeOwnerRegistrationNew';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WishlistPage } from './components/WishlistButton';
+import { AIPet } from './components/ai-pet';
 // Student career pages
 import CareerExplorerPage from './pages/student/CareerExplorerPage';
 import CareerExplorerDetailPage from './pages/student/CareerExplorerDetailPage';
@@ -150,6 +151,8 @@ function Shell() {
       </div>
       {!isStandalone && !isDashboard && <Footer />}
       {!isStandalone && !isDashboard && <MobileBottomNav />}
+      {/* Floating AI companion — database-grounded, hidden on dashboards. */}
+      <AIPet />
     </div>
   );
 }
