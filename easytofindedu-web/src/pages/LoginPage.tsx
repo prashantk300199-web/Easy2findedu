@@ -131,11 +131,11 @@ export function LoginPage() {
 
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  // All owner types (Hostel / Institute / College) land on the main website
+  // after login. The existing Owner Dashboards are still reachable from the
+  // owner Profile page at /profile.
   const afterAuth = () => {
-    if (role === 'institute_owner') navigate('/institute-dashboard');
-    else if (role === 'college_owner') navigate('/college-dashboard');
-    else if (role === 'owner') navigate('/dashboard');
-    else navigate('/');
+    navigate('/');
   };
 
   async function handleSubmit(e: React.FormEvent) {
