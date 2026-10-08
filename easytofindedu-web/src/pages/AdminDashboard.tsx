@@ -516,7 +516,7 @@ function Shell({
 
       {/* Main */}
       <main className="flex-1 min-w-0 flex flex-col">
-        <header className="border-b border-night-700 bg-night-900/60 backdrop-blur-sm sticky top-0 z-20">
+        <header className="border-b border-night-700 bg-night-900 backdrop-blur-sm sticky top-0 z-20">
           <div className="px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between gap-4">
             <div className="min-w-0">
               <p className="overline text-gold-400 truncate">{getViewLabel(view)}</p>

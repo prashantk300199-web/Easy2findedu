@@ -7,6 +7,7 @@ export default {
         // Deep midnight navy — the canvas for every cinematic moment.
         night: {
           DEFAULT: '#070C18',
+          950: '#050912',
           900: '#050912',
           800: '#070C18',
           700: '#0C1424',
