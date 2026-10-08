@@ -168,7 +168,7 @@ export function Navbar() {
                     )}
                   </>
                 )}
-                {user.role !== 'student' && user.role !== 'admin' && (
+                {user.role !== 'student' && (
                   <Link
                     to="/profile"
                     className={cx(
@@ -297,7 +297,7 @@ export function Navbar() {
                     )}
                   </>
                 )}
-                {user.role !== 'student' && user.role !== 'admin' && (
+                {user.role !== 'student' && (
                   <Link
                     to="/profile"
                     onClick={() => setOpen(false)}
