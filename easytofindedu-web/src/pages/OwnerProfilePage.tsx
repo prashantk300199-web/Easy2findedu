@@ -523,7 +523,7 @@ export function OwnerProfilePage() {
   // Students / admins don't have an owner profile.
   useEffect(() => {
     if (!user) return;
-    if (user.role === 'student' || user.role === 'admin') {
+    if (user.role === 'student') {
       // Students and admins have their own pages — bounce to home.
       navigate('/', { replace: true });
     }
