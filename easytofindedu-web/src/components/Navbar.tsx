@@ -168,6 +168,34 @@ export function Navbar() {
                     )}
                   </>
                 )}
+                {user.role !== 'student' && user.role !== 'admin' && (
+                  <Link
+                    to="/profile"
+                    className={cx(
+                      'flex items-center gap-1.5 rounded-sm border px-2.5 py-1.5 transition-all duration-300 hover:scale-105',
+                      overHero
+                        ? 'border-gold-500/30 bg-gold-500/10 hover:border-gold-500/50 hover:bg-gold-500/20'
+                        : 'border-gold-600/25 bg-gold-50 hover:border-gold-600/40 hover:bg-gold-100'
+                    )}
+                  >
+                    <svg
+                      className={cx('w-3.5 h-3.5', overHero ? 'text-gold-300' : 'text-gold-600')}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    <span className={cx('text-[12px] font-medium', overHero ? 'text-gold-300' : 'text-gold-700')}>
+                      Profile
+                    </span>
+                  </Link>
+                )}
                 <span className={cx('text-[12px] uppercase tracking-wide2', overHero ? 'text-cream-100/70' : 'text-ink-500')}>
                   {user.name.split(' ')[0]}
                 </span>
@@ -268,6 +296,15 @@ export function Navbar() {
                       </button>
                     )}
                   </>
+                )}
+                {user.role !== 'student' && user.role !== 'admin' && (
+                  <Link
+                    to="/profile"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm uppercase tracking-wide transition-colors"
+                  >
+                    👤 Profile
+                  </Link>
                 )}
                 <button
                   type="button"

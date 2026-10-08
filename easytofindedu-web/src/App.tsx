@@ -28,6 +28,7 @@ import CollegeOwnerRegistrationNew from './pages/CollegeOwnerRegistrationNew';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { WishlistPage } from './components/WishlistButton';
 import { AIPet } from './components/ai-pet';
+import { OwnerProfilePage } from './pages/OwnerProfilePage';
 // Student career pages
 import CareerExplorerPage from './pages/student/CareerExplorerPage';
 import CareerExplorerDetailPage from './pages/student/CareerExplorerDetailPage';
@@ -47,7 +48,7 @@ function ScrollToTop() {
 }
 
 // Routes that open with a full-bleed dark hero — no top offset needed.
-const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance', '/career/chat', '/career/scholarships', '/career-explorer', '/career/recommendations', '/career/compare', '/career/i-dont-know'];
+const HERO_ROUTES = ['/hostels', '/institutes', '/colleges', '/journal', '/abroad', '/online-courses', '/career-guidance', '/career/chat', '/career/scholarships', '/career-explorer', '/career/recommendations', '/career/compare', '/career/i-dont-know', '/profile'];
 // Pages with their own full-screen layout — no navbar/footer.
 const STANDALONE_ROUTES = ['/login'];
 const DASHBOARD_ROUTES_PREFIX = ['/dashboard', '/hostel-dashboard', '/institute-dashboard', '/institute-registration', '/institute-owner', '/college-dashboard', '/college-registration', '/college-owner', '/admin'];
@@ -112,6 +113,7 @@ function AnimatedRoutes() {
           <Route path="/hostels/:slug" element={<HostelDetailPage />} />
           <Route path="/hostels/add" element={<AddHostelPage />} />
           <Route path="/wishlist" element={<WishlistPage />} />
+          <Route path="/profile" element={<OwnerProfilePage />} />
           <Route path="/career-guidance" element={<CareerGuidancePage />} />
           <Route path="/career-explorer" element={<CareerExplorerPage />} />
           <Route path="/career-explorer/:nodeId" element={<CareerExplorerDetailPage />} />
