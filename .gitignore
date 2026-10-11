@@ -10,3 +10,18 @@ dist/
 build/
 coverage/
 .cache/
+
+# ─── Legacy deploy scripts (removed from git history — DO NOT re-introduce) ──
+# These files used to contain plaintext VPS/FTP credentials and were scrubbed from
+# git history. The names are gitignored so they can't be re-committed by accident.
+# Deploys now go through GitHub Actions — see DEPLOY.md.
+deploy-to-vps.sh
+deploy-admin.sh
+deploy-admin.txt
+deploy-admin.ps1
+
+# ─── Build artifacts / deploy bundles ──────────────────────────────────────
+*.tar.gz
+admin-build.tar.gz
+website-build.tar.gz
+admin-deploy/
