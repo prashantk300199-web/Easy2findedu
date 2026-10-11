@@ -1,0 +1,95 @@
+name: Deploy Admin to VPS
+
+# Auto-deploy the new admin panel (the /admin/dashboard route inside easytofindedu-web)
+# to https://admin.easytofindedu.com on every push to main that touches the SPA.
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'easytofindedu-web/src/**'
+      - 'easytofindedu-web/package.json'
+      - 'easytofindedu-web/package-lock.json'
+      - '.github/workflows/deploy-admin.yml'
+  workflow_dispatch:  # allow manual trigger from the Actions tab
+
+jobs:
+  deploy-admin:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: 'easytofindedu-web/package-lock.json'
+
+      - name: Create environment file
+        run: |
+          cd easytofindedu-web
+          echo "VITE_API_BASE_URL=https://easytofindedu.onrender.com/api/v1" > .env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}" >> .env
+
+      - name: Install dependencies
+        run: |
+          cd easytofindedu-web
+          npm ci
+
+      - name: Build application
+        run: |
+          cd easytofindedu-web
+          npm run build
+
+      - name: SCP built bundle to VPS (staging)
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          source: "easytofindedu-web/dist/*"
+          target: "/var/www/admin-easytofindedu-temp"
+          strip_components: 2
+
+      - name: Atomic swap into web root
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          script: |
+            set -e
+            # If a previous run left a staging dir, clean it
+            if [ -d /var/www/admin-easytofindedu-temp ]; then
+              rm -rf /var/www/admin-easytofindedu-temp
+            fi
+            # SCP landed the new files; they should be in place, but if not, fail fast
+            if [ ! -d /var/www/admin-easytofindedu-temp ]; then
+              echo "❌ staging dir missing — scp step failed?"
+              exit 1
+            fi
+            # Atomic swap: old live -> backup, staging -> live
+            if [ -d /var/www/admin-easytofindedu ]; then
+              rm -rf /var/www/admin-easytofindedu.bak
+              mv /var/www/admin-easytofindedu /var/www/admin-easytofindedu.bak
+            fi
+            mv /var/www/admin-easytofindedu-temp /var/www/admin-easytofindedu
+            echo "✅ Admin deployed at $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
+            echo "✅ Contents of /var/www/admin-easytofindedu/:"
+            ls -la /var/www/admin-easytofindedu/ | head -10
+
+      - name: Verify deployment via HTTP
+        run: |
+          sleep 2  # brief settle
+          STATUS=$(curl -sS -o /dev/null -w '%{http_code}' -L https://admin.easytofindedu.com/admin/dashboard)
+          if [ "$STATUS" = "200" ]; then
+            echo "✅ /admin/dashboard returns 200 OK"
+          else
+            echo "❌ /admin/dashboard returned $STATUS — investigate!"
+            exit 1
+          fi
