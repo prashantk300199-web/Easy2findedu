@@ -76,14 +76,23 @@ export function InstituteDetailPage() {
     { label: 'Code of conduct', text: transparency.codeOfConduct },
   ].filter((p) => p.text && p.text.trim());
 
-  // If the institute has explicitly recorded whether the listed fee
-  // already includes GST, surface that as a small badge under the fee
-  // clarity line. Undefined means legacy data — don't show anything.
-  const gstLabel = institute.feeIncludesGst === true
-    ? 'Inclusive of GST'
-    : institute.feeIncludesGst === false
-      ? 'Exclusive of GST (GST charged extra)'
-      : null;
+  // GST label priority:
+  //   1. Explicit per-course `courseFees[].feeIncludesGst` values.
+  //   2. The legacy institute-level `feeIncludesGst` (older records).
+  //   3. Nothing — for records that never recorded GST data.
+  const gstLabel: string | null = (() => {
+    if (Array.isArray(institute.courseFees) && institute.courseFees.length > 0) {
+      const flags = institute.courseFees.map((c) => c.feeIncludesGst);
+      if (flags.every((f) => f === true)) return 'All courses: Inclusive of GST';
+      if (flags.every((f) => f === false)) return 'All courses: Exclusive of GST (GST charged extra)';
+      if (flags.some((f) => f === true) && flags.some((f) => f === false)) {
+        return 'GST inclusion varies by course';
+      }
+    }
+    if (institute.feeIncludesGst === true) return 'Inclusive of GST';
+    if (institute.feeIncludesGst === false) return 'Exclusive of GST (GST charged extra)';
+    return null;
+  })();
 
   return (
     <>
@@ -151,6 +160,48 @@ export function InstituteDetailPage() {
                     </div>
                   ))}
                 </div>
+              </Reveal>
+            )}
+
+            {institute.courseFees && institute.courseFees.length > 0 && (
+              <Reveal className="mt-16">
+                <Overline>Course Fees</Overline>
+                <ul className="mt-6 space-y-4">
+                  {institute.courseFees.map((fee, i) => {
+                    const total = fee.totalPayableAmount;
+                    return (
+                      <li key={(fee.courseId || fee.courseName || i) + ''} className="border-t border-cream-300 py-4">
+                        <div className="flex items-baseline justify-between gap-4">
+                          <h3 className="font-display text-lg text-ink">
+                            {fee.courseName || `Course ${i + 1}`}
+                          </h3>
+                          {total ? (
+                            <div className="text-right">
+                              <span className="font-display text-2xl text-ink tabular-nums">₹{total}</span>
+                              <span className="ml-2 text-[10px] uppercase tracking-wider text-ink-500 align-middle">
+                                {fee.feeIncludesGst ? 'incl. GST' : '+ GST'}
+                              </span>
+                            </div>
+                          ) : null}
+                        </div>
+                        {(fee.registrationFee || fee.admissionFee || fee.courseFee || fee.monthlyFee || fee.quarterlyFee || fee.materialFee || fee.kitFee || fee.examFee || fee.certificationFee || fee.otherCharges) ? (
+                          <ul className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-1 text-xs text-ink-500">
+                            {fee.registrationFee ? <li>Registration: ₹{fee.registrationFee}</li> : null}
+                            {fee.admissionFee ? <li>Admission: ₹{fee.admissionFee}</li> : null}
+                            {fee.courseFee ? <li>Course: ₹{fee.courseFee}</li> : null}
+                            {fee.monthlyFee ? <li>Monthly: ₹{fee.monthlyFee}</li> : null}
+                            {fee.quarterlyFee ? <li>Quarterly: ₹{fee.quarterlyFee}</li> : null}
+                            {fee.materialFee ? <li>Material: ₹{fee.materialFee}</li> : null}
+                            {fee.kitFee ? <li>Kit: ₹{fee.kitFee}</li> : null}
+                            {fee.examFee ? <li>Exam: ₹{fee.examFee}</li> : null}
+                            {fee.certificationFee ? <li>Certification: ₹{fee.certificationFee}</li> : null}
+                            {fee.otherCharges ? <li>Other: ₹{fee.otherCharges}</li> : null}
+                          </ul>
+                        ) : null}
+                      </li>
+                    );
+                  })}
+                </ul>
               </Reveal>
             )}
 

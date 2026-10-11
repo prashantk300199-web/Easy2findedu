@@ -96,6 +96,25 @@ export interface Institute {
   subcategories?: string[];
   // Per-course category values, surfaced from the embedded course list.
   courseCategories?: string[];
+  // Per-course fee structure. Optional; legacy records without per-
+  // course fees still render the institute-level feeIncludesGst
+  // badge under the Fee Clarity transparency line.
+  courseFees?: Array<{
+    courseId?: string;
+    courseName?: string;
+    registrationFee?: string;
+    admissionFee?: string;
+    courseFee?: string;
+    monthlyFee?: string;
+    quarterlyFee?: string;
+    materialFee?: string;
+    kitFee?: string;
+    examFee?: string;
+    certificationFee?: string;
+    otherCharges?: string;
+    totalPayableAmount?: string;
+    feeIncludesGst?: boolean;
+  }>;
   // Whether the quoted fee includes GST. Optional; legacy records
   // don't have this field.
   feeIncludesGst?: boolean;

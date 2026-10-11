@@ -16,6 +16,8 @@ interface Course {
   duration: string;
   mode: string;
   eligibility: string;
+  // Legacy single-fee shortcut (still supported on read). New edits
+  // land in `fees.totalPayableAmount` instead.
   totalFees: string;
   seats: string;
   description: string;
@@ -27,6 +29,24 @@ interface Course {
   skills: string;
   entranceExamRequired: boolean;
   entranceExamName: string;
+  // Per-course fee structure. Different courses at the same institute
+  // can have different fees; we therefore store the full breakdown on
+  // each course. `feeIncludesGst` is a boolean (never inferred from
+  // the amount).
+  fees: {
+    registrationFee: string;
+    admissionFee: string;
+    courseFee: string;
+    monthlyFee: string;
+    quarterlyFee: string;
+    materialFee: string;
+    kitFee: string;
+    examFee: string;
+    certificationFee: string;
+    otherCharges: string;
+    totalPayableAmount: string;
+    feeIncludesGst: boolean;
+  };
 }
 
 interface Step4Props {
@@ -83,7 +103,21 @@ const emptyCourse: Omit<Course, 'id'> = {
   outcomes: '',
   skills: '',
   entranceExamRequired: false,
-  entranceExamName: ''
+  entranceExamName: '',
+  fees: {
+    registrationFee: '',
+    admissionFee: '',
+    courseFee: '',
+    monthlyFee: '',
+    quarterlyFee: '',
+    materialFee: '',
+    kitFee: '',
+    examFee: '',
+    certificationFee: '',
+    otherCharges: '',
+    totalPayableAmount: '',
+    feeIncludesGst: false
+  }
 };
 
 // Normalize a previously-saved category value to one of:
@@ -101,7 +135,82 @@ const splitCategory = (raw: any): { value: string; isCustom: boolean } => {
   return { value: trimmed, isCustom: true };
 };
 
+// Normalize per-course fees from any of:
+//   - the new `fees` sub-object (preferred)
+//   - a flat row on the course itself (legacy / accidental flat fields)
+//   - the institute-level `step9Fees` block (legacy — different courses
+//     used to share the institute fee structure)
+// Returns a fully populated `fees` object (defaulted) so the form
+// always has a consistent shape to render.
+const emptyFees = {
+  registrationFee: '',
+  admissionFee: '',
+  courseFee: '',
+  monthlyFee: '',
+  quarterlyFee: '',
+  materialFee: '',
+  kitFee: '',
+  examFee: '',
+  certificationFee: '',
+  otherCharges: '',
+  totalPayableAmount: '',
+  feeIncludesGst: false
+};
+
+const readFees = (c: any, fallbackInstituteFees?: any): typeof emptyFees => {
+  const src = c?.fees;
+  if (src && typeof src === 'object') {
+    return {
+      registrationFee: src.registrationFee ?? '',
+      admissionFee: src.admissionFee ?? '',
+      courseFee: src.courseFee ?? '',
+      monthlyFee: src.monthlyFee ?? '',
+      quarterlyFee: src.quarterlyFee ?? '',
+      materialFee: src.materialFee ?? '',
+      kitFee: src.kitFee ?? '',
+      examFee: src.examFee ?? '',
+      certificationFee: src.certificationFee ?? '',
+      otherCharges: src.otherCharges ?? '',
+      totalPayableAmount: src.totalPayableAmount ?? '',
+      feeIncludesGst:
+        typeof src.feeIncludesGst === 'boolean'
+          ? src.feeIncludesGst
+          : (typeof src.gstIncluded === 'boolean' ? src.gstIncluded : false)
+    };
+  }
+  // Legacy fallback — the old step9Fees block had no per-course split
+  // and applied the same fee structure to every course.
+  if (fallbackInstituteFees && typeof fallbackInstituteFees === 'object') {
+    return {
+      registrationFee: fallbackInstituteFees.registrationFee ?? '',
+      admissionFee: fallbackInstituteFees.admissionFee ?? '',
+      courseFee: fallbackInstituteFees.courseFee ?? '',
+      monthlyFee: fallbackInstituteFees.monthlyFee ?? '',
+      quarterlyFee: fallbackInstituteFees.quarterlyFee ?? '',
+      materialFee: fallbackInstituteFees.materialFee ?? '',
+      kitFee: fallbackInstituteFees.kitFee ?? '',
+      examFee: fallbackInstituteFees.examFee ?? '',
+      certificationFee: fallbackInstituteFees.certificationFee ?? '',
+      otherCharges: fallbackInstituteFees.otherCharges ?? '',
+      totalPayableAmount: fallbackInstituteFees.totalPayableAmount ?? '',
+      feeIncludesGst:
+        typeof fallbackInstituteFees.feeIncludesGst === 'boolean'
+          ? fallbackInstituteFees.feeIncludesGst
+          : (typeof fallbackInstituteFees.gstIncluded === 'boolean' ? fallbackInstituteFees.gstIncluded : false)
+    };
+  }
+  return { ...emptyFees };
+};
+
 export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loading }: Step4Props) {
+  // Legacy fallback path: older drafts that had a single institute-level
+  // fee structure (data.step9Fees / data.fees / data.feesSection). When
+  // the embedded `courses` array has no per-course fees, we seed each
+  // course with that shared block so owners can still see the values
+  // they previously entered.
+  const instituteLevelFees =
+    data?.step9Fees || data?.feesSection || data?.fees || null;
+
   const [courses, setCourses] = useState<Course[]>(
     Array.isArray(data?.courses)
       ? data.courses.map((c: any) => {
@@ -115,7 +224,9 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
             duration: c?.duration || '',
             mode: c?.mode || '',
             eligibility: c?.eligibility || '',
-            totalFees: c?.totalFees || (c?.fees?.amount ? String(c.fees.amount) : ''),
+            totalFees:
+              c?.totalFees ||
+              (c?.fees?.totalPayableAmount ? String(c.fees.totalPayableAmount) : ''),
             seats: c?.seats || '',
             description: c?.description || '',
             certificationAvailable: !!c?.certificationAvailable,
@@ -125,7 +236,8 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
             outcomes: c?.outcomes || '',
             skills: c?.skills || '',
             entranceExamRequired: !!c?.entranceExamRequired,
-            entranceExamName: c?.entranceExamName || ''
+            entranceExamName: c?.entranceExamName || '',
+            fees: readFees(c, instituteLevelFees)
           };
         })
       : []
@@ -160,7 +272,8 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
             outcomes: c?.outcomes || '',
             skills: c?.skills || '',
             entranceExamRequired: !!c?.entranceExamRequired,
-            entranceExamName: c?.entranceExamName || ''
+            entranceExamName: c?.entranceExamName || '',
+            fees: readFees(c, instituteLevelFees)
           };
         })
       );
@@ -192,6 +305,26 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
       setCurrentCourse(prev => ({ ...prev, category: value, categoryIsCustom: false }));
     }
     if (errors.category) setErrors((prev: any) => ({ ...prev, category: '' }));
+  };
+
+  // Nested handler for the per-course fee fields. Field name format:
+  //   `fees.<key>` so we can reuse one onChange across all fee inputs.
+  // The GST radio uses `fees.feeIncludesGst` with value "yes" / "no".
+  const handleFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    setCurrentCourse(prev => {
+      const next = { ...emptyFees, ...(prev.fees || {}) };
+      if (name === 'fees.feeIncludesGst') {
+        next.feeIncludesGst = value === 'yes' || checked === true;
+      } else if (type === 'checkbox') {
+        next.feeIncludesGst = !!checked;
+      } else {
+        const key = name.replace(/^fees\./, '');
+        (next as any)[key] = value;
+      }
+      return { ...prev, fees: next };
+    });
+    if (errors[name]) setErrors((prev: any) => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
@@ -238,7 +371,10 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
       outcomes: course.outcomes,
       skills: course.skills,
       entranceExamRequired: course.entranceExamRequired,
-      entranceExamName: course.entranceExamName
+      entranceExamName: course.entranceExamName,
+      // Always seed from the saved course fees so editing a course
+      // doesn't accidentally re-pull the institute-level legacy block.
+      fees: { ...emptyFees, ...(course.fees || {}) }
     });
     setErrors({});
   };
@@ -278,9 +414,18 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
 
   // Build a clean persistence shape so the server only ever sees the new
   // fields. Legacy fields (minAge / maxAge) are dropped silently; custom
-  // categories are preserved as-is.
+  // categories are preserved as-is; per-course fees land on the
+  // `fees` sub-object.
   const buildPersistableCourses = (list: Course[]) => list.map((c) => {
-    const out: any = {
+    const fees = { ...emptyFees, ...(c.fees || {}) };
+    // Normalize the legacy single-fee shortcut: if the owner typed a
+    // value in the old "Total Fees" field but didn't fill the new
+    // breakdown, surface it on the breakdown so it's not silently
+    // lost when we drop the shortcut.
+    if (!fees.totalPayableAmount && c.totalFees) {
+      fees.totalPayableAmount = c.totalFees;
+    }
+    return {
       id: c.id,
       courseName: c.name,
       name: c.name,
@@ -289,7 +434,9 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
       duration: c.duration,
       mode: c.mode,
       eligibility: c.eligibility,
-      totalFees: c.totalFees,
+      // Keep `totalFees` on the top level for legacy readers; the new
+      // canonical copy lives on `fees.totalPayableAmount`.
+      totalFees: fees.totalPayableAmount || c.totalFees,
       seats: c.seats,
       description: c.description,
       certificationAvailable: c.certificationAvailable,
@@ -299,9 +446,9 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
       outcomes: c.outcomes,
       skills: c.skills,
       entranceExamRequired: c.entranceExamRequired,
-      entranceExamName: c.entranceExamName
+      entranceExamName: c.entranceExamName,
+      fees
     };
-    return out;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -363,7 +510,15 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
                           {course.mode && <span className="bg-gold-900/30 text-gold-400 px-3 py-1.5 rounded border border-gold-500/30">📍 {course.mode}</span>}
                           {course.level && <span className="bg-purple-900/30 text-purple-400 px-3 py-1.5 rounded border border-purple-500/30">📊 {course.level}</span>}
                           {course.duration && <span className="bg-green-900/30 text-green-400 px-3 py-1.5 rounded border border-green-500/30">⏱️ {course.duration}</span>}
-                          {course.totalFees && <span className="bg-yellow-900/30 text-yellow-400 px-3 py-1.5 rounded border border-yellow-500/30">💰 ₹{course.totalFees}</span>}
+                          {course.fees?.totalPayableAmount && (
+                            <span className="bg-yellow-900/30 text-yellow-400 px-3 py-1.5 rounded border border-yellow-500/30">
+                              💰 ₹{course.fees.totalPayableAmount}
+                              {course.fees.feeIncludesGst && <span className="text-[10px] ml-1 opacity-80">(incl. GST)</span>}
+                            </span>
+                          )}
+                          {!course.fees?.totalPayableAmount && course.totalFees && (
+                            <span className="bg-yellow-900/30 text-yellow-400 px-3 py-1.5 rounded border border-yellow-500/30">💰 ₹{course.totalFees}</span>
+                          )}
                         </div>
                         {course.description && (
                           <p className="mt-3 text-sm text-cream-100/60 line-clamp-2">{course.description}</p>
@@ -524,30 +679,132 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
               />
             </div>
 
-            {/* Fees and Seats */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Seats (Total Fees moved into the per-course fees block below) */}
+            <div>
+              <label className="block text-sm font-semibold text-cream-100 mb-2">Number of Seats</label>
+              <input
+                type="text"
+                name="seats"
+                value={currentCourse.seats}
+                onChange={handleChange}
+                placeholder="E.g., 50"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
+              />
+            </div>
+
+            {/* Per-course Fee Structure + GST */}
+            <div className="bg-night-900/50 border border-night-700 rounded-lg p-5 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-cream-100 mb-2">Total Fees (₹)</label>
-                <input
-                  type="text"
-                  name="totalFees"
-                  value={currentCourse.totalFees}
-                  onChange={handleChange}
-                  placeholder="E.g., 50000"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
+                <h4 className="text-base font-semibold text-cream-100">
+                  Fee Structure (this course)
+                </h4>
+                <p className="text-xs text-cream-100/50 mt-1">
+                  Each course can have its own fee structure. Fill only the fee types that
+                  apply to this course. The total below is what students will see on the
+                  course listing.
+                </p>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-cream-100 mb-2">Number of Seats</label>
-                <input
-                  type="text"
-                  name="seats"
-                  value={currentCourse.seats}
-                  onChange={handleChange}
-                  placeholder="E.g., 50"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {([
+                  ['registrationFee', 'Registration Fee (₹)'],
+                  ['admissionFee', 'Admission Fee (₹)'],
+                  ['courseFee', 'Course Fee (₹)'],
+                  ['monthlyFee', 'Monthly Fee (₹)'],
+                  ['quarterlyFee', 'Quarterly Fee (₹)'],
+                  ['materialFee', 'Material Fee (₹)'],
+                  ['kitFee', 'Kit Fee (₹)'],
+                  ['examFee', 'Exam Fee (₹)'],
+                  ['certificationFee', 'Certification Fee (₹)'],
+                  ['otherCharges', 'Other Charges (₹)']
+                ] as const).map(([key, label]) => (
+                  <div key={key}>
+                    <label className="block text-xs font-semibold text-cream-100 mb-1">
+                      {label}
+                    </label>
+                    <input
+                      type="text"
+                      name={`fees.${key}`}
+                      value={currentCourse.fees?.[key as keyof typeof currentCourse.fees] as string ?? ''}
+                      onChange={handleFeeChange}
+                      placeholder="0"
+                      className="w-full px-3 py-2 bg-night-900 border border-night-700 rounded-lg text-sm text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
+                    />
+                  </div>
+                ))}
+                <div>
+                  <label className="block text-xs font-semibold text-cream-100 mb-1">
+                    Total Payable (₹)
+                  </label>
+                  <input
+                    type="text"
+                    name="fees.totalPayableAmount"
+                    value={currentCourse.fees?.totalPayableAmount ?? ''}
+                    onChange={handleFeeChange}
+                    placeholder="0"
+                    className="w-full px-3 py-2 bg-night-900 border border-gold-500/40 rounded-lg text-sm text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
+                  />
+                  <p className="text-[10px] text-cream-100/40 mt-1">
+                    This is the headline fee students will see.
+                  </p>
+                </div>
+              </div>
+
+              {/* GST inclusion — stored as a boolean on the course, never
+                  inferred from the amount. */}
+              <div className="border-t border-night-700 pt-4">
+                <p className="text-sm font-semibold text-cream-100 mb-2">
+                  Does the fee for this course include GST?
+                </p>
+                <p className="text-xs text-cream-100/50 mb-3">
+                  The amount entered above is stored as-is — no GST is added or removed.
+                </p>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <label
+                    className={`flex-1 flex items-start gap-2 p-3 rounded-lg border cursor-pointer text-sm transition-all ${
+                      currentCourse.fees?.feeIncludesGst === true
+                        ? 'border-gold-500 bg-gold-500/10'
+                        : 'border-night-700 bg-night-900 hover:border-gold-500/40'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="fees.feeIncludesGst"
+                      value="yes"
+                      checked={currentCourse.fees?.feeIncludesGst === true}
+                      onChange={handleFeeChange}
+                      className="mt-0.5 accent-gold-500"
+                    />
+                    <span>
+                      <span className="block text-cream-100 font-semibold">Yes — GST included</span>
+                      <span className="block text-cream-100/50 text-xs mt-0.5">
+                        The amount above already includes GST.
+                      </span>
+                    </span>
+                  </label>
+                  <label
+                    className={`flex-1 flex items-start gap-2 p-3 rounded-lg border cursor-pointer text-sm transition-all ${
+                      currentCourse.fees?.feeIncludesGst === false
+                        ? 'border-gold-500 bg-gold-500/10'
+                        : 'border-night-700 bg-night-900 hover:border-gold-500/40'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="fees.feeIncludesGst"
+                      value="no"
+                      checked={currentCourse.fees?.feeIncludesGst === false}
+                      onChange={handleFeeChange}
+                      className="mt-0.5 accent-gold-500"
+                    />
+                    <span>
+                      <span className="block text-cream-100 font-semibold">No — GST not included</span>
+                      <span className="block text-cream-100/50 text-xs mt-0.5">
+                        GST is charged extra on top of the amount above.
+                      </span>
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
 

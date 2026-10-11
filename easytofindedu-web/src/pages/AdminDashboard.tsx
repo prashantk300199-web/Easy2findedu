@@ -1497,19 +1497,51 @@ function InstituteReviewView({
               <ApplicationStepSection step={4} label={STEP_LABELS[3]}>
                 {Array.isArray(app.step4Courses?.courses) && app.step4Courses.courses.length > 0 ? (
                   <div className="space-y-3">
-                    {app.step4Courses.courses.map((c: any, i: number) => (
-                      <div key={i} className="border border-night-700 bg-night-800/50 p-3 text-sm">
-                        <p className="text-cream-100">{c.courseName || `Course ${i + 1}`}</p>
-                        <p className="text-xs text-cream-100/40 mt-1">
-                          {c.category && `Category: ${c.category}`}
-                          {c.category && (c.duration || c.mode || c.level) && ' · '}
-                          {c.duration && `${c.duration}`}
-                          {c.mode && ` · ${c.mode}`}
-                          {c.level && ` · ${c.level}`}
-                          {c.totalFees && ` · ₹${c.totalFees}`}
-                        </p>
-                      </div>
-                    ))}
+                    {app.step4Courses.courses.map((c: any, i: number) => {
+                      const f = c?.fees || {};
+                      const total = f.totalPayableAmount || c?.totalFees;
+                      const gst = f.feeIncludesGst === true
+                        ? ' (incl. GST)'
+                        : (f.feeIncludesGst === false ? ' (+ GST)' : '');
+                      return (
+                        <div key={i} className="border border-night-700 bg-night-800/50 p-3 text-sm">
+                          <p className="text-cream-100">{c.courseName || `Course ${i + 1}`}</p>
+                          <p className="text-xs text-cream-100/40 mt-1">
+                            {c.category && `Category: ${c.category}`}
+                            {c.category && (c.duration || c.mode || c.level) && ' · '}
+                            {c.duration && `${c.duration}`}
+                            {c.mode && ` · ${c.mode}`}
+                            {c.level && ` · ${c.level}`}
+                          </p>
+                          {(total || f.registrationFee || f.admissionFee || f.courseFee || f.monthlyFee) ? (
+                            <div className="mt-2 text-xs text-cream-100/60">
+                              {total && (
+                                <p>
+                                  <span className="text-cream-100/80 font-semibold">Total payable: </span>
+                                  ₹{total}{gst}
+                                </p>
+                              )}
+                              {(f.registrationFee || f.admissionFee || f.courseFee || f.monthlyFee || f.quarterlyFee || f.materialFee || f.kitFee || f.examFee || f.certificationFee || f.otherCharges) ? (
+                                <p className="text-cream-100/50 mt-1">
+                                  Breakdown: {[
+                                    f.registrationFee && `Reg ₹${f.registrationFee}`,
+                                    f.admissionFee && `Adm ₹${f.admissionFee}`,
+                                    f.courseFee && `Course ₹${f.courseFee}`,
+                                    f.monthlyFee && `Monthly ₹${f.monthlyFee}`,
+                                    f.quarterlyFee && `Quarterly ₹${f.quarterlyFee}`,
+                                    f.materialFee && `Material ₹${f.materialFee}`,
+                                    f.kitFee && `Kit ₹${f.kitFee}`,
+                                    f.examFee && `Exam ₹${f.examFee}`,
+                                    f.certificationFee && `Cert ₹${f.certificationFee}`,
+                                    f.otherCharges && `Other ₹${f.otherCharges}`
+                                  ].filter(Boolean).join(' · ')}
+                                </p>
+                              ) : null}
+                            </div>
+                          ) : null}
+                        </div>
+                      );
+                    })}
                   </div>
                 ) : <p className="text-sm text-cream-100/40">No courses listed.</p>}
               </ApplicationStepSection>
@@ -1550,13 +1582,13 @@ function InstituteReviewView({
               <ApplicationStepSection step={9} label={STEP_LABELS[8]}>
                 <DataGrid
                   items={[
-                    ['Course fee', app.step9Fees?.courseFee],
-                    ['Total payable', app.step9Fees?.totalPayableAmount],
-                    ['Fee includes GST', app.step9Fees?.feeIncludesGst === true
-                      ? 'Yes — GST included'
-                      : (app.step9Fees?.feeIncludesGst === false ? 'No — GST not included' : '—')],
+                    // Per-course fees + GST are shown in Step 4 (Courses).
+                    // Step 9 only carries institute-wide policies now.
                     ['Scholarship available', app.step9Fees?.scholarshipAvailable ? 'Yes' : 'No'],
-                    ['EMI available', app.step9Fees?.installmentAvailable ? 'Yes' : 'No'],
+                    ['Installment / EMI available', app.step9Fees?.installmentAvailable ? 'Yes' : 'No'],
+                    ['EMI provider', app.step9Fees?.emiProvider],
+                    ['Refund policy', app.step9Fees?.refundPolicy ? 'Set' : '—'],
+                    ['Cancellation policy', app.step9Fees?.cancellationPolicy ? 'Set' : '—'],
                   ]}
                 />
               </ApplicationStepSection>

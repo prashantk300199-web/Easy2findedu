@@ -10,25 +10,14 @@ interface Step7Props {
 }
 
 export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraft, loading }: Step7Props) {
-  // GST inclusion is a single, clearly worded option that applies to the
-  // total fee the owner is quoting. Stored separately as
-  // `feeIncludesGst` so downstream code can render a label like
-  // "₹50,000 (incl. GST)" without inferring from the amount.
+  // Per-course fee structure (registration / admission / course /
+  // monthly / quarterly / material / kit / exam / certification /
+  // other / total / GST) now lives on each course in Step 4. This
+  // step only carries institute-level policy fields that apply across
+  // all courses — scholarships, EMI, refund, and cancellation.
+  // We still read legacy `feeIncludesGst` at the institute level for
+  // backward compatibility, but it is no longer edited here.
   const [formData, setFormData] = useState({
-    registrationFee: data?.registrationFee ?? '',
-    admissionFee: data?.admissionFee ?? '',
-    courseFee: data?.courseFee ?? '',
-    monthlyFee: data?.monthlyFee ?? '',
-    quarterlyFee: data?.quarterlyFee ?? '',
-    materialFee: data?.materialFee ?? '',
-    kitFee: data?.kitFee ?? '',
-    examFee: data?.examFee ?? '',
-    certificationFee: data?.certificationFee ?? '',
-    otherCharges: data?.otherCharges ?? '',
-    totalPayableAmount: data?.totalPayableAmount ?? '',
-    // Legacy / new — store as boolean; old drafts may have undefined.
-    feeIncludesGst:
-      typeof data?.feeIncludesGst === 'boolean' ? data.feeIncludesGst : (data?.gstIncluded ?? false),
     scholarshipAvailable: data?.scholarshipAvailable || false,
     scholarshipDetails: data?.scholarshipDetails || '',
     installmentAvailable: data?.installmentAvailable || false,
@@ -44,13 +33,6 @@ export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraf
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (type === 'radio') {
-      // For the GST radio group, store the boolean in `feeIncludesGst`.
-      if (name === 'feeIncludesGst') {
-        setFormData(prev => ({ ...prev, feeIncludesGst: value === 'yes' }));
-      } else {
-        setFormData(prev => ({ ...prev, [name]: value }));
-      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -71,245 +53,22 @@ export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraf
       <p className="text-cream-100/60 mb-8">Provide fee structure and scholarship information (All fields optional)</p>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Fee Structure */}
-        <div>
-          <h3 className="text-xl font-semibold text-cream-100 mb-4 flex items-center gap-2">
-            <DollarSign size={20} className="text-gold-400" />
-            Fee Structure
-          </h3>
-          <p className="text-sm text-cream-100/50 mb-4">Fill only the fee types that apply to your institute</p>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Registration Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="registrationFee"
-                value={formData.registrationFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Admission Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="admissionFee"
-                value={formData.admissionFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Course Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="courseFee"
-                value={formData.courseFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Monthly Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="monthlyFee"
-                value={formData.monthlyFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Quarterly Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="quarterlyFee"
-                value={formData.quarterlyFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Material Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="materialFee"
-                value={formData.materialFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Kit Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="kitFee"
-                value={formData.kitFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Exam Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="examFee"
-                value={formData.examFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Certification Fee (₹)
-              </label>
-              <input
-                type="number"
-                name="certificationFee"
-                value={formData.certificationFee}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Other Charges (₹)
-              </label>
-              <input
-                type="number"
-                name="otherCharges"
-                value={formData.otherCharges}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-cream-100 mb-2">
-                Total Payable Amount (₹)
-              </label>
-              <input
-                type="number"
-                name="totalPayableAmount"
-                value={formData.totalPayableAmount}
-                onChange={handleChange}
-                placeholder="0"
-                min="0"
-                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-              />
-            </div>
-          </div>
-
-          {/* GST inclusion — applies to the total fee the owner is quoting.
-              Stored separately as `feeIncludesGst` (boolean) so we never
-              infer GST status from the amount. */}
-          <div className="mt-6 p-5 rounded-lg border border-gold-500/30 bg-night-900/60">
-            <div className="flex items-center gap-2 mb-3">
-              <Info size={18} className="text-gold-400" />
-              <p className="text-sm font-semibold text-cream-100">
-                Does the fee include GST?
-              </p>
-            </div>
-            <p className="text-xs text-cream-100/50 mb-4">
-              This helps students understand exactly what they will pay. The fee amount
-              you entered above is stored as-is — no GST is added or removed automatically.
+        {/* Note: per-course fees (registration, admission, course,
+            monthly, quarterly, material, kit, exam, certification,
+            other, total) plus the GST inclusion flag now live on each
+            course in Step 4. The fields below apply across all
+            courses at the institute. */}
+        <div className="p-5 rounded-lg border border-gold-500/30 bg-night-900/60 flex items-start gap-3">
+          <Info size={18} className="text-gold-400 mt-0.5" />
+          <div>
+            <p className="text-sm font-semibold text-cream-100">
+              Per-course fees and GST are set on each course.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <label
-                className={`flex-1 flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all ${
-                  formData.feeIncludesGst === true
-                    ? 'border-gold-500 bg-gold-500/10'
-                    : 'border-night-700 bg-night-900 hover:border-gold-500/40'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="feeIncludesGst"
-                  value="yes"
-                  checked={formData.feeIncludesGst === true}
-                  onChange={handleChange}
-                  className="mt-1 accent-gold-500"
-                />
-                <div>
-                  <span className="block text-sm font-semibold text-cream-100">
-                    Yes — GST included
-                  </span>
-                  <span className="block text-xs text-cream-100/50 mt-1">
-                    The amount above already includes GST.
-                  </span>
-                </div>
-              </label>
-              <label
-                className={`flex-1 flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all ${
-                  formData.feeIncludesGst === false
-                    ? 'border-gold-500 bg-gold-500/10'
-                    : 'border-night-700 bg-night-900 hover:border-gold-500/40'
-                }`}
-              >
-                <input
-                  type="radio"
-                  name="feeIncludesGst"
-                  value="no"
-                  checked={formData.feeIncludesGst === false}
-                  onChange={handleChange}
-                  className="mt-1 accent-gold-500"
-                />
-                <div>
-                  <span className="block text-sm font-semibold text-cream-100">
-                    No — GST not included
-                  </span>
-                  <span className="block text-xs text-cream-100/50 mt-1">
-                    GST will be charged extra on top of the amount above.
-                  </span>
-                </div>
-              </label>
-            </div>
+            <p className="text-xs text-cream-100/50 mt-1">
+              Open Step 4 (Courses / Programs) and edit a course to set
+              its fee structure and whether the listed amount includes
+              GST. The fields below are institute-wide policies.
+            </p>
           </div>
         </div>
 
