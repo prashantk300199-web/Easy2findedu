@@ -31,6 +31,11 @@ import {
   CalendarDays,
   MapPin,
   Hash,
+  Edit3,
+  Power,
+  Trash2,
+  ArrowUpDown,
+  Plus,
 } from 'lucide-react';
 
 /* ============================================================
@@ -61,6 +66,135 @@ const STEP_LABELS = [
   'Results',
   'Gallery',
   'Verification',
+];
+
+/* ============================================================
+ * Hostel enums (mirror src/constants/amenities.js + src/models/Hostel.js)
+ * ============================================================ */
+
+const ROOM_TYPES = [
+  'single_sharing_wall',
+  'single_sharing_partition',
+  'single_sharing_attached_washroom',
+  'double_sharing_wall',
+  'double_sharing_partition',
+  'double_sharing_attached_washroom',
+  'triple_sharing_wall',
+  'triple_sharing_partition',
+  'triple_sharing_attached_washroom',
+  'quad_sharing_wall',
+  'quad_sharing_attached_washroom',
+];
+const ROOM_TYPE_LABEL: Record<string, string> = {
+  single_sharing_wall: 'Single Sharing (Wall)',
+  single_sharing_partition: 'Single Sharing (Partition)',
+  single_sharing_attached_washroom: 'Single Sharing (Attached Washroom)',
+  double_sharing_wall: 'Double Sharing (Wall)',
+  double_sharing_partition: 'Double Sharing (Partition)',
+  double_sharing_attached_washroom: 'Double Sharing (Attached Washroom)',
+  triple_sharing_wall: 'Triple Sharing (Wall)',
+  triple_sharing_partition: 'Triple Sharing (Partition)',
+  triple_sharing_attached_washroom: 'Triple Sharing (Attached Washroom)',
+  quad_sharing_wall: 'Quad Sharing (Wall)',
+  quad_sharing_attached_washroom: 'Quad Sharing (Attached Washroom)',
+};
+const HOSTEL_TYPES = ['boys', 'girls', 'co_ed'];
+const HOSTEL_TYPE_LABEL: Record<string, string> = { boys: 'Boys', girls: 'Girls', co_ed: 'Co-Ed' };
+const DEPOSIT_TYPES = ['two_month_fee', 'one_month_fee', '15_day_fee', 'no_deposit'];
+const DEPOSIT_LABEL: Record<string, string> = {
+  two_month_fee: '2 Months Fee',
+  one_month_fee: '1 Month Fee',
+  '15_day_fee': '15 Days Fee',
+  no_deposit: 'No Deposit',
+};
+const GUEST_POLICIES = ['family_only', 'friends_only', 'both_allowed', 'no_one_allowed'];
+const GUEST_POLICY_LABEL: Record<string, string> = {
+  family_only: 'Family Only',
+  friends_only: 'Friends Only',
+  both_allowed: 'Both Allowed',
+  no_one_allowed: 'No One Allowed',
+};
+const FLOORING = ['tiles', 'marble', 'granite', 'mosaic', 'plaster'];
+const MEAL_FREQUENCIES = ['2_times', '3_times', '4_times'];
+const MEAL_FREQUENCY_LABEL: Record<string, string> = { '2_times': '2x/day', '3_times': '3x/day', '4_times': '4x/day' };
+const MEAL_TYPES = ['veg', 'non_veg', 'both'];
+const MEAL_SERVICE = ['in_house_kitchen', 'somewhere_else_cooked'];
+const MEAL_SERVICE_LABEL: Record<string, string> = {
+  in_house_kitchen: 'In-house Kitchen',
+  somewhere_else_cooked: 'Cooked Elsewhere',
+};
+const SECURITY_FIELDS = [
+  'full_time_warden', 'cctv', 'security_guard_24x7', 'biometric_entry',
+  'visitor_register', 'first_aid_kit', 'fire_extinguisher', 'transport_facilities',
+];
+const SECURITY_LABEL: Record<string, string> = {
+  full_time_warden: 'Full-time Warden',
+  cctv: 'CCTV Surveillance',
+  security_guard_24x7: '24x7 Security Guard',
+  biometric_entry: 'Biometric / Card Entry',
+  visitor_register: 'Visitor Register',
+  first_aid_kit: 'First Aid Kit',
+  fire_extinguisher: 'Fire Extinguisher',
+  transport_facilities: 'Transport Facilities',
+};
+const LEGAL_DOCS = [
+  'hostel_registration', 'form_3', 'food_license', 'character_certificate',
+  'trade_license', 'fire_noc', 'hostel_association_member', 'member_of_hostel_wellfare_association',
+];
+const LEGAL_LABEL: Record<string, string> = {
+  hostel_registration: 'Hostel Registration',
+  form_3: 'Form 3',
+  food_license: 'Food License',
+  character_certificate: 'Character Certificate',
+  trade_license: 'Trade License',
+  fire_noc: 'Fire NOC',
+  hostel_association_member: 'Hostel Association Member',
+  member_of_hostel_wellfare_association: 'Welfare Association Member',
+};
+// Amenity groups: name → human label + list of valid chip keys (must match backend constants/amenities.js)
+const AMENITY_GROUPS: Array<{ key: keyof Hostel; label: string; options: { key: string; label: string }[] }> = [
+  { key: 'in_room_amenities', label: 'In-room', options: [
+    { key: 'mattress', label: 'Mattress' }, { key: 'pillow', label: 'Pillow' },
+    { key: 'bed_with_storage', label: 'Bed with Storage' }, { key: 'bed', label: 'Bed' },
+    { key: 'wardrobe', label: 'Wardrobe' }, { key: 'study_table', label: 'Study Table' },
+    { key: 'study_chair', label: 'Study Chair' }, { key: 'bookshelf', label: 'Bookshelf' },
+    { key: 'shoe_rack', label: 'Shoe Rack' }, { key: 'mirror', label: 'Mirror' },
+    { key: 'curtains', label: 'Curtains' }, { key: 'fan', label: 'Fan' },
+    { key: 'ac', label: 'AC' }, { key: 'cooler', label: 'Air Cooler' },
+    { key: 'room_heater', label: 'Room Heater' }, { key: 'attached_bathroom', label: 'Attached Bathroom' },
+    { key: 'balcony', label: 'Private Balcony' },
+  ]},
+  { key: 'washroom_amenities', label: 'Washroom', options: [
+    { key: 'indian_toilet', label: 'Indian Toilet' }, { key: 'western_toilet', label: 'Western Toilet' },
+    { key: 'geyser', label: 'Geyser' }, { key: '24x7_water_in_washroom', label: '24x7 Water' },
+    { key: 'separate_bath_and_toilet', label: 'Separate Bath & Toilet' },
+    { key: 'one_washroom_per_6_students', label: '1 per 6 students' },
+  ]},
+  { key: 'utilities', label: 'Utilities', options: [
+    { key: 'ro_water', label: 'RO Water' }, { key: 'water_cooler', label: 'Water Cooler' },
+    { key: '24x7_water_supply', label: '24x7 Water Supply' },
+    { key: 'electricity_backup', label: 'Power Backup' }, { key: 'inverter_backup', label: 'Inverter' },
+    { key: 'wifi', label: 'Wi-Fi' }, { key: 'high_speed_internet', label: 'High-Speed Internet' },
+    { key: 'refrigerator', label: 'Refrigerator' }, { key: 'induction', label: 'Induction' },
+    { key: 'guest_room_for_parents', label: 'Guest Room for Parents' },
+  ]},
+  { key: 'cleaning', label: 'Cleaning', options: [
+    { key: 'washing_machine', label: 'Washing Machine' },
+    { key: 'paid_laundry_service', label: 'Paid Laundry' },
+    { key: 'drying_area', label: 'Drying Area' }, { key: 'daily_room_cleaning', label: 'Daily Cleaning' },
+    { key: '6_days_in_a_week', label: '6 days/week' }, { key: '5_days_in_a_week', label: '5 days/week' },
+  ]},
+  { key: 'building_amenities', label: 'Building', options: [
+    { key: 'lift', label: 'Lift' }, { key: 'parking', label: 'Parking' },
+    { key: 'wheelchair_access', label: 'Wheelchair Access' }, { key: 'terrace_access', label: 'Terrace' },
+  ]},
+  { key: 'common_amenities', label: 'Common', options: [
+    { key: 'common_hall', label: 'Common Hall' }, { key: 'study_room', label: 'Study Room' },
+    { key: 'library', label: 'Library' }, { key: 'gym', label: 'Gym' },
+    { key: 'indoor_games', label: 'Indoor Games' }, { key: 'newspaper_magazine', label: 'Newspapers' },
+    { key: 'tv_in_common_area', label: 'TV in Common Area' },
+  ]},
+  { key: 'recreation', label: 'Recreation', options: [] }, // alias of common_amenities on backend; keep separate field per model
 ];
 
 /* ============================================================
@@ -96,15 +230,75 @@ interface Hostel {
   masked_name?: string;
   slug?: string;
   hostel_type: string;
+  description?: string;
   status: string;
-  is_open: boolean;
-  owner?: { _id: string; name: string; email: string; phone?: string };
+  is_open?: boolean;
+  sort_priority?: number;
+  rejection_reason?: string;
+  owner?: { _id: string; name: string; email: string; phone?: string; profilePhoto?: string; address?: any };
   createdAt: string;
   updatedAt: string;
-  address?: { city?: string; area?: string; line1?: string; state?: string; pincode?: string };
+  address?: {
+    line1?: string; line2?: string; area?: string; subarea?: string;
+    city?: string; state?: string; pincode?: string; country?: string;
+  };
+  location?: { type?: string; coordinates?: [number, number] };
+  rent?: { security_deposit_type?: string; registration_fee?: number };
+  contact_info?: {
+    phone?: string; alternative_phone?: string; additional_phones?: string[];
+    email?: string; owner_name?: string; owner_age?: string; owner_gender?: string;
+  };
+  photos?: Array<{ url: string; publicId?: string }>;
+  rooms?: Array<{
+    room_type: string; total_beds: number; available_beds_count?: number;
+    monthly_rent: number; is_available?: boolean; ac?: boolean;
+  }>;
+  meal_plans?: Array<{
+    frequency: string; meal_type: string; service_type: string;
+    monthly_cost?: number; menu_card?: { url: string; publicId?: string };
+  }>;
+  in_room_amenities?: string[];
+  washroom_amenities?: string[];
+  utilities?: string[];
+  cleaning?: string[];
+  building_amenities?: string[];
+  common_amenities?: string[];
+  recreation?: string[];
+  total_hostel_beds?: number;
+  notice_period_days?: number;
+  laundry?: { washing_machine?: boolean; paid_laundry_service?: boolean; drying_area?: boolean };
+  washroom_details?: {
+    indian_toilet?: boolean; western_toilet?: boolean;
+    attached_washroom_available?: boolean; total_washrooms?: number; washroom_to_student_ratio?: string;
+  };
+  warden?: {
+    name?: string; gender?: string; age?: string;
+    contact_number?: string; alternative_contact?: string; additional_contacts?: string[]; email?: string;
+  };
+  security?: {
+    full_time_warden?: boolean; cctv?: boolean; security_guard_24x7?: boolean;
+    biometric_entry?: boolean; visitor_register?: boolean; first_aid_kit?: boolean;
+    fire_extinguisher?: boolean; transport_facilities?: boolean;
+  };
+  rules?: {
+    gate_close_time?: string; late_entry_allowed?: boolean; smoking_allowed?: boolean;
+    alcohol_allowed?: boolean; guest_policy?: string; pets_allowed?: boolean; custom_rules?: string[];
+  };
+  nearby_distances?: { institutes?: Array<{ name: string; distance_km: number }>; landmarks?: Array<{ name: string; distance_km: number }> };
+  building_details?: { building_age_years?: number; flooring_type?: string; number_of_floors?: number };
+  legal_docs?: {
+    hostel_registration?: boolean; form_3?: boolean; food_license?: boolean;
+    character_certificate?: boolean; trade_license?: boolean; fire_noc?: boolean;
+    hostel_association_member?: boolean; member_of_hostel_wellfare_association?: boolean;
+  };
+  comparisonMetrics?: {
+    cleanlinessScore?: number; securityScore?: number; foodScore?: number;
+    wifiScore?: number; studyEnvironmentScore?: number; valueForMoney?: number;
+    studentSatisfaction?: number; overallScore?: number;
+  };
+  social_media?: { youtube?: string; instagram?: string; facebook?: string };
   views_count?: number;
   leads_count?: number;
-  total_hostel_beds?: number;
 }
 
 interface InstituteApplication {
@@ -305,8 +499,15 @@ export function AdminDashboard() {
           onError={requireLogin}
         />
       )}
-      {view === 'hostel-approvals' && <HostelApprovalsView onError={requireLogin} />}
-      {view === 'all-hostels' && <AllHostelsView onError={requireLogin} />}
+      {view === 'hostel-approvals' && <HostelApprovalsView onOpen={(id) => setView({ kind: 'hostel-review', id } as any)} onError={requireLogin} />}
+      {view === 'all-hostels' && <AllHostelsView onOpen={(id) => setView({ kind: 'hostel-review', id } as any)} onError={requireLogin} />}
+      {typeof view === 'object' && (view as any).kind === 'hostel-review' && (
+        <HotelReviewView
+          hostelId={(view as any).id as string}
+          onBack={() => setView('all-hostels')}
+          onError={requireLogin}
+        />
+      )}
       {view === 'hostel-owners' && <HostelOwnersView onError={requireLogin} />}
       {view === 'institute-owners' && <InstituteOwnersView onError={requireLogin} />}
       {view === 'students' && <StudentsView onError={requireLogin} />}
@@ -324,6 +525,7 @@ type ViewKey =
   | { kind: 'college-review'; id: string }
   | 'hostel-approvals'
   | 'all-hostels'
+  | { kind: 'hostel-review'; id: string }
   | 'hostel-owners'
   | 'institute-owners'
   | 'students'
@@ -373,7 +575,7 @@ function LoginScreen({
   };
 
   return (
-    <div className="bg-night-950 min-h-screen w-full flex items-center justify-center px-6 py-12">
+    <div className="bg-night-900 min-h-screen w-full flex items-center justify-center px-6 py-12">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -471,7 +673,7 @@ function Shell({
   const isOnReview = activeKey === 'institute-review' || activeKey === 'college-review';
 
   return (
-    <div className="bg-night-950 min-h-screen w-full flex flex-col lg:flex-row">
+    <div className="bg-night-900 min-h-screen w-full flex flex-col lg:flex-row">
       {/* Sidebar */}
       <aside className="w-full lg:w-60 xl:w-64 bg-night-900 border-b lg:border-b-0 lg:border-r border-night-700 flex-shrink-0 lg:min-h-screen flex flex-col">
         <div className="p-5 lg:p-6 border-b border-night-700">
@@ -546,6 +748,11 @@ function Shell({
 }
 
 function getViewLabel(view: ViewKey): string {
+  if (typeof view === 'object' && view !== null && 'kind' in view) {
+    if (view.kind === 'institute-review') return 'Institute Review';
+    if (view.kind === 'college-review') return 'College Review';
+    if (view.kind === 'hostel-review') return 'Hostel Review';
+  }
   if (typeof view === 'string') {
     return ({
       'dashboard': 'Overview',
@@ -560,7 +767,7 @@ function getViewLabel(view: ViewKey): string {
       'scholarships': 'Scholarships',
     } as Record<string, string>)[view] || 'Admin';
   }
-  return 'Application Review';
+  return 'Admin';
 }
 
 /* ============================================================
@@ -1273,7 +1480,16 @@ function InstituteReviewView({
                 <DataGrid
                   items={[
                     ['Primary category', app.step2Category?.primaryCategory],
-                    ['Subcategories', Array.isArray(app.step2Category?.subcategories) ? app.step2Category.subcategories.join(', ') : app.step2Category?.subcategories],
+                    ['Subcategories', (() => {
+                      // Accept the new array shape and the legacy single-
+                      // string shape so older applications remain readable.
+                      const raw = app.step2Category?.subcategories;
+                      if (Array.isArray(raw)) return raw.filter(Boolean).join(', ');
+                      if (typeof raw === 'string' && raw) return raw;
+                      const legacy = app.step2Category?.subcategory;
+                      if (typeof legacy === 'string' && legacy) return legacy;
+                      return undefined;
+                    })()],
                   ]}
                 />
               </ApplicationStepSection>
@@ -1285,7 +1501,12 @@ function InstituteReviewView({
                       <div key={i} className="border border-night-700 bg-night-800/50 p-3 text-sm">
                         <p className="text-cream-100">{c.courseName || `Course ${i + 1}`}</p>
                         <p className="text-xs text-cream-100/40 mt-1">
-                          {c.duration && `${c.duration}`} {c.mode && `· ${c.mode}`} {c.level && `· ${c.level}`}
+                          {c.category && `Category: ${c.category}`}
+                          {c.category && (c.duration || c.mode || c.level) && ' · '}
+                          {c.duration && `${c.duration}`}
+                          {c.mode && ` · ${c.mode}`}
+                          {c.level && ` · ${c.level}`}
+                          {c.totalFees && ` · ₹${c.totalFees}`}
                         </p>
                       </div>
                     ))}
@@ -1331,6 +1552,9 @@ function InstituteReviewView({
                   items={[
                     ['Course fee', app.step9Fees?.courseFee],
                     ['Total payable', app.step9Fees?.totalPayableAmount],
+                    ['Fee includes GST', app.step9Fees?.feeIncludesGst === true
+                      ? 'Yes — GST included'
+                      : (app.step9Fees?.feeIncludesGst === false ? 'No — GST not included' : '—')],
                     ['Scholarship available', app.step9Fees?.scholarshipAvailable ? 'Yes' : 'No'],
                     ['EMI available', app.step9Fees?.installmentAvailable ? 'Yes' : 'No'],
                   ]}
@@ -1645,23 +1869,25 @@ function ActionButton({
  * Hostel Approvals + All Hostels
  * ============================================================ */
 
-function HostelApprovalsView({ onError }: { onError: (e: Error) => never }) {
-  return <HostelListView title="Pending Hostel Approvals" subtitle="Review and approve or reject new hostel listings." fixedStatus="pending" onError={onError} />;
+function HostelApprovalsView({ onOpen, onError }: { onOpen: (id: string) => void; onError: (e: Error) => never }) {
+  return <HostelListView title="Pending Hostel Approvals" subtitle="Review and approve or reject new hostel listings." fixedStatus="pending" onOpen={onOpen} onError={onError} />;
 }
 
-function AllHostelsView({ onError }: { onError: (e: Error) => never }) {
-  return <HostelListView title="All Hostels" subtitle="Manage the status of every hostel on the platform." onError={onError} />;
+function AllHostelsView({ onOpen, onError }: { onOpen: (id: string) => void; onError: (e: Error) => never }) {
+  return <HostelListView title="All Hostels" subtitle="Manage the status of every hostel on the platform." onOpen={onOpen} onError={onError} />;
 }
 
 function HostelListView({
   title,
   subtitle,
   fixedStatus,
+  onOpen,
   onError,
 }: {
   title: string;
   subtitle: string;
   fixedStatus?: string;
+  onOpen: (id: string) => void;
   onError: (e: Error) => never;
 }) {
   const [hostels, setHostels] = useState<Hostel[]>([]);
@@ -1738,7 +1964,14 @@ function HostelListView({
       ) : (
         <div className="space-y-3 min-w-0">
           {hostels.map((h) => (
-            <div key={h._id} className="border border-night-700 bg-night-900 p-4 sm:p-5 min-w-0">
+            <div
+              key={h._id}
+              role="button"
+              tabIndex={0}
+              onClick={() => onOpen(h._id)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(h._id); } }}
+              className="border border-night-700 bg-night-900 p-4 sm:p-5 min-w-0 cursor-pointer hover:bg-night-800/50 transition-colors focus:outline-none focus:border-gold-500/40"
+            >
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div className="min-w-0 flex-1">
                   <h3 className="font-display text-lg text-cream-100 break-words">
@@ -1759,9 +1992,16 @@ function HostelListView({
                 </div>
                 <div className="flex flex-row sm:flex-col items-start sm:items-end gap-2 flex-shrink-0">
                   <StatusBadge status={h.status} />
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onOpen(h._id); }}
+                    className="inline-flex items-center gap-1.5 border border-gold-500/50 px-3 py-1.5 text-[10px] uppercase tracking-wide2 text-gold-400 hover:bg-gold-500 hover:text-night-900 transition-colors"
+                  >
+                    <Eye size={10} />
+                    View
+                  </button>
                   {h.status !== 'approved' && (
                     <button
-                      onClick={() => setStatus(h._id, 'approved')}
+                      onClick={(e) => { e.stopPropagation(); setStatus(h._id, 'approved'); }}
                       disabled={busyId === h._id}
                       className="inline-flex items-center gap-1.5 border border-green-500/40 px-3 py-1.5 text-[10px] uppercase tracking-wide2 text-green-300 hover:bg-green-500/10 transition-colors disabled:opacity-50"
                     >
@@ -1771,7 +2011,7 @@ function HostelListView({
                   )}
                   {h.status !== 'rejected' && (
                     <button
-                      onClick={() => setStatus(h._id, 'rejected')}
+                      onClick={(e) => { e.stopPropagation(); setStatus(h._id, 'rejected'); }}
                       disabled={busyId === h._id}
                       className="inline-flex items-center gap-1.5 border border-red-500/40 px-3 py-1.5 text-[10px] uppercase tracking-wide2 text-red-300 hover:bg-red-500/10 transition-colors disabled:opacity-50"
                     >
@@ -1786,6 +2026,837 @@ function HostelListView({
         </div>
       )}
     </div>
+  );
+}
+
+/* ============================================================
+ * Hostel Review (full detail + edit)
+ * ============================================================ */
+
+function HotelReviewView({
+  hostelId,
+  onBack,
+  onError,
+}: {
+  hostelId: string;
+  onBack: () => void;
+  onError: (e: Error) => never;
+}) {
+  const [hostel, setHostel] = useState<Hostel | null>(null);
+  const [stats, setStats] = useState<{ total_bookings?: number; total_reviews?: number } | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [processing, setProcessing] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      setError(null);
+      const data = await get(`/admin/hostels/${hostelId}`);
+      // backend returns { hostel, stats } OR { data: { hostel, stats } } — normalise
+      const payload = data?.data?.hostel ? data.data : data;
+      setHostel(payload?.hostel || payload?.data || null);
+      setStats(payload?.stats || null);
+    } catch (err: any) {
+      try { onError(err); } catch { setError(err?.message || 'Failed to load hostel'); }
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [hostelId, onError]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const setStatus = async (newStatus: 'approved' | 'rejected' | 'pending') => {
+    if (!hostel) return;
+    const label = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+    if (!confirm(`${label} this hostel?`)) return;
+    setProcessing(true);
+    try {
+      await patch(`/admin/hostels/${hostel._id}/status`, { status: newStatus });
+      await load();
+    } catch (err: any) {
+      setError(err?.message || 'Update failed');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const toggleOpen = async () => {
+    if (!hostel) return;
+    setProcessing(true);
+    try {
+      await patch(`/admin/hostels/${hostel._id}/toggle-open`, {});
+      await load();
+    } catch (err: any) {
+      setError(err?.message || 'Toggle failed');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const setPriority = async () => {
+    if (!hostel) return;
+    const input = prompt(`Set sort priority for "${hostel.masked_name || hostel.name}"\n\nHigher number = shown first. Current: ${hostel.sort_priority ?? 0}`, String(hostel.sort_priority ?? 0));
+    if (input == null) return;
+    const n = Number(input);
+    if (!Number.isFinite(n)) { setError('Priority must be a number'); return; }
+    setProcessing(true);
+    try {
+      await patch(`/admin/hostels/${hostel._id}/priority`, { sort_priority: n });
+      await load();
+    } catch (err: any) {
+      setError(err?.message || 'Priority update failed');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const deleteHostel = async () => {
+    if (!hostel) return;
+    if (!confirm(`Permanently delete "${hostel.masked_name || hostel.name}"? This removes photos, bookings, and reviews. This cannot be undone.`)) return;
+    setProcessing(true);
+    try {
+      await adminApi(`/admin/hostels/${hostel._id}`, { method: 'DELETE' });
+      onBack();
+    } catch (err: any) {
+      setError(err?.message || 'Delete failed');
+      setProcessing(false);
+    }
+  };
+
+  if (loading) return <CenteredSpinner label="Loading hostel" />;
+  if (!hostel) return <EmptyState title="Hostel not found" hint="It may have been deleted." />;
+
+  const displayName = hostel.masked_name || hostel.name || 'Untitled hostel';
+  const ownerBlock = hostel.owner;
+
+  return (
+    <div className="space-y-6 lg:space-y-8 min-w-0">
+      <button
+        onClick={onBack}
+        className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-wide2 text-cream-100/60 hover:text-gold-400 transition-colors"
+      >
+        <ChevronLeft size={12} /> Back to hostels
+      </button>
+
+      {error && <ErrorState message={error} onRetry={() => { setError(null); load(); }} />}
+
+      {/* Header band */}
+      <div className="border border-night-700 bg-night-900 p-5 sm:p-6 min-w-0">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <p className="overline text-gold-400">Hostel</p>
+            <h2 className="font-display text-d2 text-cream-100 mt-2 break-words">{displayName}</h2>
+            <p className="text-sm text-cream-100/50 mt-2 break-words">
+              {hostel._id} · added {new Date(hostel.createdAt).toLocaleDateString('en-IN')}
+              {hostel.updatedAt && hostel.updatedAt !== hostel.createdAt && (
+                <> · updated {new Date(hostel.updatedAt).toLocaleDateString('en-IN')}</>
+              )}
+            </p>
+            <div className="flex flex-wrap gap-2 mt-4">
+              <StatusBadge status={hostel.status} />
+              <span className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[10px] uppercase tracking-wide2 whitespace-nowrap ${hostel.is_open ? 'border-emerald-400/40 bg-emerald-400/5 text-emerald-300' : 'border-night-600 bg-night-800 text-cream-100/50'}`}>
+                {hostel.is_open ? 'Open' : 'Closed'}
+              </span>
+              {hostel.sort_priority != null && hostel.sort_priority > 0 && (
+                <span className="inline-flex items-center gap-1.5 border border-gold-500/40 bg-gold-500/5 px-2.5 py-1 text-[10px] uppercase tracking-wide2 text-gold-300">
+                  Priority {hostel.sort_priority}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-3 lg:gap-4 lg:min-w-[280px]">
+            <SummaryStat label="Beds" value={hostel.total_hostel_beds ?? 0} />
+            <SummaryStat label="Rooms" value={hostel.rooms?.length ?? 0} />
+            <SummaryStat label="Bookings" value={stats?.total_bookings ?? 0} />
+          </div>
+        </div>
+      </div>
+
+      {/* Action bar */}
+      <div className="border border-night-700 bg-night-900 p-4 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-[10px] uppercase tracking-wide2 text-cream-100/40">Actions</p>
+        <div className="flex flex-wrap gap-2">
+          <ActionButton onClick={() => setEditOpen(true)} icon={Edit3} variant="outline" disabled={processing}>
+            Edit Details
+          </ActionButton>
+          {hostel.status !== 'approved' && (
+            <ActionButton onClick={() => setStatus('approved')} icon={CheckCircle} variant="primary" disabled={processing}>
+              Approve
+            </ActionButton>
+          )}
+          {hostel.status !== 'rejected' && (
+            <ActionButton onClick={() => setStatus('rejected')} icon={XCircle} variant="danger" disabled={processing}>
+              Reject
+            </ActionButton>
+          )}
+          <ActionButton onClick={toggleOpen} icon={Power} variant="outline" disabled={processing}>
+            {hostel.is_open ? 'Mark Closed' : 'Mark Open'}
+          </ActionButton>
+          <ActionButton onClick={setPriority} icon={ArrowUpDown} variant="outline" disabled={processing}>
+            Set Priority
+          </ActionButton>
+          <ActionButton onClick={deleteHostel} icon={Trash2} variant="danger" disabled={processing}>
+            Delete
+          </ActionButton>
+        </div>
+      </div>
+
+      {/* Two-column grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 min-w-0">
+        <div className="xl:col-span-2 space-y-3 min-w-0">
+
+          <ApplicationStepSection step={1} label="Basic" open>
+            <DataGrid items={[
+              ['Name', hostel.name],
+              ['Masked name', hostel.masked_name],
+              ['Slug', hostel.slug],
+              ['Type', hostel.hostel_type ? (HOSTEL_TYPE_LABEL[hostel.hostel_type] || hostel.hostel_type) : null],
+              ['Description', hostel.description],
+              ['Total beds', hostel.total_hostel_beds],
+              ['Notice period (days)', hostel.notice_period_days],
+              ['Is open', hostel.is_open ? 'Yes' : 'No'],
+              ['Status', hostel.status],
+              ['Sort priority', hostel.sort_priority ?? 0],
+              ['Created', new Date(hostel.createdAt).toLocaleString('en-IN')],
+              ['Updated', new Date(hostel.updatedAt).toLocaleString('en-IN')],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={2} label="Address" open>
+            <DataGrid items={[
+              ['Line 1', hostel.address?.line1],
+              ['Line 2', hostel.address?.line2],
+              ['Area', hostel.address?.area],
+              ['Subarea', hostel.address?.subarea],
+              ['City', hostel.address?.city],
+              ['State', hostel.address?.state],
+              ['Pincode', hostel.address?.pincode],
+              ['Country', hostel.address?.country],
+              ['Geo', hostel.location?.coordinates ? `${hostel.location.coordinates[1]}, ${hostel.location.coordinates[0]}` : null],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={3} label={`Photos (${hostel.photos?.length ?? 0})`} open>
+            {hostel.photos?.length ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {hostel.photos.map((p, i) => (
+                  <a key={i} href={p.url} target="_blank" rel="noopener noreferrer" className="block border border-night-700 hover:border-gold-500/40 transition-colors">
+                    {/\.(jpe?g|png|gif|webp|avif|bmp)$/i.test(p.url) ? (
+                      <img src={p.url} alt={`Hostel photo ${i + 1}`} className="w-full h-32 object-cover" />
+                    ) : (
+                      <DocumentPreview label={`Photo ${i + 1}`} url={p.url} />
+                    )}
+                  </a>
+                ))}
+              </div>
+            ) : <p className="text-sm text-cream-100/40">No photos uploaded.</p>}
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={4} label={`Rooms (${hostel.rooms?.length ?? 0})`}>
+            {hostel.rooms?.length ? (
+              <div className="space-y-3">
+                {hostel.rooms.map((r, i) => (
+                  <div key={i} className="border border-night-700 p-3">
+                    <DataGrid items={[
+                      ['Type', ROOM_TYPE_LABEL[r.room_type] || r.room_type],
+                      ['Total beds', r.total_beds],
+                      ['Available beds', r.available_beds_count],
+                      ['Monthly rent', r.monthly_rent != null ? `₹${r.monthly_rent}` : null],
+                      ['A/C', r.ac ? 'Yes' : 'No'],
+                      ['Available', r.is_available === false ? 'No' : 'Yes'],
+                    ]} />
+                  </div>
+                ))}
+              </div>
+            ) : <p className="text-sm text-cream-100/40">No rooms defined.</p>}
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={5} label={`Meal Plans (${hostel.meal_plans?.length ?? 0})`}>
+            {hostel.meal_plans?.length ? (
+              <div className="space-y-3">
+                {hostel.meal_plans.map((m, i) => (
+                  <div key={i} className="border border-night-700 p-3">
+                    <DataGrid items={[
+                      ['Frequency', MEAL_FREQUENCY_LABEL[m.frequency] || m.frequency],
+                      ['Meal type', m.meal_type],
+                      ['Service', MEAL_SERVICE_LABEL[m.service_type] || m.service_type],
+                      ['Monthly cost', m.monthly_cost != null ? `₹${m.monthly_cost}` : null],
+                      ['Menu card', m.menu_card?.url ? { label: 'View menu', href: m.menu_card.url } : null],
+                    ]} />
+                  </div>
+                ))}
+              </div>
+            ) : <p className="text-sm text-cream-100/40">No meal plans defined.</p>}
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={6} label="Amenities">
+            <div className="space-y-4">
+              {AMENITY_GROUPS.filter((g) => g.key !== 'recreation' || hostel.recreation?.length).map((g) => {
+                const list = (hostel as any)[g.key] as string[] | undefined;
+                if (!list || list.length === 0) return null;
+                return (
+                  <div key={g.key as string}>
+                    <p className="overline text-gold-400 mb-2">{g.label}</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {list.map((key) => {
+                        const opt = g.options.find((o) => o.key === key);
+                        return (
+                          <span key={key} className="inline-flex items-center px-2 py-1 text-[10px] uppercase tracking-wide2 border border-night-600 bg-night-800 text-cream-100/70">
+                            {opt?.label || key}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+              {!AMENITY_GROUPS.some((g) => ((hostel as any)[g.key] as string[] | undefined)?.length) && (
+                <p className="text-sm text-cream-100/40">No amenities listed.</p>
+              )}
+            </div>
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={7} label="Rent">
+            <DataGrid items={[
+              ['Security deposit type', hostel.rent?.security_deposit_type ? DEPOSIT_LABEL[hostel.rent.security_deposit_type] || hostel.rent.security_deposit_type : null],
+              ['Registration fee', hostel.rent?.registration_fee != null ? `₹${hostel.rent.registration_fee}` : null],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={8} label="Contact">
+            <DataGrid items={[
+              ['Phone', hostel.contact_info?.phone],
+              ['Alt phone', hostel.contact_info?.alternative_phone],
+              ['Additional phones', hostel.contact_info?.additional_phones?.join(', ')],
+              ['Email', hostel.contact_info?.email],
+              ['Owner name', hostel.contact_info?.owner_name],
+              ['Owner age', hostel.contact_info?.owner_age],
+              ['Owner gender', hostel.contact_info?.owner_gender],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={9} label="Warden">
+            <DataGrid items={[
+              ['Name', hostel.warden?.name],
+              ['Gender', hostel.warden?.gender],
+              ['Age', hostel.warden?.age],
+              ['Contact', hostel.warden?.contact_number],
+              ['Alt contact', hostel.warden?.alternative_contact],
+              ['Additional contacts', hostel.warden?.additional_contacts?.join(', ')],
+              ['Email', hostel.warden?.email],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={10} label="Security & Facilities">
+            <p className="overline text-gold-400 mb-2">Security</p>
+            <DataGrid items={SECURITY_FIELDS.map((f) => [SECURITY_LABEL[f], hostel.security?.[f as keyof NonNullable<typeof hostel.security>] ? 'Yes' : 'No'])} />
+            <p className="overline text-gold-400 mb-2 mt-4">Laundry</p>
+            <DataGrid items={[
+              ['Washing machine', hostel.laundry?.washing_machine ? 'Yes' : 'No'],
+              ['Paid laundry service', hostel.laundry?.paid_laundry_service ? 'Yes' : 'No'],
+              ['Drying area', hostel.laundry?.drying_area ? 'Yes' : 'No'],
+            ]} />
+            <p className="overline text-gold-400 mb-2 mt-4">Washroom</p>
+            <DataGrid items={[
+              ['Indian toilet', hostel.washroom_details?.indian_toilet ? 'Yes' : 'No'],
+              ['Western toilet', hostel.washroom_details?.western_toilet ? 'Yes' : 'No'],
+              ['Attached washroom available', hostel.washroom_details?.attached_washroom_available ? 'Yes' : 'No'],
+              ['Total washrooms', hostel.washroom_details?.total_washrooms],
+              ['Washroom-to-student ratio', hostel.washroom_details?.washroom_to_student_ratio],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={11} label="Rules">
+            <DataGrid items={[
+              ['Gate close time', hostel.rules?.gate_close_time],
+              ['Late entry allowed', hostel.rules?.late_entry_allowed ? 'Yes' : 'No'],
+              ['Smoking allowed', hostel.rules?.smoking_allowed ? 'Yes' : 'No'],
+              ['Alcohol allowed', hostel.rules?.alcohol_allowed ? 'Yes' : 'No'],
+              ['Guest policy', hostel.rules?.guest_policy ? GUEST_POLICY_LABEL[hostel.rules.guest_policy] || hostel.rules.guest_policy : null],
+              ['Pets allowed', hostel.rules?.pets_allowed ? 'Yes' : 'No'],
+              ['Custom rules', hostel.rules?.custom_rules?.length ? hostel.rules.custom_rules : null],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={12} label="Building & Legal">
+            <p className="overline text-gold-400 mb-2">Building</p>
+            <DataGrid items={[
+              ['Building age (years)', hostel.building_details?.building_age_years],
+              ['Flooring type', hostel.building_details?.flooring_type],
+              ['Number of floors', hostel.building_details?.number_of_floors],
+            ]} />
+            <p className="overline text-gold-400 mb-2 mt-4">Legal documents</p>
+            <DataGrid items={LEGAL_DOCS.map((f) => [LEGAL_LABEL[f], hostel.legal_docs?.[f as keyof NonNullable<typeof hostel.legal_docs>] ? 'Yes' : 'No'])} />
+            {hostel.nearby_distances?.institutes?.length ? (
+              <>
+                <p className="overline text-gold-400 mb-2 mt-4">Nearby institutes</p>
+                <DataGrid items={hostel.nearby_distances.institutes.map((n) => [n.name, `${n.distance_km} km`])} />
+              </>
+            ) : null}
+            {hostel.nearby_distances?.landmarks?.length ? (
+              <>
+                <p className="overline text-gold-400 mb-2 mt-4">Nearby landmarks</p>
+                <DataGrid items={hostel.nearby_distances.landmarks.map((n) => [n.name, `${n.distance_km} km`])} />
+              </>
+            ) : null}
+            <p className="overline text-gold-400 mb-2 mt-4">Social media</p>
+            <DataGrid items={[
+              ['YouTube', hostel.social_media?.youtube ? { label: hostel.social_media.youtube, href: hostel.social_media.youtube } : null],
+              ['Instagram', hostel.social_media?.instagram ? { label: hostel.social_media.instagram, href: hostel.social_media.instagram } : null],
+              ['Facebook', hostel.social_media?.facebook ? { label: hostel.social_media.facebook, href: hostel.social_media.facebook } : null],
+            ]} />
+          </ApplicationStepSection>
+
+          <ApplicationStepSection step={13} label="Stats">
+            <DataGrid items={[
+              ['Total bookings', stats?.total_bookings ?? 0],
+              ['Total reviews', stats?.total_reviews ?? 0],
+              ['Views', hostel.views_count ?? 0],
+              ['Leads', hostel.leads_count ?? 0],
+              ['Cleanliness score', hostel.comparisonMetrics?.cleanlinessScore],
+              ['Security score', hostel.comparisonMetrics?.securityScore],
+              ['Food score', hostel.comparisonMetrics?.foodScore],
+              ['Wi-Fi score', hostel.comparisonMetrics?.wifiScore],
+              ['Study environment', hostel.comparisonMetrics?.studyEnvironmentScore],
+              ['Value for money', hostel.comparisonMetrics?.valueForMoney],
+              ['Student satisfaction', hostel.comparisonMetrics?.studentSatisfaction],
+              ['Overall score', hostel.comparisonMetrics?.overallScore],
+            ]} />
+          </ApplicationStepSection>
+        </div>
+
+        {/* Right sidebar */}
+        <div className="space-y-3 min-w-0">
+          <div className="border border-night-700 bg-night-900 p-5">
+            <p className="overline text-gold-400">Owner</p>
+            <div className="mt-3 space-y-1 text-sm">
+              <p className="text-cream-100 break-words">{ownerBlock?.name || '—'}</p>
+              <p className="text-xs text-cream-100/60 break-words">{ownerBlock?.email || '—'}</p>
+              {ownerBlock?.phone && <p className="text-xs text-cream-100/60">{ownerBlock.phone}</p>}
+            </div>
+          </div>
+
+          <div className="border border-night-700 bg-night-900 p-5">
+            <p className="overline text-gold-400">Quick info</p>
+            <div className="mt-3 space-y-2 text-xs text-cream-100/70">
+              <div className="flex justify-between gap-2"><span className="text-cream-100/40">ID</span><span className="font-mono truncate">{hostel._id}</span></div>
+              <div className="flex justify-between gap-2"><span className="text-cream-100/40">Slug</span><span className="truncate">{hostel.slug || '—'}</span></div>
+              <div className="flex justify-between gap-2"><span className="text-cream-100/40">Sort priority</span><span>{hostel.sort_priority ?? 0}</span></div>
+              <div className="flex justify-between gap-2"><span className="text-cream-100/40">Open</span><span>{hostel.is_open ? 'Yes' : 'No'}</span></div>
+            </div>
+          </div>
+
+          {hostel.rejection_reason && (
+            <div className="border border-wine/40 bg-wine/5 p-5">
+              <p className="overline text-wine">Rejection reason</p>
+              <p className="text-sm text-cream-100/80 mt-2 break-words">{hostel.rejection_reason}</p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <HostelEditModal
+        open={editOpen}
+        hostel={hostel}
+        saving={processing}
+        onClose={() => setEditOpen(false)}
+        onSave={async (body) => {
+          setProcessing(true);
+          try {
+            await patch(`/admin/hostels/${hostel._id}`, body);
+            await load();
+            setEditOpen(false);
+          } catch (err: any) {
+            setError(err?.message || 'Save failed');
+          } finally {
+            setProcessing(false);
+          }
+        }}
+      />
+    </div>
+  );
+}
+
+/* ============================================================
+ * Hostel Edit Modal
+ * ============================================================ */
+
+function HostelEditModal({
+  open,
+  hostel,
+  saving,
+  onClose,
+  onSave,
+}: {
+  open: boolean;
+  hostel: Hostel;
+  saving: boolean;
+  onClose: () => void;
+  onSave: (body: Partial<Hostel>) => Promise<void>;
+}) {
+  type Tab = 'basic' | 'address' | 'rent' | 'rooms' | 'amenities' | 'warden' | 'security' | 'rules' | 'building';
+  const tabs: Array<{ key: Tab; label: string }> = [
+    { key: 'basic', label: 'Basic' },
+    { key: 'address', label: 'Address' },
+    { key: 'rent', label: 'Rent' },
+    { key: 'rooms', label: 'Rooms' },
+    { key: 'amenities', label: 'Amenities' },
+    { key: 'warden', label: 'Warden' },
+    { key: 'security', label: 'Security' },
+    { key: 'rules', label: 'Rules' },
+    { key: 'building', label: 'Building & Legal' },
+  ];
+  const [tab, setTab] = useState<Tab>('basic');
+  const [form, setForm] = useState<Hostel>(hostel);
+
+  // Re-seed form whenever the modal opens or the source hostel changes
+  useEffect(() => {
+    if (open) {
+      setForm(hostel);
+      setTab('basic');
+    }
+  }, [open, hostel]);
+
+  const upd = <K extends keyof Hostel>(k: K, v: Hostel[K]) => setForm((f) => ({ ...f, [k]: v }));
+  const updNested = <K extends keyof Hostel>(k: K, patch: any) =>
+    setForm((f) => ({ ...f, [k]: { ...((f as any)[k] || {}), ...patch } }));
+
+  const toggleAmenity = (groupKey: keyof Hostel, key: string) => {
+    setForm((f) => {
+      const cur = ((f as any)[groupKey] as string[] | undefined) || [];
+      const next = cur.includes(key) ? cur.filter((k) => k !== key) : [...cur, key];
+      return { ...f, [groupKey]: next } as Hostel;
+    });
+  };
+
+  const setRoomField = (idx: number, field: string, value: any) => {
+    setForm((f) => {
+      const rooms = [...(f.rooms || [])];
+      rooms[idx] = { ...rooms[idx], [field]: value };
+      return { ...f, rooms };
+    });
+  };
+  const addRoom = () => {
+    setForm((f) => ({
+      ...f,
+      rooms: [...(f.rooms || []), { room_type: 'double_sharing_wall', total_beds: 1, monthly_rent: 0, ac: false, is_available: true }],
+    }));
+  };
+  const removeRoom = (idx: number) => {
+    setForm((f) => ({ ...f, rooms: (f.rooms || []).filter((_, i) => i !== idx) }));
+  };
+
+  const submit = async () => {
+    // Strip out fields the backend updateHostelDetails ignores (slug, owner, etc.) by sending only known keys.
+    const body: any = {
+      name: form.name,
+      masked_name: form.masked_name,
+      hostel_type: form.hostel_type,
+      description: form.description,
+      total_hostel_beds: form.total_hostel_beds,
+      notice_period_days: form.notice_period_days,
+      is_open: form.is_open,
+      in_room_amenities: form.in_room_amenities,
+      common_amenities: form.common_amenities,
+      recreation: form.recreation,
+      address: form.address,
+      rent: form.rent,
+      laundry: form.laundry,
+      washroom_details: form.washroom_details,
+      warden: form.warden,
+      security: form.security,
+      rules: form.rules,
+      nearby_distances: form.nearby_distances,
+      building_details: {
+        ...form.building_details,
+        // Coerce temporarily-empty value to a valid number before save
+        number_of_floors: (() => {
+          const n = Number(form.building_details?.number_of_floors);
+          return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1;
+        })()
+      },
+      legal_docs: form.legal_docs,
+      rooms: form.rooms,
+    };
+    await onSave(body);
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title="Edit Hostel Details" size="xl">
+      <div className="space-y-4 min-w-0">
+        {/* Tabs */}
+        <div className="flex gap-2 overflow-x-auto pb-1">
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`flex-shrink-0 px-3 py-1.5 text-[10px] uppercase tracking-wide2 transition-colors ${
+                tab === t.key
+                  ? 'bg-gold-500 text-night-900'
+                  : 'border border-night-600 text-cream-100/60 hover:border-gold-500 hover:text-gold-400'
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Tab body */}
+        <div className="border border-night-700 p-4 sm:p-5 space-y-4 min-w-0">
+          {tab === 'basic' && (
+            <>
+              <Field label="Name"><input type="text" value={form.name || ''} onChange={(e) => upd('name', e.target.value)} className={inputCls} /></Field>
+              <Field label="Masked name"><input type="text" value={form.masked_name || ''} onChange={(e) => upd('masked_name', e.target.value)} className={inputCls} /></Field>
+              <Field label="Type">
+                <select value={form.hostel_type || ''} onChange={(e) => upd('hostel_type', e.target.value)} className={inputCls}>
+                  {HOSTEL_TYPES.map((t) => <option key={t} value={t}>{HOSTEL_TYPE_LABEL[t]}</option>)}
+                </select>
+              </Field>
+              <Field label="Description"><textarea rows={3} value={form.description || ''} onChange={(e) => upd('description', e.target.value)} className={inputCls} /></Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Total beds"><input type="number" min={0} value={form.total_hostel_beds ?? ''} onChange={(e) => upd('total_hostel_beds', e.target.value === '' ? undefined : Number(e.target.value))} className={inputCls} /></Field>
+                <Field label="Notice period (days)"><input type="number" min={0} value={form.notice_period_days ?? ''} onChange={(e) => upd('notice_period_days', e.target.value === '' ? undefined : Number(e.target.value))} className={inputCls} /></Field>
+              </div>
+              <CheckField label="Is open (accepting students)" value={!!form.is_open} onChange={(v) => upd('is_open', v)} />
+            </>
+          )}
+
+          {tab === 'address' && (
+            <>
+              <Field label="Line 1"><input type="text" value={form.address?.line1 || ''} onChange={(e) => updNested('address', { line1: e.target.value })} className={inputCls} /></Field>
+              <Field label="Line 2"><input type="text" value={form.address?.line2 || ''} onChange={(e) => updNested('address', { line2: e.target.value })} className={inputCls} /></Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Area"><input type="text" value={form.address?.area || ''} onChange={(e) => updNested('address', { area: e.target.value })} className={inputCls} /></Field>
+                <Field label="Subarea"><input type="text" value={form.address?.subarea || ''} onChange={(e) => updNested('address', { subarea: e.target.value })} className={inputCls} /></Field>
+                <Field label="City"><input type="text" value={form.address?.city || ''} onChange={(e) => updNested('address', { city: e.target.value })} className={inputCls} /></Field>
+                <Field label="State"><input type="text" value={form.address?.state || ''} onChange={(e) => updNested('address', { state: e.target.value })} className={inputCls} /></Field>
+                <Field label="Pincode"><input type="text" value={form.address?.pincode || ''} onChange={(e) => updNested('address', { pincode: e.target.value })} className={inputCls} /></Field>
+                <Field label="Country"><input type="text" value={form.address?.country || ''} onChange={(e) => updNested('address', { country: e.target.value })} className={inputCls} /></Field>
+              </div>
+            </>
+          )}
+
+          {tab === 'rent' && (
+            <>
+              <Field label="Security deposit type">
+                <select value={form.rent?.security_deposit_type || ''} onChange={(e) => updNested('rent', { security_deposit_type: e.target.value })} className={inputCls}>
+                  {DEPOSIT_TYPES.map((t) => <option key={t} value={t}>{DEPOSIT_LABEL[t]}</option>)}
+                </select>
+              </Field>
+              <Field label="Registration fee (₹)"><input type="number" min={0} value={form.rent?.registration_fee ?? ''} onChange={(e) => updNested('rent', { registration_fee: e.target.value === '' ? 0 : Number(e.target.value) })} className={inputCls} /></Field>
+            </>
+          )}
+
+          {tab === 'rooms' && (
+            <>
+              {(form.rooms || []).map((r, i) => (
+                <div key={i} className="border border-night-700 p-3 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <p className="overline text-gold-400">Room {i + 1}</p>
+                    <button onClick={() => removeRoom(i)} className="text-[10px] uppercase tracking-wide2 text-red-300 hover:text-red-400 inline-flex items-center gap-1">
+                      <X size={10} /> Remove
+                    </button>
+                  </div>
+                  <Field label="Type">
+                    <select value={r.room_type} onChange={(e) => setRoomField(i, 'room_type', e.target.value)} className={inputCls}>
+                      {ROOM_TYPES.map((t) => <option key={t} value={t}>{ROOM_TYPE_LABEL[t]}</option>)}
+                    </select>
+                  </Field>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <Field label="Total beds"><input type="number" min={0} value={r.total_beds} onChange={(e) => setRoomField(i, 'total_beds', Number(e.target.value))} className={inputCls} /></Field>
+                    <Field label="Avail. beds"><input type="number" min={0} value={r.available_beds_count ?? 0} onChange={(e) => setRoomField(i, 'available_beds_count', Number(e.target.value))} className={inputCls} /></Field>
+                    <Field label="Monthly rent (₹)"><input type="number" min={0} value={r.monthly_rent} onChange={(e) => setRoomField(i, 'monthly_rent', Number(e.target.value))} className={inputCls} /></Field>
+                  </div>
+                  <div className="flex gap-4">
+                    <CheckField label="A/C" value={!!r.ac} onChange={(v) => setRoomField(i, 'ac', v)} />
+                    <CheckField label="Available" value={r.is_available !== false} onChange={(v) => setRoomField(i, 'is_available', v)} />
+                  </div>
+                </div>
+              ))}
+              <button onClick={addRoom} className="inline-flex items-center gap-1.5 border border-night-600 px-3 py-1.5 text-[10px] uppercase tracking-wide2 text-cream-100/70 hover:border-gold-500 hover:text-gold-400 transition-colors">
+                <Plus size={10} /> Add room
+              </button>
+            </>
+          )}
+
+          {tab === 'amenities' && (
+            <div className="space-y-5">
+              {AMENITY_GROUPS.map((g) => (
+                <div key={g.key as string}>
+                  <p className="overline text-gold-400 mb-2">{g.label}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {g.options.map((opt) => {
+                      const list = ((form as any)[g.key] as string[] | undefined) || [];
+                      const on = list.includes(opt.key);
+                      return (
+                        <button
+                          key={opt.key}
+                          type="button"
+                          onClick={() => toggleAmenity(g.key, opt.key)}
+                          className={`inline-flex items-center px-2 py-1 text-[10px] uppercase tracking-wide2 border transition-colors ${
+                            on
+                              ? 'border-gold-500 bg-gold-500/10 text-gold-300'
+                              : 'border-night-600 bg-night-800 text-cream-100/60 hover:border-gold-500/40'
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {tab === 'warden' && (
+            <>
+              <Field label="Name"><input type="text" value={form.warden?.name || ''} onChange={(e) => updNested('warden', { name: e.target.value })} className={inputCls} /></Field>
+              <div className="grid grid-cols-2 gap-4">
+                <Field label="Gender">
+                  <select value={form.warden?.gender || ''} onChange={(e) => updNested('warden', { gender: e.target.value })} className={inputCls}>
+                    <option value="">—</option>
+                    <option value="male">Male</option><option value="female">Female</option><option value="other">Other</option>
+                  </select>
+                </Field>
+                <Field label="Age"><input type="text" value={form.warden?.age || ''} onChange={(e) => updNested('warden', { age: e.target.value })} className={inputCls} /></Field>
+                <Field label="Contact number"><input type="text" value={form.warden?.contact_number || ''} onChange={(e) => updNested('warden', { contact_number: e.target.value })} className={inputCls} /></Field>
+                <Field label="Alt contact"><input type="text" value={form.warden?.alternative_contact || ''} onChange={(e) => updNested('warden', { alternative_contact: e.target.value })} className={inputCls} /></Field>
+              </div>
+              <Field label="Email"><input type="email" value={form.warden?.email || ''} onChange={(e) => updNested('warden', { email: e.target.value })} className={inputCls} /></Field>
+            </>
+          )}
+
+          {tab === 'security' && (
+            <>
+              <p className="overline text-gold-400">Security</p>
+              <div className="grid grid-cols-2 gap-2">
+                {SECURITY_FIELDS.map((f) => (
+                  <CheckField key={f} label={SECURITY_LABEL[f]} value={!!(form.security as any)?.[f]} onChange={(v) => updNested('security', { [f]: v })} />
+                ))}
+              </div>
+              <p className="overline text-gold-400 mt-4">Laundry</p>
+              <div className="grid grid-cols-2 gap-2">
+                <CheckField label="Washing machine" value={!!form.laundry?.washing_machine} onChange={(v) => updNested('laundry', { washing_machine: v })} />
+                <CheckField label="Paid laundry service" value={!!form.laundry?.paid_laundry_service} onChange={(v) => updNested('laundry', { paid_laundry_service: v })} />
+                <CheckField label="Drying area" value={!!form.laundry?.drying_area} onChange={(v) => updNested('laundry', { drying_area: v })} />
+              </div>
+              <p className="overline text-gold-400 mt-4">Washroom</p>
+              <div className="grid grid-cols-2 gap-2">
+                <CheckField label="Indian toilet" value={!!form.washroom_details?.indian_toilet} onChange={(v) => updNested('washroom_details', { indian_toilet: v })} />
+                <CheckField label="Western toilet" value={!!form.washroom_details?.western_toilet} onChange={(v) => updNested('washroom_details', { western_toilet: v })} />
+                <CheckField label="Attached washroom available" value={!!form.washroom_details?.attached_washroom_available} onChange={(v) => updNested('washroom_details', { attached_washroom_available: v })} />
+              </div>
+              <Field label="Total washrooms"><input type="number" min={0} value={form.washroom_details?.total_washrooms ?? ''} onChange={(e) => updNested('washroom_details', { total_washrooms: e.target.value === '' ? 0 : Number(e.target.value) })} className={inputCls} /></Field>
+              <Field label="Washroom-to-student ratio"><input type="text" value={form.washroom_details?.washroom_to_student_ratio || ''} onChange={(e) => updNested('washroom_details', { washroom_to_student_ratio: e.target.value })} className={inputCls} /></Field>
+            </>
+          )}
+
+          {tab === 'rules' && (
+            <>
+              <Field label="Gate close time"><input type="time" value={form.rules?.gate_close_time || ''} onChange={(e) => updNested('rules', { gate_close_time: e.target.value })} className={inputCls} /></Field>
+              <Field label="Guest policy">
+                <select value={form.rules?.guest_policy || ''} onChange={(e) => updNested('rules', { guest_policy: e.target.value })} className={inputCls}>
+                  {GUEST_POLICIES.map((p) => <option key={p} value={p}>{GUEST_POLICY_LABEL[p]}</option>)}
+                </select>
+              </Field>
+              <div className="grid grid-cols-2 gap-2">
+                <CheckField label="Late entry allowed" value={!!form.rules?.late_entry_allowed} onChange={(v) => updNested('rules', { late_entry_allowed: v })} />
+                <CheckField label="Smoking allowed" value={!!form.rules?.smoking_allowed} onChange={(v) => updNested('rules', { smoking_allowed: v })} />
+                <CheckField label="Alcohol allowed" value={!!form.rules?.alcohol_allowed} onChange={(v) => updNested('rules', { alcohol_allowed: v })} />
+                <CheckField label="Pets allowed" value={!!form.rules?.pets_allowed} onChange={(v) => updNested('rules', { pets_allowed: v })} />
+              </div>
+              <Field label="Custom rules (one per line)">
+                <textarea
+                  rows={3}
+                  value={(form.rules?.custom_rules || []).join('\n')}
+                  onChange={(e) => updNested('rules', { custom_rules: e.target.value.split('\n').map((s) => s.trim()).filter(Boolean) })}
+                  className={inputCls}
+                />
+              </Field>
+            </>
+          )}
+
+          {tab === 'building' && (
+            <>
+              <p className="overline text-gold-400">Building</p>
+              <div className="grid grid-cols-3 gap-4">
+                <Field label="Age (years)"><input type="number" min={0} value={form.building_details?.building_age_years ?? ''} onChange={(e) => updNested('building_details', { building_age_years: e.target.value === '' ? 0 : Number(e.target.value) })} className={inputCls} /></Field>
+                <Field label="Flooring">
+                  <select value={form.building_details?.flooring_type || ''} onChange={(e) => updNested('building_details', { flooring_type: e.target.value })} className={inputCls}>
+                    {FLOORING.map((f) => <option key={f} value={f}>{f}</option>)}
+                  </select>
+                </Field>
+                <Field label="Floors">
+                  <input
+                    type="number"
+                    min={1}
+                    value={form.building_details?.number_of_floors ?? ''}
+                    onChange={(e) => {
+                      // Allow empty / partial values while editing so the
+                      // default doesn't get re-injected (which would turn a
+                      // user-typed "2" into "12" when the field is cleared).
+                      const raw = e.target.value;
+                      if (raw === '') {
+                        updNested('building_details', { number_of_floors: '' as any });
+                      } else {
+                        const n = Number(raw);
+                        updNested('building_details', { number_of_floors: Number.isFinite(n) ? n : '' as any });
+                      }
+                    }}
+                    onBlur={() => {
+                      const n = Number(form.building_details?.number_of_floors);
+                      const safe = Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1;
+                      if (safe !== form.building_details?.number_of_floors) {
+                        updNested('building_details', { number_of_floors: safe });
+                      }
+                    }}
+                    className={inputCls}
+                  />
+                </Field>
+              </div>
+              <p className="overline text-gold-400 mt-4">Legal documents</p>
+              <div className="grid grid-cols-2 gap-2">
+                {LEGAL_DOCS.map((f) => (
+                  <CheckField key={f} label={LEGAL_LABEL[f]} value={!!(form.legal_docs as any)?.[f]} onChange={(v) => updNested('legal_docs', { [f]: v })} />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Actions */}
+        <div className="flex justify-end gap-3 pt-2">
+          <button onClick={onClose} disabled={saving} className="px-4 py-2 border border-night-600 text-xs text-cream-100/70 hover:border-gold-500 hover:text-gold-400 transition-colors disabled:opacity-50">Cancel</button>
+          <button onClick={submit} disabled={saving} className="px-5 py-2 bg-gold-500 text-[10px] uppercase tracking-wide2 text-night-900 hover:bg-gold-400 transition-colors disabled:opacity-50">
+            {saving ? 'Saving…' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
+const inputCls = 'w-full bg-night-800 border border-night-600 px-3 py-2 text-sm text-cream-100 placeholder:text-cream-100/30 focus:border-gold-500 focus:outline-none';
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <label className="block">
+      <span className="block text-[10px] uppercase tracking-wide2 text-cream-100/60 mb-1.5">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function CheckField({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <label className="flex items-center gap-2 text-sm text-cream-100/80 cursor-pointer">
+      <input type="checkbox" checked={value} onChange={(e) => onChange(e.target.checked)} className="accent-gold-500" />
+      <span>{label}</span>
+    </label>
   );
 }
 
@@ -2674,15 +3745,15 @@ function CollegeReviewView({
 
       {/* Sections */}
       <Section title="College Basic Information">
-        <Field label="College Name" value={s1.collegeName} />
-        <Field label="Short Name" value={s1.shortName} />
-        <Field label="Institution Type" value={s1.institutionType} />
-        <Field label="Ownership" value={s1.ownershipType} />
-        <Field label="Established" value={s1.establishedYear} />
-        <Field label="About" value={s1.about} />
-        <Field label="Website" value={s1.website} />
-        <Field label="Contact Email" value={s1.contactEmail} />
-        <Field label="Contact Phone" value={s1.contactPhone} />
+        <FieldValue label="College Name" value={s1.collegeName} />
+        <FieldValue label="Short Name" value={s1.shortName} />
+        <FieldValue label="Institution Type" value={s1.institutionType} />
+        <FieldValue label="Ownership" value={s1.ownershipType} />
+        <FieldValue label="Established" value={s1.establishedYear} />
+        <FieldValue label="About" value={s1.about} />
+        <FieldValue label="Website" value={s1.website} />
+        <FieldValue label="Contact Email" value={s1.contactEmail} />
+        <FieldValue label="Contact Phone" value={s1.contactPhone} />
         {s1.logoFile && (
           <div className="pt-3">
             <span className="overline text-gold-400">Logo</span>
@@ -2692,19 +3763,19 @@ function CollegeReviewView({
       </Section>
 
       <Section title="Location & Campus">
-        <Field label="Full Address" value={s2.fullAddress} />
-        <Field label="City" value={s2.city} />
-        <Field label="State" value={s2.state} />
-        <Field label="District" value={s2.district} />
-        <Field label="PIN Code" value={s2.pincode} />
-        <Field label="Google Maps" value={s2.googleMapsLink} />
+        <FieldValue label="Full Address" value={s2.fullAddress} />
+        <FieldValue label="City" value={s2.city} />
+        <FieldValue label="State" value={s2.state} />
+        <FieldValue label="District" value={s2.district} />
+        <FieldValue label="PIN Code" value={s2.pincode} />
+        <FieldValue label="Google Maps" value={s2.googleMapsLink} />
       </Section>
 
       <Section title="Affiliation & Recognition">
-        <Field label="Affiliated University" value={s3?.affiliatedUniversity} />
-        <Field label="NAAC Grade" value={s3?.accreditationGrade} />
-        <Field label="NIRF Rank" value={s3?.nirfRank} />
-        <Field label="UGC / AICTE / NAAC / NBA" value={[
+        <FieldValue label="Affiliated University" value={s3?.affiliatedUniversity} />
+        <FieldValue label="NAAC Grade" value={s3?.accreditationGrade} />
+        <FieldValue label="NIRF Rank" value={s3?.nirfRank} />
+        <FieldValue label="UGC / AICTE / NAAC / NBA" value={[
           s3?.ugcRecognized && 'UGC',
           s3?.aicteApproved && 'AICTE',
           s3?.naacAccredited && 'NAAC',
@@ -2730,14 +3801,14 @@ function CollegeReviewView({
       </Section>
 
       <Section title="Admission & Fees">
-        <Field label="Admission Process" value={s5?.admissionProcess} />
-        <Field label="Entrance Exams" value={s5?.entranceExams} />
-        <Field label="Eligibility" value={s5?.eligibilityRequirements} />
-        <Field label="Fee Structure" value={s5?.feeStructureNote} />
+        <FieldValue label="Admission Process" value={s5?.admissionProcess} />
+        <FieldValue label="Entrance Exams" value={s5?.entranceExams} />
+        <FieldValue label="Eligibility" value={s5?.eligibilityRequirements} />
+        <FieldValue label="Fee Structure" value={s5?.feeStructureNote} />
       </Section>
 
       <Section title="Facilities">
-        <Field label="Selected" value={[
+        <FieldValue label="Selected" value={[
           s6?.library && 'Library',
           s6?.laboratories && 'Laboratories',
           s6?.sportsFacilities && 'Sports',
@@ -2748,29 +3819,29 @@ function CollegeReviewView({
           s6?.transportation && 'Transportation',
           s6?.clubsActivities && 'Clubs',
         ].filter(Boolean).join(', ') || '—'} />
-        {s6?.otherFacilities && <Field label="Other" value={s6.otherFacilities} />}
+        {s6?.otherFacilities && <FieldValue label="Other" value={s6.otherFacilities} />}
       </Section>
 
       <Section title="Hostel">
-        <Field label="Available" value={s7?.isAvailable ? 'Yes' : 'No'} />
+        <FieldValue label="Available" value={s7?.isAvailable ? 'Yes' : 'No'} />
         {s7?.isAvailable && (
           <>
-            <Field label="Boys / Girls" value={[s7?.boysHostel && 'Boys', s7?.girlsHostel && 'Girls'].filter(Boolean).join(', ')} />
-            <Field label="Capacity" value={s7?.totalCapacity} />
-            <Field label="Monthly Fee" value={s7?.hostelFees} />
-            <Field label="Room Types" value={s7?.roomTypes} />
-            <Field label="Facilities" value={s7?.hostelFacilities} />
-            <Field label="Rules" value={s7?.hostelRules} />
+            <FieldValue label="Boys / Girls" value={[s7?.boysHostel && 'Boys', s7?.girlsHostel && 'Girls'].filter(Boolean).join(', ')} />
+            <FieldValue label="Capacity" value={s7?.totalCapacity} />
+            <FieldValue label="Monthly Fee" value={s7?.hostelFees} />
+            <FieldValue label="Room Types" value={s7?.roomTypes} />
+            <FieldValue label="Facilities" value={s7?.hostelFacilities} />
+            <FieldValue label="Rules" value={s7?.hostelRules} />
           </>
         )}
       </Section>
 
       <Section title="Placements">
-        <Field label="Average Package" value={s8?.averagePackage ? `${s8.averagePackage} LPA` : ''} />
-        <Field label="Highest Package" value={s8?.highestPackage ? `${s8.highestPackage} LPA` : ''} />
-        <Field label="Placement Rate" value={s8?.placementRate ? `${s8.placementRate}%` : ''} />
-        <Field label="Top Recruiters" value={s8?.topRecruiters} />
-        <Field label="Internship" value={s8?.internshipOpportunities ? 'Available' : 'Not available'} />
+        <FieldValue label="Average Package" value={s8?.averagePackage ? `${s8.averagePackage} LPA` : ''} />
+        <FieldValue label="Highest Package" value={s8?.highestPackage ? `${s8.highestPackage} LPA` : ''} />
+        <FieldValue label="Placement Rate" value={s8?.placementRate ? `${s8.placementRate}%` : ''} />
+        <FieldValue label="Top Recruiters" value={s8?.topRecruiters} />
+        <FieldValue label="Internship" value={s8?.internshipOpportunities ? 'Available' : 'Not available'} />
       </Section>
 
       <Section title={`Scholarships (${(s9?.scholarships || []).length})`}>
@@ -2803,7 +3874,7 @@ function CollegeReviewView({
             ))}
           </div>
         )}
-        {s10?.videoUrl && <Field label="Video URL" value={s10.videoUrl} />}
+        {s10?.videoUrl && <FieldValue label="Video URL" value={s10.videoUrl} />}
       </Section>
 
       <Section title={`Documents (${(s11?.documents || []).length})`}>
@@ -2852,7 +3923,7 @@ function CollegeReviewView({
 
       {/* Modals for request-changes / reject / suspend */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-950/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-night-900/80 backdrop-blur-sm p-4">
           <div className="bg-night-900 border border-night-700 max-w-md w-full p-6">
             <h3 className="font-display text-xl text-cream-100 mb-3">
               {modal === 'changes' && 'Request Changes'}
@@ -2904,7 +3975,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Field({ label, value }: { label: string; value?: string | number | null }) {
+function FieldValue({ label, value }: { label: string; value?: string | number | null }) {
   if (value === undefined || value === null || value === '') return (
     <div className="grid grid-cols-3 gap-3 border-b border-night-800 py-1.5">
       <span className="text-cream-100/50 text-xs uppercase tracking-overline">{label}</span>

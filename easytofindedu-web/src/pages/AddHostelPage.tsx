@@ -233,6 +233,16 @@ export function AddHostelPage() {
     // Transform data for backend
     const transformedData = {
       ...formData,
+      building_details: {
+        ...formData.building_details,
+        // Coerce the temporarily-empty value (allowed while editing) back
+        // to a numeric default so Joi's `min(1)` validator on the server
+        // never sees a string.
+        number_of_floors: (() => {
+          const n = Number(formData.building_details.number_of_floors);
+          return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1;
+        })()
+      },
       notice_period_days: formData.notice_period === 'custom'
         ? (formData.custom_notice_period_days || 0)
         : parseInt(formData.notice_period),

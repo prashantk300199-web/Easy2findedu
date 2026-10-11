@@ -95,9 +95,10 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
       newErrors.pincode = 'Enter a valid 6-digit PIN code';
     }
 
-    if (!formData.latitude || !formData.longitude) {
-      newErrors.location = 'Google Maps location is required';
-    }
+    // Google Maps location is OPTIONAL. If both latitude and longitude
+    // are provided, they must be valid numbers; if either is missing we
+    // simply proceed without coordinates. The textual address fields are
+    // what matter for registration.
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -119,14 +120,14 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
         (error) => {
           setErrors((prev: any) => ({
             ...prev,
-            location: 'Unable to get location. Please enter manually.'
+            location: 'Unable to get location. You can enter coordinates manually or skip this step.'
           }));
         }
       );
     } else {
       setErrors((prev: any) => ({
         ...prev,
-        location: 'Geolocation is not supported by your browser'
+        location: 'Geolocation is not supported by your browser. You can enter coordinates manually or skip this step.'
       }));
     }
   };
@@ -143,7 +144,9 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
         landmark: formData.landmark,
         city: formData.city,
         state: formData.state,
-        pincode: formData.pincode
+        pincode: formData.pincode,
+        latitude: formData.latitude,
+        longitude: formData.longitude
       });
     }
   };
@@ -158,7 +161,9 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
       landmark: formData.landmark,
       city: formData.city,
       state: formData.state,
-      pincode: formData.pincode
+      pincode: formData.pincode,
+      latitude: formData.latitude,
+      longitude: formData.longitude
     });
   };
 
@@ -342,12 +347,16 @@ export default function Step3LocationContact({ data, onNext, onBack, onSaveDraft
           </div>
         </div>
 
-        {/* Google Maps Location */}
+        {/* Google Maps Location - Optional */}
         <div>
-          <h3 className="text-xl font-semibold text-cream-100 mb-6 flex items-center gap-2">
+          <h3 className="text-xl font-semibold text-cream-100 mb-2 flex items-center gap-2">
             <MapPin size={20} className="text-gold-400" />
-            Google Maps Location <span className="text-red-400">*</span>
+            Google Maps Location
           </h3>
+          <p className="text-sm text-cream-100/50 mb-6">
+            Optional — adding coordinates helps students find you on the map, but registration
+            can be completed without them.
+          </p>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -333,9 +333,27 @@ export function Step1BasicInfo({
             <label className="mb-2 block text-sm font-semibold text-ink-600">Number of Floors</label>
             <input
               type="number"
-              value={formData.building_details.number_of_floors}
-              onChange={(e) => setFormData(prev => ({ ...prev, building_details: { ...prev.building_details, number_of_floors: parseInt(e.target.value) || 1 } }))}
               min="1"
+              value={formData.building_details.number_of_floors}
+              onChange={(e) => {
+                // Keep as a string during typing so the controlled input
+                // can be cleared / partially edited without the `|| 1`
+                // fallback ever re-injecting a default and producing
+                // strings like "12" when the user only wanted "2".
+                const raw = e.target.value;
+                const sanitized = raw.replace(/[^0-9]/g, '').slice(0, 3);
+                const next = sanitized === '' ? '' : Number(sanitized);
+                setFormData(prev => ({ ...prev, building_details: { ...prev.building_details, number_of_floors: next as any } }));
+              }}
+              onBlur={() => {
+                // Coerce empty / out-of-range values to a sensible numeric
+                // default on blur so the persisted value is always a number.
+                setFormData(prev => {
+                  const n = Number(prev.building_details.number_of_floors);
+                  const safe = Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1;
+                  return { ...prev, building_details: { ...prev.building_details, number_of_floors: safe } };
+                });
+              }}
               placeholder="1"
               className="w-full rounded-xl border border-cream-400 bg-cream-50 px-4 py-3 text-ink focus:border-gold-700 focus:outline-none focus:ring-2 focus:ring-gold-700/20"
             />

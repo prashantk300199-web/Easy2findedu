@@ -148,7 +148,10 @@ export interface FormData {
   };
   location: {
     type: string;
-    coordinates: [number, number];
+    // Coordinates are optional. `null` means the owner chose not to
+    // (or could not) pick a map location. Existing records with valid
+    // coordinates continue to be read normally.
+    coordinates: [number, number] | null;
   };
   rent: {
     security_deposit_type: string;
@@ -200,7 +203,7 @@ export interface FormData {
   building_details: {
     building_age_years: number;
     flooring_type: string;
-    number_of_floors: number;
+    number_of_floors: number | '';
   };
   social_media: SocialMedia;
   legal_docs: {
@@ -248,7 +251,7 @@ export const getInitialFormData = (): FormData => ({
     state: 'Bihar',
     country: 'India'
   },
-  location: { type: "Point", coordinates: [85.1376, 25.5941] },
+  location: { type: "Point", coordinates: null },
   rent: { security_deposit_type: 'one_month_fee', registration_fee: 0 },
   rooms: [{
     room_type: 'single_sharing_wall',

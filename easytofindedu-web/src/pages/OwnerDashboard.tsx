@@ -412,7 +412,11 @@ function AddHostel({ setView, editHostelId }: { setView: (v: 'hostels' | 'bookin
       fd.append('hostel_type', f.hostel_type);
       fd.append('description', f.description);
       fd.append('address', JSON.stringify({ line1: f.line1, subarea: f.subarea, area: f.area, pincode: f.pincode, city: f.city, state: f.state, country: 'India' }));
-      fd.append('location', JSON.stringify({ type: 'Point', coordinates: [85.1376, 25.5941] }));
+      // Map location is OPTIONAL. The compact form on this page doesn't
+      // surface a map picker, so we send no coordinates by default rather
+      // than defaulting to a hardcoded Patna pin. The textual address is
+      // sufficient for the listing to appear in search results.
+      fd.append('location', JSON.stringify({ type: 'Point' }));
       fd.append('rent', JSON.stringify({ security_deposit_type: f.security_deposit_type, registration_fee: Number(f.registration_fee) }));
       fd.append('rooms', JSON.stringify([{ room_type: f.room_type, total_beds: Number(f.room_beds), monthly_rent: Number(f.room_rent), is_available: true, available_beds_count: Number(f.room_beds), ac: amenities.includes('ac') }]));
       fd.append('warden', JSON.stringify({ name: f.warden_name, contact_number: f.warden_phone }));

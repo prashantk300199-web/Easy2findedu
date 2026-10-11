@@ -195,9 +195,12 @@ export function Step2AddressRent({ formData, setFormData, handleLiveLocation, cu
         </div>
       </div>
 
-      {/* Location Coordinates */}
+      {/* Location Coordinates - Optional */}
       <div className="border-t border-cream-400 pt-6">
-        <label className="mb-2 block text-sm font-semibold text-ink-600">Location Coordinates</label>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-semibold text-ink-600">Location Coordinates</label>
+          <span className="text-xs text-ink-500">Optional</span>
+        </div>
         <div className="space-y-3">
           <button
             type="button"
@@ -206,20 +209,35 @@ export function Step2AddressRent({ formData, setFormData, handleLiveLocation, cu
           >
             <Navigation size={18} /> Use Current Location (GPS)
           </button>
-          <div className="rounded-xl bg-cream-50 p-4">
-            <div className="grid gap-2 text-sm">
-              <div className="flex justify-between">
-                <span className="font-semibold text-ink-600">Latitude:</span>
-                <span className="font-mono text-ink">{formData.location.coordinates[1].toFixed(6)}</span>
+          {(() => {
+            // Guard: coordinates may be missing if the owner skipped map
+            // selection. Render a textual fallback instead of crashing on
+            // `coordinates[1].toFixed(6)`.
+            const coords = formData.location?.coordinates;
+            if (!coords || coords.length !== 2 || coords.some(v => v == null)) {
+              return (
+                <div className="rounded-xl bg-cream-50 p-4 text-sm text-ink-600">
+                  No map coordinates set yet. You can skip this and your address will still be visible to students.
+                </div>
+              );
+            }
+            return (
+              <div className="rounded-xl bg-cream-50 p-4">
+                <div className="grid gap-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-ink-600">Latitude:</span>
+                    <span className="font-mono text-ink">{coords[1].toFixed(6)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-ink-600">Longitude:</span>
+                    <span className="font-mono text-ink">{coords[0].toFixed(6)}</span>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="font-semibold text-ink-600">Longitude:</span>
-                <span className="font-mono text-ink">{formData.location.coordinates[0].toFixed(6)}</span>
-              </div>
-            </div>
-          </div>
+            );
+          })()}
           <p className="text-xs text-ink-600">
-            💡 Tip: Click "Use Current Location" for accurate GPS coordinates, or manually set them if needed.
+            💡 Tip: Click "Use Current Location" for accurate GPS coordinates, or skip this step — your address fields are enough to complete registration.
           </p>
         </div>
       </div>

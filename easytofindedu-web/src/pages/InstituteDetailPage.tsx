@@ -76,6 +76,15 @@ export function InstituteDetailPage() {
     { label: 'Code of conduct', text: transparency.codeOfConduct },
   ].filter((p) => p.text && p.text.trim());
 
+  // If the institute has explicitly recorded whether the listed fee
+  // already includes GST, surface that as a small badge under the fee
+  // clarity line. Undefined means legacy data — don't show anything.
+  const gstLabel = institute.feeIncludesGst === true
+    ? 'Inclusive of GST'
+    : institute.feeIncludesGst === false
+      ? 'Exclusive of GST (GST charged extra)'
+      : null;
+
   return (
     <>
       <Section className="pt-10">
@@ -134,6 +143,11 @@ export function InstituteDetailPage() {
                     <div key={policy.label} className="border-t border-cream-300 pt-6">
                       <h3 className="font-display text-xl text-ink">{policy.label}</h3>
                       <Prose text={policy.text!} />
+                      {policy.label === 'Fee clarity' && gstLabel && (
+                        <span className="mt-2 inline-block text-xs font-medium bg-gold-100 text-night-900 border border-gold-500/40 rounded-full px-3 py-1">
+                          {gstLabel}
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -157,6 +171,22 @@ export function InstituteDetailPage() {
           <aside>
             <Overline>Details</Overline>
             <dl className="mt-6">
+              <Spec label="Category" value={institute.category} />
+              {institute.subcategories && institute.subcategories.length > 0 && (
+                <div className="border-t border-cream-300 py-5">
+                  <dt className="overline">Target examinations / programs</dt>
+                  <dd className="mt-2 flex flex-wrap gap-1.5">
+                    {institute.subcategories.map((sub) => (
+                      <span
+                        key={sub}
+                        className="inline-block bg-gold-100 text-night-900 border border-gold-500/40 rounded-full px-3 py-1 text-xs font-medium"
+                      >
+                        {sub}
+                      </span>
+                    ))}
+                  </dd>
+                </div>
+              )}
               <Spec label="Director" value={institute.directorName} />
               <Spec label="Branches" value={institute.totalBranches} />
               <Spec label="Student–faculty ratio" value={academic?.studentFacultyRatio} />

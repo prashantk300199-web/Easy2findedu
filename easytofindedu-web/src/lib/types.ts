@@ -52,6 +52,10 @@ export interface Institute {
     areaName?: string;
     fullAddress?: string;
     landmark?: string;
+    // Google Maps coordinates — optional; legacy records and owners
+    // who skipped map selection will simply not have these.
+    latitude?: number;
+    longitude?: number;
     distanceFromLandmarks?: { landmarkName?: string; distanceInKm?: number }[];
   };
   facilities?: InstituteFacilities;
@@ -84,6 +88,17 @@ export interface Institute {
     careerOutcomesScore?: number;
     overallScore?: number;
   };
+  // Top-level category (e.g. "Medical Coaching"). Optional for legacy
+  // records that predate the multi-select category step.
+  category?: string;
+  // Target examinations / programs the institute prepares students for.
+  // Empty array is the safe default for older records.
+  subcategories?: string[];
+  // Per-course category values, surfaced from the embedded course list.
+  courseCategories?: string[];
+  // Whether the quoted fee includes GST. Optional; legacy records
+  // don't have this field.
+  feeIncludesGst?: boolean;
   courses?: unknown[];
 }
 

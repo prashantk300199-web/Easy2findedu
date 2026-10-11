@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { DollarSign, Award, CreditCard, FileText } from 'lucide-react';
+import { DollarSign, Award, CreditCard, FileText, Info } from 'lucide-react';
 
 interface Step7Props {
   data?: any;
@@ -10,18 +10,25 @@ interface Step7Props {
 }
 
 export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraft, loading }: Step7Props) {
+  // GST inclusion is a single, clearly worded option that applies to the
+  // total fee the owner is quoting. Stored separately as
+  // `feeIncludesGst` so downstream code can render a label like
+  // "₹50,000 (incl. GST)" without inferring from the amount.
   const [formData, setFormData] = useState({
-    registrationFee: data?.registrationFee || '',
-    admissionFee: data?.admissionFee || '',
-    courseFee: data?.courseFee || '',
-    monthlyFee: data?.monthlyFee || '',
-    quarterlyFee: data?.quarterlyFee || '',
-    materialFee: data?.materialFee || '',
-    kitFee: data?.kitFee || '',
-    examFee: data?.examFee || '',
-    certificationFee: data?.certificationFee || '',
-    otherCharges: data?.otherCharges || '',
-    totalPayableAmount: data?.totalPayableAmount || '',
+    registrationFee: data?.registrationFee ?? '',
+    admissionFee: data?.admissionFee ?? '',
+    courseFee: data?.courseFee ?? '',
+    monthlyFee: data?.monthlyFee ?? '',
+    quarterlyFee: data?.quarterlyFee ?? '',
+    materialFee: data?.materialFee ?? '',
+    kitFee: data?.kitFee ?? '',
+    examFee: data?.examFee ?? '',
+    certificationFee: data?.certificationFee ?? '',
+    otherCharges: data?.otherCharges ?? '',
+    totalPayableAmount: data?.totalPayableAmount ?? '',
+    // Legacy / new — store as boolean; old drafts may have undefined.
+    feeIncludesGst:
+      typeof data?.feeIncludesGst === 'boolean' ? data.feeIncludesGst : (data?.gstIncluded ?? false),
     scholarshipAvailable: data?.scholarshipAvailable || false,
     scholarshipDetails: data?.scholarshipDetails || '',
     installmentAvailable: data?.installmentAvailable || false,
@@ -37,6 +44,13 @@ export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraf
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
+    } else if (type === 'radio') {
+      // For the GST radio group, store the boolean in `feeIncludesGst`.
+      if (name === 'feeIncludesGst') {
+        setFormData(prev => ({ ...prev, feeIncludesGst: value === 'yes' }));
+      } else {
+        setFormData(prev => ({ ...prev, [name]: value }));
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -229,6 +243,72 @@ export default function Step7FeesScholarships({ data, onNext, onBack, onSaveDraf
                 min="0"
                 className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
               />
+            </div>
+          </div>
+
+          {/* GST inclusion — applies to the total fee the owner is quoting.
+              Stored separately as `feeIncludesGst` (boolean) so we never
+              infer GST status from the amount. */}
+          <div className="mt-6 p-5 rounded-lg border border-gold-500/30 bg-night-900/60">
+            <div className="flex items-center gap-2 mb-3">
+              <Info size={18} className="text-gold-400" />
+              <p className="text-sm font-semibold text-cream-100">
+                Does the fee include GST?
+              </p>
+            </div>
+            <p className="text-xs text-cream-100/50 mb-4">
+              This helps students understand exactly what they will pay. The fee amount
+              you entered above is stored as-is — no GST is added or removed automatically.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <label
+                className={`flex-1 flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all ${
+                  formData.feeIncludesGst === true
+                    ? 'border-gold-500 bg-gold-500/10'
+                    : 'border-night-700 bg-night-900 hover:border-gold-500/40'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="feeIncludesGst"
+                  value="yes"
+                  checked={formData.feeIncludesGst === true}
+                  onChange={handleChange}
+                  className="mt-1 accent-gold-500"
+                />
+                <div>
+                  <span className="block text-sm font-semibold text-cream-100">
+                    Yes — GST included
+                  </span>
+                  <span className="block text-xs text-cream-100/50 mt-1">
+                    The amount above already includes GST.
+                  </span>
+                </div>
+              </label>
+              <label
+                className={`flex-1 flex items-start gap-3 p-4 rounded-lg border cursor-pointer transition-all ${
+                  formData.feeIncludesGst === false
+                    ? 'border-gold-500 bg-gold-500/10'
+                    : 'border-night-700 bg-night-900 hover:border-gold-500/40'
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="feeIncludesGst"
+                  value="no"
+                  checked={formData.feeIncludesGst === false}
+                  onChange={handleChange}
+                  className="mt-1 accent-gold-500"
+                />
+                <div>
+                  <span className="block text-sm font-semibold text-cream-100">
+                    No — GST not included
+                  </span>
+                  <span className="block text-xs text-cream-100/50 mt-1">
+                    GST will be charged extra on top of the amount above.
+                  </span>
+                </div>
+              </label>
             </div>
           </div>
         </div>

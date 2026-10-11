@@ -1,16 +1,21 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Plus, Edit2, Trash2, BookOpen, X } from 'lucide-react';
 
 interface Course {
   id: string;
   name: string;
+  // Free-form category. Either a value from COURSE_CATEGORIES (when the
+  // owner picks from the dropdown) or a custom string (when they pick
+  // "Other" and type one). Stored as a string; never reduced to the
+  // literal word "Other".
   category: string;
+  // Helper field used to keep the dropdown's "Other" sentinel separate
+  // from a custom string. Not persisted.
+  categoryIsCustom?: boolean;
   level: string;
   duration: string;
   mode: string;
   eligibility: string;
-  minAge: string;
-  maxAge: string;
   totalFees: string;
   seats: string;
   description: string;
@@ -35,15 +40,39 @@ interface Step4Props {
 const COURSE_MODES = ['Online', 'Offline', 'Hybrid'];
 const LEVELS = ['Beginner', 'Intermediate', 'Advanced', 'Professional', 'Other'];
 
+// Source-of-truth list of supported course categories. The order is
+// meaningful: "Other" is always last so it's the obvious fallback.
+const COURSE_CATEGORIES = [
+  'Engineering',
+  'Computer Science',
+  'Information Technology',
+  'Management',
+  'Medical',
+  'Dental',
+  'Nursing',
+  'Pharmacy',
+  'Law',
+  'Arts',
+  'Science',
+  'Commerce',
+  'Education',
+  'Agriculture',
+  'Design',
+  'Hotel Management',
+  'Architecture',
+  'Diploma',
+  'Vocational',
+  'Other'
+];
+
 const emptyCourse: Omit<Course, 'id'> = {
   name: '',
   category: '',
+  categoryIsCustom: false,
   level: '',
   duration: '',
   mode: '',
   eligibility: '',
-  minAge: '',
-  maxAge: '',
   totalFees: '',
   seats: '',
   description: '',
@@ -57,12 +86,87 @@ const emptyCourse: Omit<Course, 'id'> = {
   entranceExamName: ''
 };
 
+// Normalize a previously-saved category value to one of:
+//   - a value from COURSE_CATEGORIES (when it matches)
+//   - a free-form custom string (when it doesn't match, including legacy
+//     values the owner typed in directly)
+//   - "" (when the course had no category)
+const splitCategory = (raw: any): { value: string; isCustom: boolean } => {
+  if (typeof raw !== 'string') return { value: '', isCustom: false };
+  const trimmed = raw.trim();
+  if (!trimmed) return { value: '', isCustom: false };
+  if (COURSE_CATEGORIES.includes(trimmed) && trimmed !== 'Other') {
+    return { value: trimmed, isCustom: false };
+  }
+  return { value: trimmed, isCustom: true };
+};
+
 export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loading }: Step4Props) {
-  const [courses, setCourses] = useState<Course[]>(data?.courses || []);
+  const [courses, setCourses] = useState<Course[]>(
+    Array.isArray(data?.courses)
+      ? data.courses.map((c: any) => {
+          const { value, isCustom } = splitCategory(c?.category);
+          return {
+            id: c?.id || Date.now().toString(),
+            name: c?.name || c?.courseName || '',
+            category: value,
+            categoryIsCustom: isCustom,
+            level: c?.level || '',
+            duration: c?.duration || '',
+            mode: c?.mode || '',
+            eligibility: c?.eligibility || '',
+            totalFees: c?.totalFees || (c?.fees?.amount ? String(c.fees.amount) : ''),
+            seats: c?.seats || '',
+            description: c?.description || '',
+            certificationAvailable: !!c?.certificationAvailable,
+            certificateAuthority: c?.certificateAuthority || '',
+            trialAvailable: !!c?.trialAvailable,
+            practicalTraining: !!c?.practicalTraining,
+            outcomes: c?.outcomes || '',
+            skills: c?.skills || '',
+            entranceExamRequired: !!c?.entranceExamRequired,
+            entranceExamName: c?.entranceExamName || ''
+          };
+        })
+      : []
+  );
   const [isAdding, setIsAdding] = useState(false);
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [currentCourse, setCurrentCourse] = useState<Omit<Course, 'id'>>(emptyCourse);
   const [errors, setErrors] = useState<any>({});
+
+  // Re-sync local state if the parent passes new draft data after initial mount.
+  useEffect(() => {
+    if (Array.isArray(data?.courses) && courses.length === 0) {
+      setCourses(
+        data.courses.map((c: any) => {
+          const { value, isCustom } = splitCategory(c?.category);
+          return {
+            id: c?.id || Date.now().toString(),
+            name: c?.name || c?.courseName || '',
+            category: value,
+            categoryIsCustom: isCustom,
+            level: c?.level || '',
+            duration: c?.duration || '',
+            mode: c?.mode || '',
+            eligibility: c?.eligibility || '',
+            totalFees: c?.totalFees || '',
+            seats: c?.seats || '',
+            description: c?.description || '',
+            certificationAvailable: !!c?.certificationAvailable,
+            certificateAuthority: c?.certificateAuthority || '',
+            trialAvailable: !!c?.trialAvailable,
+            practicalTraining: !!c?.practicalTraining,
+            outcomes: c?.outcomes || '',
+            skills: c?.skills || '',
+            entranceExamRequired: !!c?.entranceExamRequired,
+            entranceExamName: c?.entranceExamName || ''
+          };
+        })
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
@@ -77,6 +181,17 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
     if (errors[name]) {
       setErrors((prev: any) => ({ ...prev, [name]: '' }));
     }
+  };
+
+  const handleCategorySelect = (value: string) => {
+    // value is the option from the dropdown. When it's the "Other" sentinel
+    // we keep the field empty so the owner can type a custom category.
+    if (value === '__OTHER__') {
+      setCurrentCourse(prev => ({ ...prev, category: '', categoryIsCustom: true }));
+    } else {
+      setCurrentCourse(prev => ({ ...prev, category: value, categoryIsCustom: false }));
+    }
+    if (errors.category) setErrors((prev: any) => ({ ...prev, category: '' }));
   };
 
   const validate = () => {
@@ -108,12 +223,11 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
     setCurrentCourse({
       name: course.name,
       category: course.category,
+      categoryIsCustom: course.categoryIsCustom,
       level: course.level,
       duration: course.duration,
       mode: course.mode,
       eligibility: course.eligibility,
-      minAge: course.minAge,
-      maxAge: course.maxAge,
       totalFees: course.totalFees,
       seats: course.seats,
       description: course.description,
@@ -162,14 +276,55 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
     setErrors({});
   };
 
+  // Build a clean persistence shape so the server only ever sees the new
+  // fields. Legacy fields (minAge / maxAge) are dropped silently; custom
+  // categories are preserved as-is.
+  const buildPersistableCourses = (list: Course[]) => list.map((c) => {
+    const out: any = {
+      id: c.id,
+      courseName: c.name,
+      name: c.name,
+      category: (c.category || '').trim(),
+      level: c.level,
+      duration: c.duration,
+      mode: c.mode,
+      eligibility: c.eligibility,
+      totalFees: c.totalFees,
+      seats: c.seats,
+      description: c.description,
+      certificationAvailable: c.certificationAvailable,
+      certificateAuthority: c.certificateAuthority,
+      trialAvailable: c.trialAvailable,
+      practicalTraining: c.practicalTraining,
+      outcomes: c.outcomes,
+      skills: c.skills,
+      entranceExamRequired: c.entranceExamRequired,
+      entranceExamName: c.entranceExamName
+    };
+    return out;
+  });
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onNext({ courses });
+    onNext({ courses: buildPersistableCourses(courses) });
   };
 
   const handleSave = () => {
-    onSaveDraft({ courses });
+    onSaveDraft({ courses: buildPersistableCourses(courses) });
   };
+
+  // Whether the dropdown should currently show "Other" as selected.
+  // True when (a) the category is not in the predefined list, or (b) it's
+  // a custom string. This keeps the dropdown's "Other" sentinel visible
+  // after a custom value has been entered.
+  const dropdownValue = useMemo(() => {
+    if (currentCourse.categoryIsCustom) return '__OTHER__';
+    if (currentCourse.category && COURSE_CATEGORIES.includes(currentCourse.category) && currentCourse.category !== 'Other') {
+      return currentCourse.category;
+    }
+    if (currentCourse.category === 'Other') return '__OTHER__';
+    return '';
+  }, [currentCourse.category, currentCourse.categoryIsCustom]);
 
   return (
     <div className="bg-night-800 border border-night-700 p-8 rounded-lg shadow-2xl">
@@ -200,6 +355,11 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
                       <div className="flex-1">
                         <h3 className="font-semibold text-lg text-cream-100">{course.name}</h3>
                         <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
+                          {course.category && (
+                            <span className="bg-blue-900/30 text-blue-300 px-3 py-1.5 rounded border border-blue-500/30">
+                              📂 {course.category}
+                            </span>
+                          )}
                           {course.mode && <span className="bg-gold-900/30 text-gold-400 px-3 py-1.5 rounded border border-gold-500/30">📍 {course.mode}</span>}
                           {course.level && <span className="bg-purple-900/30 text-purple-400 px-3 py-1.5 rounded border border-purple-500/30">📊 {course.level}</span>}
                           {course.duration && <span className="bg-green-900/30 text-green-400 px-3 py-1.5 rounded border border-green-500/30">⏱️ {course.duration}</span>}
@@ -275,14 +435,29 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-semibold text-cream-100 mb-2">Course Category</label>
-                <input
-                  type="text"
-                  name="category"
-                  value={currentCourse.category}
-                  onChange={handleChange}
-                  placeholder="E.g., Medical, Technology"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
+                <select
+                  value={dropdownValue}
+                  onChange={(e) => handleCategorySelect(e.target.value)}
+                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 focus:ring-2 focus:ring-gold-500 transition-all"
+                >
+                  <option value="">Select a category</option>
+                  {COURSE_CATEGORIES.filter(c => c !== 'Other').map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                  <option value="__OTHER__">Other (add custom)…</option>
+                </select>
+                {currentCourse.categoryIsCustom && (
+                  <input
+                    type="text"
+                    value={currentCourse.category}
+                    onChange={(e) => setCurrentCourse(prev => ({ ...prev, category: e.target.value, categoryIsCustom: true }))}
+                    placeholder="Enter custom category"
+                    className="mt-2 w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
+                  />
+                )}
+                <p className="text-xs text-cream-100/40 mt-1">
+                  Pick a standard category or "Other" to add your own.
+                </p>
               </div>
 
               <div>
@@ -336,43 +511,17 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
               {errors.mode && <p className="text-red-400 text-sm mt-1">{errors.mode}</p>}
             </div>
 
-            {/* Eligibility, Age Range */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-cream-100 mb-2">Eligibility</label>
-                <input
-                  type="text"
-                  name="eligibility"
-                  value={currentCourse.eligibility}
-                  onChange={handleChange}
-                  placeholder="E.g., 12th Pass, Graduate"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-cream-100 mb-2">Minimum Age</label>
-                <input
-                  type="number"
-                  name="minAge"
-                  value={currentCourse.minAge}
-                  onChange={handleChange}
-                  placeholder="Min age"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-cream-100 mb-2">Maximum Age</label>
-                <input
-                  type="number"
-                  name="maxAge"
-                  value={currentCourse.maxAge}
-                  onChange={handleChange}
-                  placeholder="Max age"
-                  className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
-                />
-              </div>
+            {/* Eligibility (age fields removed) */}
+            <div>
+              <label className="block text-sm font-semibold text-cream-100 mb-2">Eligibility</label>
+              <input
+                type="text"
+                name="eligibility"
+                value={currentCourse.eligibility}
+                onChange={handleChange}
+                placeholder="E.g., 12th Pass, Graduate"
+                className="w-full px-4 py-3 bg-night-900 border border-night-700 rounded-lg text-cream-100 placeholder:text-cream-100/40 focus:ring-2 focus:ring-gold-500 transition-all"
+              />
             </div>
 
             {/* Fees and Seats */}
@@ -380,7 +529,7 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
               <div>
                 <label className="block text-sm font-semibold text-cream-100 mb-2">Total Fees (₹)</label>
                 <input
-                  type="number"
+                  type="text"
                   name="totalFees"
                   value={currentCourse.totalFees}
                   onChange={handleChange}
@@ -392,7 +541,7 @@ export default function Step4Courses({ data, onNext, onBack, onSaveDraft, loadin
               <div>
                 <label className="block text-sm font-semibold text-cream-100 mb-2">Number of Seats</label>
                 <input
-                  type="number"
+                  type="text"
                   name="seats"
                   value={currentCourse.seats}
                   onChange={handleChange}
