@@ -64,11 +64,8 @@ jobs:
           port: 22
           script: |
             set -e
-            # If a previous run left a staging dir, clean it
-            if [ -d /var/www/admin-easytofindedu-temp ]; then
-              rm -rf /var/www/admin-easytofindedu-temp
-            fi
-            # SCP landed the new files; they should be in place, but if not, fail fast
+            # SCP just created /var/www/admin-easytofindedu-temp with fresh files.
+            # No cleanup needed — scp-action replaces contents each run.
             if [ ! -d /var/www/admin-easytofindedu-temp ]; then
               echo "❌ staging dir missing — scp step failed?"
               exit 1
